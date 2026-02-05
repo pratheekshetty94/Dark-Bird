@@ -31,33 +31,33 @@ export default function Footer() {
 
   return (
     <footer className="bg-ink border-t border-stone/10">
-      {/* Main Footer - Compact single row on desktop */}
-      <div className="container-content py-8 md:py-10">
+      {/* Main Footer - Evenly distributed on desktop */}
+      <div className="container-content py-10 md:py-12">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
           {/* Brand Column */}
-          <div className="flex-shrink-0">
-            <Link href="/" className="group inline-block mb-3">
+          <div className="flex-shrink-0 md:flex-1">
+            <Link href="/" className="group inline-block mb-4">
               <Image
                 src="/images/logo.png"
                 alt="Dark Bird Films"
-                width={280}
-                height={100}
-                className="h-16 md:h-20 w-auto object-contain transition-opacity group-hover:opacity-80"
+                width={400}
+                height={150}
+                className="h-24 md:h-32 lg:h-40 w-auto object-contain transition-opacity group-hover:opacity-80"
               />
             </Link>
-            <p className="text-silver text-sm leading-relaxed max-w-[240px]">
+            <p className="text-silver text-sm md:text-base whitespace-nowrap">
               Stories that move. Brands that grow.
             </p>
           </div>
 
-          {/* Links Row - All in one horizontal flow on desktop */}
-          <div className="flex flex-wrap gap-x-12 gap-y-6 md:gap-x-16">
+          {/* Links Row - Evenly distributed in center */}
+          <div className="flex flex-wrap justify-center md:justify-end gap-x-10 gap-y-6 md:gap-x-12 lg:gap-x-16 md:flex-[2]">
             {/* Quick Links */}
             <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-2">
+              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-3">
                 Navigate
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {quickLinks.map((link) => (
                   <li key={link.href}>
                     <Link
@@ -73,10 +73,10 @@ export default function Footer() {
 
             {/* Services */}
             <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-2">
+              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-3">
                 Services
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 {services.map((link) => (
                   <li key={link.href}>
                     <Link
@@ -92,10 +92,10 @@ export default function Footer() {
 
             {/* Contact */}
             <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-2">
+              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-3">
                 Connect
               </h4>
-              <ul className="space-y-1.5">
+              <ul className="space-y-2">
                 <li>
                   <a
                     href="mailto:management@darkbirdfilms.com"
@@ -128,7 +128,7 @@ export default function Footer() {
 
             {/* Social Links */}
             <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-2">
+              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-3">
                 Follow
               </h4>
               <div className="flex items-center gap-2">
@@ -140,7 +140,7 @@ export default function Footer() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-8 h-8 rounded-lg bg-charcoal flex items-center justify-center text-warm-gray hover:text-accent hover:bg-charcoal/80 transition-all"
+                      className="w-9 h-9 rounded-lg bg-charcoal flex items-center justify-center text-warm-gray hover:text-accent hover:bg-charcoal/80 transition-all"
                       aria-label={social.label}
                     >
                       <Icon className="w-4 h-4" />
