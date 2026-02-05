@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import Image from 'next/image'
 
 const principles = [
   {
@@ -33,19 +34,19 @@ export default function DarkBirdWay() {
 
       <div className="container-content relative z-10">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-24">
-          {/* Left Column - Visual Element */}
+          {/* Left Column - Creative Trust Visual */}
           <div className="hidden lg:block lg:col-span-5">
             <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-charcoal">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-center">
-                  <span className="block text-accent text-[280px] font-display leading-none opacity-10">
-                    "
-                  </span>
-                  <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-display text-4xl text-cream/60 tracking-wider uppercase whitespace-nowrap">
-                    Creative Trust
-                  </p>
-                </div>
+              {/* Creative Trust Vector Image */}
+              <div className="absolute inset-0 flex items-center justify-center p-8">
+                <Image
+                  src="/images/creative-trust.png"
+                  alt="Creative Trust"
+                  fill
+                  className="object-contain p-8"
+                />
               </div>
+              {/* Decorative overlays */}
               <div className="absolute top-0 right-0 w-1/2 h-1/2 bg-gradient-to-bl from-accent/20 to-transparent" />
               <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-gradient-to-tr from-accent/10 to-transparent" />
               <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-accent to-transparent" />
