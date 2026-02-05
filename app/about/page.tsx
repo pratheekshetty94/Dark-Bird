@@ -408,7 +408,7 @@ export default function AboutPage() {
       </section>
 
       {/* Awards & Recognition */}
-      <section className="section-dark section-padding pb-0 relative overflow-hidden">
+      <section className="section-dark section-padding pb-16 md:pb-24 relative overflow-hidden">
         {/* Gold accent */}
         <div
           className="absolute top-0 left-0 w-1/2 h-full opacity-5 pointer-events-none"
