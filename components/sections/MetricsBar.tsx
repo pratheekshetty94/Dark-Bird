@@ -107,7 +107,7 @@ export default function MetricsBar() {
           {metrics.map((metric, index) => (
             <div key={metric.label} className="text-center lg:text-left">
               {/* Number with count-up animation */}
-              <div className="font-display text-4xl md:text-5xl text-ink whitespace-nowrap">
+              <div className="text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-ink whitespace-nowrap">
                 <span
                   ref={(el) => {
                     numberRefs.current[index] = el
@@ -115,15 +115,15 @@ export default function MetricsBar() {
                 >
                   {metric.isYear ? '2000' : '0'}
                 </span>
-                <span>{metric.suffix}</span>
+                <span className="text-accent">{metric.suffix}</span>
               </div>
 
               {/* Label */}
-              <div className="mt-2 metric-label">
-                <span className="font-medium text-sm md:text-base text-ink whitespace-nowrap">
+              <div className="mt-3 metric-label">
+                <span className="font-bold text-base md:text-lg text-ink uppercase tracking-wide">
                   {metric.label}
                 </span>
-                <span className="block text-xs md:text-sm text-warm-gray mt-1">
+                <span className="block text-sm text-warm-gray mt-1">
                   {metric.description}
                 </span>
               </div>
