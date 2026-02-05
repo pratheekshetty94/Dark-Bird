@@ -108,7 +108,7 @@ export default function Navbar() {
           isScrolled
             ? hasLightBackground
               ? 'py-4 bg-ink'
-              : 'py-4 backdrop-blur-xl bg-ink/80'
+              : 'py-4 bg-transparent'
             : hasLightBackground
               ? 'py-6 bg-ink'
               : 'py-6 bg-transparent'
