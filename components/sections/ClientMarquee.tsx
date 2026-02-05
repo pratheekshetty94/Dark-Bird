@@ -39,20 +39,50 @@ interface ClientMarqueeProps {
 }
 
 export default function ClientMarquee({ className, showSecondRow = true }: ClientMarqueeProps) {
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState<boolean | null>(null)
   const [isPaused, setIsPaused] = useState(false)
+  const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0)
     }
     checkMobile()
+
+    // Ensure logos stay visible
+    setIsVisible(true)
   }, [])
 
   const firstRowClients = clients.slice(0, 13)
   const secondRowClients = clients.slice(13)
 
-  // Mobile: Two rows with auto-scroll, pause on touch
+  // Show loading state while determining mobile/desktop
+  if (isMobile === null) {
+    return (
+      <section className={cn('section-dark py-6 md:py-16', className)}>
+        <div className="overflow-hidden opacity-50">
+          <div className="flex" style={{ width: 'max-content' }}>
+            {firstRowClients.map((client, index) => (
+              <div key={`loading-${index}`} className="flex items-center justify-center flex-shrink-0 mx-2 md:mx-6">
+                <div className="relative h-16 md:h-28 w-40 md:w-56">
+                  <Image
+                    src={client.logo}
+                    alt={client.name}
+                    fill
+                    sizes="(max-width: 768px) 160px, 224px"
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  // Mobile: Two rows with auto-scroll, pause on touch - NO scroll reveal effects
   if (isMobile) {
     return (
       <section className={cn('section-dark py-6', className)}>
@@ -61,50 +91,50 @@ export default function ClientMarquee({ className, showSecondRow = true }: Clien
           onTouchStart={() => setIsPaused(true)}
           onTouchEnd={() => setTimeout(() => setIsPaused(false), 1000)}
         >
-          {/* First Row */}
+          {/* First Row - Always visible, no opacity animation */}
           <div className="mb-4">
             <div
               className={cn(
-                "flex animate-marquee",
+                "flex animate-marquee will-change-transform",
                 isPaused && "[animation-play-state:paused]"
               )}
               style={{ width: 'max-content' }}
             >
-              {[...firstRowClients, ...firstRowClients].map((client, index) => (
+              {[...firstRowClients, ...firstRowClients, ...firstRowClients].map((client, index) => (
                 <div key={`mobile-row1-${index}`} className="flex items-center justify-center flex-shrink-0 mx-2">
-                  <div className="relative h-16 w-40 opacity-50">
+                  <div className="relative h-16 w-40 opacity-60">
                     <Image
                       src={client.logo}
                       alt={client.name}
                       fill
                       sizes="160px"
                       className="object-contain"
-                      loading="lazy"
+                      loading={index < 13 ? "eager" : "lazy"}
                     />
                   </div>
                 </div>
               ))}
             </div>
           </div>
-          {/* Second Row - Reverse direction */}
+          {/* Second Row - Reverse direction - Always visible */}
           <div>
             <div
               className={cn(
-                "flex animate-marquee-reverse",
+                "flex animate-marquee-reverse will-change-transform",
                 isPaused && "[animation-play-state:paused]"
               )}
               style={{ width: 'max-content' }}
             >
-              {[...secondRowClients, ...secondRowClients].map((client, index) => (
+              {[...secondRowClients, ...secondRowClients, ...secondRowClients].map((client, index) => (
                 <div key={`mobile-row2-${index}`} className="flex items-center justify-center flex-shrink-0 mx-2">
-                  <div className="relative h-16 w-40 opacity-50">
+                  <div className="relative h-16 w-40 opacity-60">
                     <Image
                       src={client.logo}
                       alt={client.name}
                       fill
                       sizes="160px"
                       className="object-contain"
-                      loading="lazy"
+                      loading={index < 12 ? "eager" : "lazy"}
                     />
                   </div>
                 </div>
