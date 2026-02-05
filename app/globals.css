@@ -1,0 +1,523 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ========================================
+   DARK BIRD FILMS - NEW DESIGN SYSTEM
+   Inspired by: Burocratik, ToyFight, Inertia
+   ======================================== */
+
+@layer base {
+  :root {
+    /* New warm color palette */
+    --accent: #E85A3F;
+    --accent-hover: #D14A30;
+    --accent-muted: #F5A898;
+    --ink: #1A1818;
+    --charcoal: #2B2926;
+    --stone: #4A4744;
+    --warm-gray: #8A8580;
+    --silver: #B5B0AA;
+    --cream: #FAF6EF;
+    --paper: #FFFEF8;
+    --gold: #C9A962;
+
+    /* Easing functions */
+    --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-bounce: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    --ease-dramatic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-ink text-cream;
+    font-feature-settings: 'kern' 1, 'liga' 1;
+  }
+
+  /* Custom Selection */
+  ::selection {
+    @apply bg-accent text-cream;
+  }
+
+  /* Custom Scrollbar - Minimal */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-ink;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-charcoal rounded-full;
+    transition: background 0.2s;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-stone;
+  }
+
+  /* Headings use serif display font */
+  h1, h2, h3 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  /* ===== SECTION LABELS ===== */
+  .section-label {
+    @apply font-mono uppercase text-label tracking-[0.2em] text-accent;
+  }
+
+  /* Parenthetical label style (Inertia-inspired) */
+  .label-parenthetical {
+    @apply font-mono text-label tracking-[0.15em] text-warm-gray;
+  }
+  .label-parenthetical::before {
+    content: '( ';
+  }
+  .label-parenthetical::after {
+    content: ' )';
+  }
+
+  /* ===== BUTTONS ===== */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-8 py-4
+           bg-accent text-cream font-medium rounded-lg
+           transition-all duration-300 ease-smooth
+           hover:bg-accent-hover hover:shadow-glow hover:scale-[1.02]
+           active:scale-[0.98];
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-8 py-4
+           bg-transparent border border-cream/30 text-cream font-medium rounded-lg
+           transition-all duration-300 ease-smooth
+           hover:border-accent hover:text-accent hover:bg-accent/5;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 text-cream font-medium
+           transition-all duration-300 ease-smooth
+           hover:text-accent;
+  }
+
+  .btn-ghost::after {
+    content: '→';
+    @apply transition-transform duration-300;
+  }
+
+  .btn-ghost:hover::after {
+    transform: translateX(4px);
+  }
+
+  /* ===== CONTAINERS ===== */
+  .container-content {
+    @apply max-w-content mx-auto px-gutter;
+  }
+
+  .container-narrow {
+    @apply max-w-narrow mx-auto px-gutter;
+  }
+
+  .container-wide {
+    @apply max-w-wide mx-auto px-gutter;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section-padding {
+    @apply py-section;
+  }
+
+  .section-dark {
+    @apply bg-ink text-cream;
+  }
+
+  .section-light {
+    @apply bg-cream text-ink;
+  }
+
+  .section-charcoal {
+    @apply bg-charcoal text-cream;
+  }
+
+  .section-cream {
+    @apply bg-cream text-ink;
+  }
+
+  /* ===== TYPOGRAPHY COMPONENTS ===== */
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-cream to-silver;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Large quote styling */
+  .blockquote-large {
+    @apply font-display text-display italic text-cream/90 relative pl-8;
+  }
+  .blockquote-large::before {
+    content: '"';
+    @apply absolute left-0 top-0 text-accent text-[4rem] leading-none font-display;
+  }
+
+  /* ===== METRIC NUMBERS ===== */
+  .metric-number {
+    @apply font-display text-metric text-accent;
+  }
+
+  .metric-label {
+    @apply font-mono text-label uppercase tracking-[0.15em] text-warm-gray;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    @apply bg-charcoal border border-stone/20 rounded-lg
+           transition-all duration-400 ease-smooth;
+  }
+
+  .card:hover {
+    @apply border-accent/30 shadow-medium;
+  }
+
+  .card-interactive {
+    @apply card cursor-pointer;
+  }
+
+  .card-interactive:hover {
+    @apply -translate-y-1 shadow-dramatic;
+  }
+
+  /* ===== VIDEO/IMAGE OVERLAYS ===== */
+  .video-gradient {
+    @apply absolute inset-0;
+    background: linear-gradient(transparent 40%, rgba(26,24,24,0.95) 100%);
+  }
+
+  .image-overlay {
+    @apply absolute inset-0 bg-ink/40 transition-opacity duration-400;
+  }
+
+  /* ===== LINKS ===== */
+  .link-underline {
+    @apply relative inline-block;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-[1px] bg-accent
+           transition-all duration-300 ease-smooth;
+  }
+
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+
+  /* ===== AWARDS/BADGES ===== */
+  .award-badge {
+    @apply inline-flex items-center gap-2 px-4 py-2
+           bg-gold/10 border border-gold/30 text-gold
+           rounded-full text-caption font-medium;
+  }
+
+  /* ===== TAGS ===== */
+  .tag {
+    @apply inline-flex items-center px-3 py-1
+           bg-charcoal border border-stone/30
+           rounded-full text-caption text-silver;
+  }
+
+  .tag-accent {
+    @apply tag bg-accent/10 border-accent/30 text-accent;
+  }
+
+  /* ===== FORM ELEMENTS ===== */
+  .form-input {
+    @apply w-full px-4 py-3 bg-charcoal border border-stone/30 rounded-lg
+           text-cream placeholder:text-warm-gray
+           focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20
+           transition-all duration-200;
+  }
+
+  .form-label {
+    @apply block text-caption font-medium text-warm-gray mb-2 uppercase tracking-wider;
+  }
+
+  /* ===== DIVIDERS ===== */
+  .divider {
+    @apply w-full h-px bg-stone/30;
+  }
+
+  .divider-accent {
+    @apply w-16 h-1 bg-accent;
+  }
+}
+
+@layer utilities {
+  /* ===== REVEAL ANIMATIONS ===== */
+  .reveal {
+    @apply opacity-0 translate-y-8;
+  }
+
+  .reveal.active {
+    @apply opacity-100 translate-y-0 transition-all duration-800 ease-smooth;
+  }
+
+  /* Staggered children animations */
+  .stagger-children > * {
+    @apply opacity-0 translate-y-6;
+  }
+
+  .stagger-children.active > * {
+    @apply opacity-100 translate-y-0;
+    transition: opacity 0.6s var(--ease-smooth), transform 0.6s var(--ease-smooth);
+  }
+
+  .stagger-children.active > *:nth-child(1) { transition-delay: 0.1s; }
+  .stagger-children.active > *:nth-child(2) { transition-delay: 0.2s; }
+  .stagger-children.active > *:nth-child(3) { transition-delay: 0.3s; }
+  .stagger-children.active > *:nth-child(4) { transition-delay: 0.4s; }
+  .stagger-children.active > *:nth-child(5) { transition-delay: 0.5s; }
+  .stagger-children.active > *:nth-child(6) { transition-delay: 0.6s; }
+
+  /* Hover lift */
+  .hover-lift {
+    @apply transition-all duration-300 ease-smooth;
+  }
+  .hover-lift:hover {
+    @apply -translate-y-1 shadow-medium;
+  }
+
+  /* Glow effect */
+  .glow-accent {
+    box-shadow: 0 0 40px rgba(232, 90, 63, 0.25);
+  }
+
+  /* Mix blend for overlapping text */
+  .blend-difference {
+    mix-blend-mode: difference;
+  }
+}
+
+/* ===== NOISE TEXTURE OVERLAY ===== */
+.noise-overlay {
+  @apply pointer-events-none fixed inset-0 z-[1000] opacity-[0.025];
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Legacy support - keep film-grain class working */
+.film-grain {
+  @apply noise-overlay;
+}
+
+/* ===== NAVIGATION ===== */
+.nav-transparent {
+  @apply bg-transparent;
+}
+
+.nav-solid {
+  @apply backdrop-blur-xl;
+  background: rgba(26, 24, 24, 0.9);
+}
+
+/* ===== DROPDOWN MENU ===== */
+.dropdown-menu {
+  @apply absolute top-full left-0 min-w-[300px]
+         backdrop-blur-xl border border-stone/20 rounded-lg
+         overflow-hidden opacity-0 invisible translate-y-2
+         transition-all duration-200;
+  background: rgba(26, 24, 24, 0.95);
+}
+
+.dropdown-menu.active {
+  @apply opacity-100 visible translate-y-0;
+}
+
+.dropdown-item {
+  @apply flex items-center gap-4 px-5 py-4
+         border-l-2 border-transparent
+         hover:border-accent hover:bg-cream/5
+         transition-all duration-200;
+}
+
+/* ===== MOBILE MENU ===== */
+.mobile-menu {
+  @apply fixed inset-0 bg-ink z-50 flex flex-col;
+}
+
+/* ===== MARQUEE ===== */
+.marquee-container {
+  @apply overflow-hidden whitespace-nowrap;
+}
+
+.marquee-content {
+  @apply inline-flex gap-16 animate-marquee;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+/* ===== ARTICLE SLIDER ===== */
+@keyframes slide-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-slide-left {
+  animation: slide-left 35s linear infinite;
+}
+
+.animate-slide-left:hover {
+  animation-play-state: paused;
+}
+
+/* ===== VIDEO HERO ===== */
+.hero-video-container {
+  @apply relative w-full h-screen overflow-hidden;
+}
+
+.hero-video {
+  @apply absolute inset-0 w-full h-full object-cover;
+}
+
+.hero-video-overlay {
+  @apply absolute inset-0 z-10;
+  background: linear-gradient(
+    transparent 30%,
+    rgba(26, 24, 24, 0.6) 60%,
+    rgba(26, 24, 24, 0.95) 100%
+  );
+}
+
+/* ===== SCROLL INDICATOR ===== */
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+.scroll-indicator {
+  animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .section-padding {
+    @apply py-16;
+  }
+
+  .container-content,
+  .container-narrow,
+  .container-wide {
+    @apply px-5;
+  }
+}
+
+/* ===== SCROLLBAR HIDE ===== */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+  .noise-overlay,
+  .film-grain {
+    display: none !important;
+  }
+}
+
+/* ===== CUSTOM ANIMATIONS ===== */
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
+/* Shimmer animation for logo reveal */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* Logo reveal animation */
+@keyframes logo-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+    filter: blur(10px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.15);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+/* Noise texture for film grain */
+.noise-texture {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  animation: grainShift 0.4s steps(6) infinite;
+}
+
+@keyframes grainShift {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-1%, 1%); }
+  50% { transform: translate(1%, -1%); }
+  75% { transform: translate(-1%, -1%); }
+}
+
+/* Preloader specific styles */
+.preloader-content {
+  background: #1A1818;
+}
