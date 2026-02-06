@@ -358,7 +358,7 @@ export default function FilmDetailPage() {
               style={{ transitionDelay: '200ms' }}
             >
               <div
-                className="relative aspect-[2/3] w-full max-w-[350px] mx-auto rounded-xl overflow-hidden shadow-dramatic cursor-pointer group"
+                className="relative aspect-[2/3] w-full max-w-[320px] md:max-w-[400px] mx-auto rounded-xl overflow-hidden shadow-dramatic cursor-pointer group"
                 onClick={() => setIsTrailerOpen(true)}
               >
                 <Image
