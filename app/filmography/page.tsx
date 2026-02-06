@@ -18,6 +18,8 @@ interface FilmItem {
   award?: string
   description?: string
   platform?: string
+  wikiUrl?: string
+  imdbUrl?: string
 }
 
 const films: FilmItem[] = [
@@ -31,6 +33,8 @@ const films: FilmItem[] = [
     award: '2 National Awards + 21 more',
     description: 'A blockbuster that captivated India with its raw portrayal of man vs nature.',
     platform: 'Amazon Prime Video',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Kantara_(2022_film)',
+    imdbUrl: 'https://www.imdb.com/title/tt15327088/',
   },
   {
     id: '777-charlie',
@@ -42,6 +46,8 @@ const films: FilmItem[] = [
     award: 'National Award + State Award Best Editor',
     description: 'A heartwarming tale of a man and his dog that touched millions.',
     platform: 'Amazon Prime Video',
+    wikiUrl: 'https://en.wikipedia.org/wiki/777_Charlie',
+    imdbUrl: 'https://www.imdb.com/title/tt7466810/',
   },
   {
     id: 'gandhada-gudi',
@@ -52,6 +58,8 @@ const films: FilmItem[] = [
     category: 'documentary',
     description: 'Puneeth Rajkumar\'s final film - a tribute to Karnataka\'s wildlife.',
     platform: 'Amazon Prime Video',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Gandhada_Gudi_(2022_film)',
+    imdbUrl: 'https://www.imdb.com/title/tt21288778/',
   },
   {
     id: 'su-from-so',
@@ -61,6 +69,8 @@ const films: FilmItem[] = [
     role: 'Trailer & Song Editor',
     category: 'feature',
     description: 'A coming-of-age story exploring modern relationships.',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Su_From_So',
+    imdbUrl: 'https://www.imdb.com/title/tt37629310/',
   },
   {
     id: 'shpsk',
@@ -72,10 +82,12 @@ const films: FilmItem[] = [
     award: 'National Award + 2 State Awards',
     description: 'A story of a teacher\'s fight to save a government school.',
     platform: 'Amazon Prime Video',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Sarkari_Hi._Pra._Shaale,_Kasaragodu,_Koduge:_Ramanna_Rai',
+    imdbUrl: 'https://www.imdb.com/title/tt8602654/',
   },
   {
     id: 'garudagamana',
-    title: 'Garudagamana Vrishabha Vahana',
+    title: 'Garuda Gamana Vrishabha Vahana',
     year: '2021',
     poster: '/images/posters/06 garudagamana vrishabha vahana.png',
     role: 'Filmed & Edited Intro Song',
@@ -83,15 +95,19 @@ const films: FilmItem[] = [
     award: 'Filmfare + 2 SIIMA Awards',
     description: 'An underworld drama exploring friendship and betrayal.',
     platform: 'Amazon Prime Video',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Garuda_Gamana_Vrishabha_Vahana',
+    imdbUrl: 'https://www.imdb.com/title/tt11953248/',
   },
   {
     id: 'hero',
     title: 'Hero',
-    year: '2022',
+    year: '2021',
     poster: '/images/posters/07 hero.jpeg',
     role: 'Editor',
     category: 'feature',
     description: 'An action-packed entertainer with a unique storyline.',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Hero_(2021_film)',
+    imdbUrl: 'https://www.imdb.com/title/tt13986904/',
   },
   {
     id: 'ondu-motteya-kathe',
@@ -103,6 +119,8 @@ const films: FilmItem[] = [
     award: 'Filmfare Best Film',
     description: 'A quirky comedy about a bald man\'s journey to find love.',
     platform: 'Amazon Prime Video',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Ondu_Motteya_Kathe',
+    imdbUrl: 'https://www.imdb.com/title/tt6620238/',
   },
   {
     id: 'maarnami',
@@ -112,6 +130,7 @@ const films: FilmItem[] = [
     role: 'Editor',
     category: 'feature',
     description: 'A gripping thriller set in rural Karnataka.',
+    imdbUrl: 'https://www.imdb.com/title/tt33476537/',
   },
   {
     id: 'kotee',
@@ -121,6 +140,52 @@ const films: FilmItem[] = [
     role: 'Editor',
     category: 'feature',
     description: 'A powerful story of ambition and struggle.',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Kotee',
+    imdbUrl: 'https://www.imdb.com/title/tt27494630/',
+  },
+  {
+    id: 'toby',
+    title: 'Toby',
+    year: '2023',
+    poster: '/images/posters/10 kotee.webp', // Placeholder - needs poster
+    role: 'Editor',
+    category: 'feature',
+    description: 'A gripping crime thriller.',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Toby_(film)',
+    imdbUrl: 'https://www.imdb.com/title/tt28075055/',
+  },
+  {
+    id: 'katha-sangama',
+    title: 'Katha Sangama',
+    year: '2019',
+    poster: '/images/posters/10 kotee.webp', // Placeholder - needs poster
+    role: 'Editor',
+    category: 'feature',
+    description: 'An anthology film with interconnected stories.',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Katha_Sangama_(2019_film)',
+    imdbUrl: 'https://www.imdb.com/title/tt7315232/',
+  },
+  {
+    id: 'anukta',
+    title: 'Anukta',
+    year: '2019',
+    poster: '/images/posters/10 kotee.webp', // Placeholder - needs poster
+    role: 'Editor',
+    category: 'feature',
+    description: 'A thought-provoking drama.',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Anukta',
+    imdbUrl: 'https://www.imdb.com/title/tt8426772/',
+  },
+  {
+    id: 'madharaasi',
+    title: 'Madharaasi',
+    year: '2024',
+    poster: '/images/posters/10 kotee.webp', // Placeholder - needs poster
+    role: 'Editor',
+    category: 'feature',
+    description: 'A compelling regional drama.',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Madharaasi',
+    imdbUrl: 'https://www.imdb.com/title/tt28252563/',
   },
 ]
 
