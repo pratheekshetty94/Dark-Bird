@@ -326,6 +326,7 @@ export default function FilmDetailPage() {
             fill
             className="object-cover object-top"
             priority
+            unoptimized
           />
           {/* Gradient overlays */}
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/80 to-ink/30" />
@@ -357,7 +358,7 @@ export default function FilmDetailPage() {
               style={{ transitionDelay: '200ms' }}
             >
               <div
-                className="relative aspect-[2/3] rounded-xl overflow-hidden shadow-dramatic cursor-pointer group"
+                className="relative aspect-[2/3] w-full max-w-[320px] mx-auto lg:max-w-none rounded-xl overflow-hidden shadow-dramatic cursor-pointer group"
                 onClick={() => setIsTrailerOpen(true)}
               >
                 <Image
@@ -365,6 +366,7 @@ export default function FilmDetailPage() {
                   alt={film.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  unoptimized
                 />
                 {/* Play overlay */}
                 <div className="absolute inset-0 bg-ink/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
