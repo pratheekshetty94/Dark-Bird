@@ -1,8 +1,9 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Target } from 'lucide-react'
+import { ArrowLeft, Target, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 
@@ -61,6 +62,33 @@ const performanceAds = [
 ]
 
 export default function PerformanceAdsPage() {
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const openLightbox = (index: number) => {
+    setCurrentIndex(index)
+    setLightboxOpen(true)
+  }
+
+  const closeLightbox = () => {
+    setLightboxOpen(false)
+  }
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? performanceAds.length - 1 : prev - 1))
+  }
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev === performanceAds.length - 1 ? 0 : prev + 1))
+  }
+
+  // Handle keyboard navigation
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') closeLightbox()
+    if (e.key === 'ArrowLeft') goToPrevious()
+    if (e.key === 'ArrowRight') goToNext()
+  }
+
   return (
     <>
       {/* Hero Section */}
@@ -115,14 +143,20 @@ export default function PerformanceAdsPage() {
           </ScrollReveal>
 
           <StaggerReveal className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {performanceAds.map((ad) => (
-              <div key={ad.src} className="group relative rounded-xl overflow-hidden shadow-lg bg-white">
-                <div className="aspect-square relative">
+            {performanceAds.map((ad, index) => (
+              <button
+                key={ad.src}
+                onClick={() => openLightbox(index)}
+                className="group relative rounded-xl overflow-hidden shadow-lg bg-white cursor-pointer text-left"
+              >
+                {/* Show full image without cropping */}
+                <div className="relative">
                   <Image
                     src={ad.src}
                     alt={ad.title}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    width={600}
+                    height={600}
+                    className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-105"
                     unoptimized
                   />
                 </div>
@@ -131,12 +165,80 @@ export default function PerformanceAdsPage() {
                     {ad.client}
                   </span>
                   <span className="text-white font-medium text-sm">{ad.title}</span>
+                  <span className="text-white/60 text-xs mt-1">Click to view fullscreen</span>
                 </div>
-              </div>
+              </button>
             ))}
           </StaggerReveal>
         </div>
       </section>
+
+      {/* Lightbox Modal */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-deep-black/95 flex items-center justify-center"
+          onClick={closeLightbox}
+          onKeyDown={handleKeyDown}
+          tabIndex={0}
+        >
+          {/* Close Button */}
+          <button
+            onClick={closeLightbox}
+            className="absolute top-4 right-4 p-2 text-white/80 hover:text-white transition-colors z-10"
+          >
+            <X className="w-8 h-8" />
+          </button>
+
+          {/* Previous Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              goToPrevious()
+            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-white/80 hover:text-white transition-colors z-10 bg-white/10 rounded-full hover:bg-white/20"
+          >
+            <ChevronLeft className="w-8 h-8" />
+          </button>
+
+          {/* Next Button */}
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              goToNext()
+            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-white/80 hover:text-white transition-colors z-10 bg-white/10 rounded-full hover:bg-white/20"
+          >
+            <ChevronRight className="w-8 h-8" />
+          </button>
+
+          {/* Image Container */}
+          <div
+            className="max-w-[90vw] max-h-[90vh] relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={performanceAds[currentIndex].src}
+              alt={performanceAds[currentIndex].title}
+              width={1200}
+              height={1200}
+              className="max-w-full max-h-[85vh] w-auto h-auto object-contain"
+              unoptimized
+            />
+            {/* Caption */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-deep-black/90 to-transparent p-4 text-center">
+              <span className="text-xs text-primary-red font-medium uppercase tracking-wider block">
+                {performanceAds[currentIndex].client}
+              </span>
+              <span className="text-white font-medium">
+                {performanceAds[currentIndex].title}
+              </span>
+              <span className="text-white/60 text-sm block mt-1">
+                {currentIndex + 1} / {performanceAds.length}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* CTA */}
       <CTABand
