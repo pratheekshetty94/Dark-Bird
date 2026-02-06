@@ -31,14 +31,6 @@ const projects = [
     href: '/work/socials/hotel-amaravathi',
   },
   {
-    title: 'Property Launch Campaign',
-    client: 'GK Builders',
-    category: 'GK Builders',
-    description: 'Anjani Lake Woods digital launch',
-    image: '/images/gk-launch.jpg',
-    href: '/work/socials/gk-builders',
-  },
-  {
     title: 'Founder Branding Strategy',
     client: 'Multiple Clients',
     category: 'Founder Branding',
