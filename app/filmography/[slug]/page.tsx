@@ -348,17 +348,17 @@ export default function FilmDetailPage() {
             <span className="font-mono text-sm uppercase tracking-wider">Back to Filmography</span>
           </Link>
 
-          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
             {/* Poster */}
             <div
               className={cn(
-                'lg:col-span-1 transition-all duration-700',
+                'lg:col-span-2 transition-all duration-700',
                 isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               )}
               style={{ transitionDelay: '200ms' }}
             >
               <div
-                className="relative aspect-[2/3] w-full max-w-[320px] mx-auto lg:max-w-none rounded-xl overflow-hidden shadow-dramatic cursor-pointer group"
+                className="relative aspect-[2/3] w-full max-w-[350px] mx-auto rounded-xl overflow-hidden shadow-dramatic cursor-pointer group"
                 onClick={() => setIsTrailerOpen(true)}
               >
                 <Image
@@ -384,7 +384,7 @@ export default function FilmDetailPage() {
             </div>
 
             {/* Info */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-3">
               {/* Award badge */}
               {film.award && (
                 <div
