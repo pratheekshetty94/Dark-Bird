@@ -45,6 +45,13 @@
     font-feature-settings: 'kern' 1, 'liga' 1;
   }
 
+  /* Hide footer and navbar during preloader */
+  body.preloader-active footer,
+  body.preloader-active nav {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
   /* Custom Selection */
   ::selection {
     @apply bg-accent text-cream;

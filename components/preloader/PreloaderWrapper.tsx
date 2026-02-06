@@ -4,7 +4,7 @@ import React, { useState, useEffect, createContext, useContext } from 'react'
 import Preloader from './Preloader'
 
 // Context to share preloader completion state
-export const PreloaderContext = createContext<{ isComplete: boolean }>({ isComplete: false })
+export const PreloaderContext = createContext<{ isComplete: boolean; isLoading: boolean }>({ isComplete: false, isLoading: true })
 
 export const usePreloader = () => useContext(PreloaderContext)
 
@@ -18,15 +18,18 @@ export default function PreloaderWrapper({ children }: PreloaderWrapperProps) {
   const [preloaderComplete, setPreloaderComplete] = useState(false)
 
   useEffect(() => {
-    // Prevent scroll during preloader
+    // Prevent scroll during preloader and hide footer
     if (isLoading) {
       document.body.style.overflow = 'hidden'
+      document.body.classList.add('preloader-active')
     } else {
       document.body.style.overflow = ''
+      document.body.classList.remove('preloader-active')
     }
 
     return () => {
       document.body.style.overflow = ''
+      document.body.classList.remove('preloader-active')
     }
   }, [isLoading])
 
@@ -40,7 +43,7 @@ export default function PreloaderWrapper({ children }: PreloaderWrapperProps) {
   }
 
   return (
-    <PreloaderContext.Provider value={{ isComplete: preloaderComplete }}>
+    <PreloaderContext.Provider value={{ isComplete: preloaderComplete, isLoading }}>
       {isLoading && <Preloader onComplete={handlePreloaderComplete} />}
       <div
         style={{
