@@ -8,8 +8,8 @@ import CTABand from '@/components/sections/CTABand'
 import { Instagram, ExternalLink, Building2, Video, Target, Users, BarChart3, Settings, Check } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Dark Bird Socials | Digital Marketing & Social Media',
-  description: 'AI-powered digital marketing, influencer campaigns, social media management, and real estate marketing. We turn audiences into communities and brands into movements.',
+  title: 'Our Social Media Work | Dark Bird Socials',
+  description: 'Brand campaigns, performance ads, and influencer marketing. We turn audiences into communities and brands into movements.',
 }
 
 const categories = ['All', 'Brand Campaigns', 'Performance Ads', 'Influencer Marketing']
