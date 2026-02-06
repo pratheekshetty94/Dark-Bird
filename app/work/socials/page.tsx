@@ -12,51 +12,33 @@ export const metadata: Metadata = {
   description: 'AI-powered digital marketing, influencer campaigns, social media management, and real estate marketing. We turn audiences into communities and brands into movements.',
 }
 
-const categories = ['All', 'GK Builders', 'Brand Campaigns', 'Founder Branding', 'Performance Ads']
+const categories = ['All', 'Brand Campaigns', 'Performance Ads', 'Influencer Marketing']
 
 const projects = [
-  // GK Builders
-  {
-    title: 'GK Builders - Full Digital Management',
-    client: 'GK Builders & Developers',
-    category: 'GK Builders',
-    description: '156 posts, 1,337+ followers, website & walkthrough films',
-    image: '/images/websites/gk-builders-homepage.jpg',
-    href: '/work/socials/gk-builders',
-  },
   // Brand Campaigns
   {
-    title: 'Hotel Amaravathi - Website Development',
-    client: 'Hotel Amaravathi',
+    title: 'Brand Campaigns',
+    client: 'GK Builders & Developers',
     category: 'Brand Campaigns',
-    description: 'Complete website with booking integration',
-    image: '/images/websites/amaravathi-homepage.png',
-    href: '/work/socials/hotel-amaravathi',
-  },
-  // Founder Branding
-  {
-    title: 'Founder Branding Strategy',
-    client: 'Personal Brand Building',
-    category: 'Founder Branding',
-    description: 'Personal brand building for executives',
+    description: 'Walkthrough films & branded content for real estate',
     image: '/images/socials/gk-ads/post-1.png',
     href: '/work/socials/gk-builders#brand-campaigns',
   },
   // Performance Ads
   {
-    title: 'Performance Ad Campaign',
+    title: 'Performance Ads',
     client: 'GK Builders & Developers',
     category: 'Performance Ads',
-    description: 'ROI-focused Meta & Google campaigns',
+    description: 'ROI-focused Meta & Google ad campaigns',
     image: '/images/socials/performance-ads/ad-creative-1.png',
     href: '/work/socials/gk-builders#performance-ads',
   },
-  // Brand Campaigns - Influencer
+  // Influencer Marketing
   {
     title: 'Influencer Marketing Campaign',
     client: 'GK Builders & Developers',
-    category: 'Brand Campaigns',
-    description: 'Multi-platform influencer collaboration',
+    category: 'Influencer Marketing',
+    description: '34 influencer collaborations for property promotion',
     image: '/images/socials/gk-ads/post-2.png',
     href: '/work/socials/gk-builders#influencer-marketing',
   },

@@ -1,9 +1,11 @@
 import { Metadata } from 'next'
+import Image from 'next/image'
+import Link from 'next/link'
 import SectionLabel from '@/components/ui/SectionLabel'
 import Button from '@/components/ui/Button'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
-import { Palette, Layout, Box, MessageSquare, Sparkles, Video } from 'lucide-react'
+import { Palette, Layout, Box, MessageSquare, Sparkles, Video, ExternalLink } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Dark Bird Designs | Brand Identity & Motion Graphics',
@@ -46,6 +48,20 @@ const services = [
 ]
 
 const projects = [
+  {
+    title: 'GK Builders Website',
+    category: 'Web Design',
+    description: 'Complete website design & development for real estate developer',
+    image: '/images/websites/gk-builders-homepage.jpg',
+    href: 'https://gkbuildersanddevelopers.com/',
+  },
+  {
+    title: 'Hotel Amaravathi Website',
+    category: 'Web Design',
+    description: 'Hospitality website with booking integration',
+    image: '/images/websites/amaravathi-homepage.png',
+    href: 'https://hotelamaravathi.in/',
+  },
   {
     title: 'Brand Identity System',
     category: 'Brand Identity',
@@ -184,33 +200,64 @@ export default function DesignsPage() {
           {/* Projects Grid - Masonry Style */}
           <StaggerReveal className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
             {projects.map((project, index) => {
-              // Vary heights for masonry effect
+              // Vary heights for masonry effect (use aspect-video for projects with images)
               const heights = ['aspect-square', 'aspect-[4/5]', 'aspect-[3/4]', 'aspect-video']
-              const heightClass = heights[index % heights.length]
+              const heightClass = project.image ? 'aspect-video' : heights[index % heights.length]
 
-              return (
+              const CardContent = (
+                <div className={`${heightClass} bg-charcoal rounded-xl overflow-hidden relative`}>
+                  {/* Image or Placeholder */}
+                  {project.image ? (
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary-red/5 to-charcoal" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Palette className="w-12 h-12 text-white/10" />
+                      </div>
+                    </>
+                  )}
+
+                  {/* Hover Overlay */}
+                  <div className="absolute inset-0 bg-primary-red/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <div className="text-center text-white p-4">
+                      <span className="text-xs uppercase tracking-wider opacity-80">
+                        {project.category}
+                      </span>
+                      <h3 className="text-xl font-bold mt-2">{project.title}</h3>
+                      <p className="text-sm opacity-80 mt-1">{project.description}</p>
+                      {project.href && (
+                        <span className="inline-flex items-center gap-1 mt-3 text-sm font-medium">
+                          Visit Website <ExternalLink className="w-4 h-4" />
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+
+              return project.href ? (
+                <a
+                  key={project.title}
+                  href={project.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="break-inside-avoid group cursor-pointer block"
+                >
+                  {CardContent}
+                </a>
+              ) : (
                 <div
                   key={project.title}
                   className="break-inside-avoid group cursor-pointer"
                 >
-                  <div className={`${heightClass} bg-charcoal rounded-xl overflow-hidden relative`}>
-                    {/* Placeholder Pattern */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary-red/5 to-charcoal" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Palette className="w-12 h-12 text-white/10" />
-                    </div>
-
-                    {/* Hover Overlay */}
-                    <div className="absolute inset-0 bg-primary-red/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="text-center text-white p-4">
-                        <span className="text-xs uppercase tracking-wider opacity-80">
-                          {project.category}
-                        </span>
-                        <h3 className="text-xl font-bold mt-2">{project.title}</h3>
-                        <p className="text-sm opacity-80 mt-1">{project.description}</p>
-                      </div>
-                    </div>
-                  </div>
+                  {CardContent}
                 </div>
               )
             })}

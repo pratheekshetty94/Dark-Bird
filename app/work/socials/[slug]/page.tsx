@@ -34,15 +34,8 @@ interface BrandData {
   }[]
 }
 
-// Category navigation for GK Builders
+// Category navigation for GK Builders (3 categories - no website, that's on designs page)
 const gkCategories = [
-  {
-    id: 'website',
-    title: 'Website',
-    description: 'Website design & development',
-    icon: 'Globe',
-    color: 'from-blue-600 to-blue-800',
-  },
   {
     id: 'brand-campaigns',
     title: 'Brand Campaigns',
@@ -158,101 +151,6 @@ const brandsData: Record<string, BrandData> = {
       'CwiHtJsIyqk',
     ],
   },
-  'hotel-amaravathi': {
-    id: 'hotel-amaravathi',
-    name: 'Hotel Amaravathi',
-    tagline: 'Website Development & Digital Presence',
-    description: 'Complete website design and development for a hospitality establishment on the Bangalore-Mysore highway, creating a seamless booking experience and showcasing their services.',
-    website: 'https://hotelamaravathi.in/',
-    category: 'Hospitality',
-    stats: [
-      { number: '4', label: 'Room Categories' },
-      { number: '5+', label: 'Guest Reviews' },
-      { number: '100%', label: 'Mobile Responsive' },
-      { number: '24/7', label: 'Online Presence' },
-    ],
-    deliverables: [
-      'Complete website design & development',
-      'Mobile-responsive booking interface',
-      'WhatsApp integration for quick reservations',
-      'Room showcase with pricing details',
-      'Guest testimonial section',
-      'Contact and location integration',
-      'SEO optimization for local searches',
-      'Social media integration',
-    ],
-    websiteScreenshots: [
-      { src: '/images/websites/amaravathi-homepage.png', title: 'Homepage' },
-      { src: '/images/websites/amaravathi-2.png', title: 'Room Details' },
-    ],
-  },
-  'gk-builders-ads': {
-    id: 'gk-builders-ads',
-    name: 'GK Builders - Performance Ads',
-    tagline: 'ROI-Focused Meta & Google Ad Campaigns',
-    description: 'High-converting performance ad campaigns designed to generate qualified leads for real estate properties. From static creatives to video ads, we craft compelling content that drives results.',
-    instagram: 'https://www.instagram.com/gkbuildersdevelopers/',
-    website: 'https://gkbuildersanddevelopers.com/',
-    category: 'Performance Ads',
-    stats: [
-      { number: '6+', label: 'Ad Creatives' },
-      { number: '34', label: 'Influencer Reels' },
-      { number: 'Meta & Google', label: 'Platforms' },
-      { number: 'Lead Gen', label: 'Campaign Focus' },
-    ],
-    deliverables: [
-      'Static ad creatives for Meta & Google',
-      'Video ad campaigns for property showcases',
-      'A/B testing multiple ad variations',
-      'Audience targeting & optimization',
-      'Lead generation landing pages',
-      'Campaign performance tracking',
-      'ROI-focused budget allocation',
-      'Retargeting campaigns',
-    ],
-    adCreatives: [
-      { src: '/images/socials/performance-ads/ad-creative-1.png', title: 'Anjani Lake Woods - Lead Gen Ad' },
-      { src: '/images/socials/performance-ads/ad-creative-2.png', title: 'Property Features Ad' },
-      { src: '/images/socials/performance-ads/ad-creative-6.png', title: 'Investment Opportunity Ad' },
-      { src: '/images/socials/performance-ads/gk-takeoff.png', title: 'GK Takeoff Campaign' },
-    ],
-    influencerReels: [
-      'DR6Yc3WDzRB',
-      'DR3eKzcCCm8',
-      'DR1H0acj8hj',
-      'DRuqaLKD5zS',
-      'DTnRib3kwgQ',
-      'DK0sxXwT8-N',
-      'DF-UI5jTbVW',
-      'DFIL-VxTasA',
-      'DC9SAGlzy3z',
-      'C62oBQ0veed',
-      'C5I_WuDPNJ-',
-      'Cr5jtj2gBaE',
-      'CbkGYnygBqW',
-      'CZUFfpUlfAn',
-      'DSJW5dzEywI',
-      'DKo1uGiyBB4',
-      'C1UR8PTL-xt',
-      'Cwey6maJS-3',
-      'CztSRCwSmVs',
-      'CztN3ftySFJ',
-      'CztMQPbRl35',
-      'Czqru2PJcyq',
-      'CzqpJ-FIxNy',
-      'CzqF9T9v1Ks',
-      'Czp5wiBSDFi',
-      'CzoJ5dlPbZh',
-      'CziszaHvs1P',
-      'CzgYv1FyJsY',
-      'CwpryBWysgf',
-      'CwpmHBLyArf',
-      'CwnFHYlMwCD',
-      'CwkeeCdyNbB',
-      'CwkakgBqp83',
-      'CwiHtJsIyqk',
-    ],
-  },
 }
 
 // Icon mapping for categories
@@ -272,7 +170,7 @@ export default function BrandDetailPage() {
   const brand = brandsData[slug]
   const [showWebsitePreview, setShowWebsitePreview] = useState(false)
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
-  const [activeCategory, setActiveCategory] = useState('website')
+  const [activeCategory, setActiveCategory] = useState('brand-campaigns')
 
   // Check if this is GK Builders (which has categorized content)
   const isGkBuilders = slug === 'gk-builders'
@@ -373,7 +271,7 @@ export default function BrandDetailPage() {
       {isGkBuilders && (
         <section className="section-light py-8 sticky top-0 z-40 bg-cream/95 backdrop-blur-sm border-b border-charcoal/10">
           <div className="container-content">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {gkCategories.map((cat) => {
                 const IconComponent = iconMap[cat.icon]
                 return (
@@ -420,85 +318,6 @@ export default function BrandDetailPage() {
                 )
               })}
             </div>
-          </div>
-        </section>
-      )}
-
-      {/* ==================== WEBSITE SECTION ==================== */}
-      {brand.websiteScreenshots && brand.websiteScreenshots.length > 0 && (
-        <section id="website" className="section-dark section-padding scroll-mt-32">
-          <div className="container-content">
-            {/* Section Header for GK Builders */}
-            {isGkBuilders && (
-              <ScrollReveal>
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                    <Globe className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-bold text-white">Website</h2>
-                    <p className="text-sm text-warm-gray">Website Design & Development</p>
-                  </div>
-                </div>
-              </ScrollReveal>
-            )}
-
-            <ScrollReveal>
-              <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8">
-                <h3 className="text-xl font-bold text-white">
-                  Website We Built
-                </h3>
-                <div className="flex items-center gap-4 mt-4 md:mt-0">
-                  {brand.website && (
-                    <>
-                      <button
-                        onClick={() => setShowWebsitePreview(true)}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg font-semibold hover:bg-primary-red/90 transition-colors"
-                      >
-                        <Eye className="w-4 h-4" />
-                        Preview Website
-                      </button>
-                      <a
-                        href={brand.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-warm-gray hover:text-white transition-colors"
-                      >
-                        Open in New Tab <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </>
-                  )}
-                </div>
-              </div>
-            </ScrollReveal>
-
-            <StaggerReveal className="grid grid-cols-1 gap-6">
-              {brand.websiteScreenshots.map((screenshot) => (
-                <button
-                  key={screenshot.src}
-                  onClick={() => setShowWebsitePreview(true)}
-                  className="block group text-left w-full"
-                >
-                  <div className="relative bg-charcoal rounded-xl overflow-hidden border border-white/10 hover:border-primary-red/50 transition-colors">
-                    <Image
-                      src={screenshot.src}
-                      alt={screenshot.title}
-                      width={1920}
-                      height={1080}
-                      className="w-full h-auto object-cover"
-                      unoptimized
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-deep-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-6">
-                      <span className="text-white font-medium">{screenshot.title}</span>
-                      <span className="inline-flex items-center gap-2 text-white font-semibold">
-                        <Eye className="w-5 h-5" />
-                        Preview Website
-                      </span>
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </StaggerReveal>
           </div>
         </section>
       )}
