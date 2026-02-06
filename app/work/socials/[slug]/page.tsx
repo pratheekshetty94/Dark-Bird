@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Instagram, ExternalLink, Globe, Eye, Heart, MessageCircle, Play, Check, X, Maximize2, Monitor, Smartphone, Tablet } from 'lucide-react'
+import { ArrowLeft, Instagram, ExternalLink, Globe, Eye, Heart, MessageCircle, Play, Check, X, Maximize2, Monitor, Smartphone, Tablet, Building2, Video, Target, Users, Megaphone, TrendingUp } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 import { cn } from '@/lib/utils'
@@ -24,7 +24,47 @@ interface BrandData {
   adCreatives?: { src: string; title: string }[]
   adVideos?: { src: string; title: string; description?: string }[]
   influencerReels?: string[] // Instagram reel IDs
+  // New categorized sections
+  categories?: {
+    id: string
+    title: string
+    description: string
+    icon: string
+    color: string
+  }[]
 }
+
+// Category navigation for GK Builders
+const gkCategories = [
+  {
+    id: 'website',
+    title: 'Website',
+    description: 'Website design & development',
+    icon: 'Globe',
+    color: 'from-blue-600 to-blue-800',
+  },
+  {
+    id: 'brand-campaigns',
+    title: 'Brand Campaigns',
+    description: 'Walkthrough films & branded content',
+    icon: 'Video',
+    color: 'from-purple-600 to-purple-800',
+  },
+  {
+    id: 'performance-ads',
+    title: 'Performance Ads',
+    description: 'ROI-focused Meta & Google ads',
+    icon: 'Target',
+    color: 'from-red-600 to-red-800',
+  },
+  {
+    id: 'influencer-marketing',
+    title: 'Influencer Marketing',
+    description: '34 influencer collaborations',
+    icon: 'Users',
+    color: 'from-pink-600 to-pink-800',
+  },
+]
 
 const brandsData: Record<string, BrandData> = {
   'gk-builders': {
@@ -215,12 +255,27 @@ const brandsData: Record<string, BrandData> = {
   },
 }
 
+// Icon mapping for categories
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  Building2,
+  Video,
+  Target,
+  Users,
+  Megaphone,
+  TrendingUp,
+  Globe,
+}
+
 export default function BrandDetailPage() {
   const params = useParams()
   const slug = params.slug as string
   const brand = brandsData[slug]
   const [showWebsitePreview, setShowWebsitePreview] = useState(false)
   const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
+  const [activeCategory, setActiveCategory] = useState('website')
+
+  // Check if this is GK Builders (which has categorized content)
+  const isGkBuilders = slug === 'gk-builders'
 
   if (!brand) {
     return (
@@ -233,6 +288,15 @@ export default function BrandDetailPage() {
         </div>
       </div>
     )
+  }
+
+  // Scroll to section
+  const scrollToSection = (sectionId: string) => {
+    setActiveCategory(sectionId)
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
 
   return (
@@ -305,61 +369,85 @@ export default function BrandDetailPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="section-light section-padding">
-        <div className="container-content">
-          <ScrollReveal>
-            <h2 className="text-section font-bold text-charcoal mb-12 text-center">
-              Results We Delivered
-            </h2>
-          </ScrollReveal>
-
-          <StaggerReveal className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {brand.stats.map((stat) => (
-              <div key={stat.label} className="text-center p-6 bg-white rounded-xl shadow-lg">
-                <span className="block text-4xl md:text-5xl font-display text-primary-red mb-2">
-                  {stat.number}
-                </span>
-                <span className="text-sm text-warm-gray">{stat.label}</span>
-              </div>
-            ))}
-          </StaggerReveal>
-        </div>
-      </section>
-
-      {/* What We Delivered */}
-      <section className="section-beige section-padding">
-        <div className="container-content">
-          <ScrollReveal>
-            <h2 className="text-section font-bold text-charcoal mb-8">
-              What We Delivered
-            </h2>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.1}>
-            <div className="bg-white p-8 rounded-xl shadow-lg">
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {brand.deliverables.map((item) => (
-                  <li key={item} className="flex items-start gap-3 text-warm-gray">
-                    <Check className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Website Preview */}
-      {brand.websiteScreenshots && brand.websiteScreenshots.length > 0 && (
-        <section className="section-dark section-padding">
+      {/* Category Navigation Cards - Only for GK Builders */}
+      {isGkBuilders && (
+        <section className="section-light py-8 sticky top-0 z-40 bg-cream/95 backdrop-blur-sm border-b border-charcoal/10">
           <div className="container-content">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {gkCategories.map((cat) => {
+                const IconComponent = iconMap[cat.icon]
+                return (
+                  <button
+                    key={cat.id}
+                    onClick={() => scrollToSection(cat.id)}
+                    className={cn(
+                      "group relative p-4 rounded-xl text-left transition-all overflow-hidden",
+                      activeCategory === cat.id
+                        ? "bg-charcoal text-white shadow-lg"
+                        : "bg-white hover:bg-charcoal/5 border border-charcoal/10"
+                    )}
+                  >
+                    <div className={cn(
+                      "absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity bg-gradient-to-br",
+                      cat.color
+                    )} />
+                    <div className="relative">
+                      <div className={cn(
+                        "w-8 h-8 rounded-lg flex items-center justify-center mb-2",
+                        activeCategory === cat.id ? "bg-primary-red" : "bg-charcoal/10"
+                      )}>
+                        {IconComponent && (
+                          <IconComponent className={cn(
+                            "w-4 h-4",
+                            activeCategory === cat.id ? "text-white" : "text-charcoal"
+                          )} />
+                        )}
+                      </div>
+                      <h3 className={cn(
+                        "font-semibold text-sm mb-0.5",
+                        activeCategory === cat.id ? "text-white" : "text-charcoal"
+                      )}>
+                        {cat.title}
+                      </h3>
+                      <p className={cn(
+                        "text-xs line-clamp-1",
+                        activeCategory === cat.id ? "text-warm-gray" : "text-warm-gray/80"
+                      )}>
+                        {cat.description}
+                      </p>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ==================== WEBSITE SECTION ==================== */}
+      {brand.websiteScreenshots && brand.websiteScreenshots.length > 0 && (
+        <section id="website" className="section-dark section-padding scroll-mt-32">
+          <div className="container-content">
+            {/* Section Header for GK Builders */}
+            {isGkBuilders && (
+              <ScrollReveal>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                    <Globe className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">Website</h2>
+                    <p className="text-sm text-warm-gray">Website Design & Development</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            )}
+
             <ScrollReveal>
               <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8">
-                <h2 className="text-section font-bold text-white">
+                <h3 className="text-xl font-bold text-white">
                   Website We Built
-                </h2>
+                </h3>
                 <div className="flex items-center gap-4 mt-4 md:mt-0">
                   {brand.website && (
                     <>
@@ -414,6 +502,52 @@ export default function BrandDetailPage() {
           </div>
         </section>
       )}
+
+      {/* Stats Section */}
+      <section className="section-light section-padding">
+        <div className="container-content">
+          <ScrollReveal>
+            <h3 className="text-xl font-bold text-charcoal mb-8 text-center">
+              Results We Delivered
+            </h3>
+          </ScrollReveal>
+
+          <StaggerReveal className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {brand.stats.map((stat) => (
+              <div key={stat.label} className="text-center p-6 bg-white rounded-xl shadow-lg">
+                <span className="block text-4xl md:text-5xl font-display text-primary-red mb-2">
+                  {stat.number}
+                </span>
+                <span className="text-sm text-warm-gray">{stat.label}</span>
+              </div>
+            ))}
+          </StaggerReveal>
+        </div>
+      </section>
+
+      {/* What We Delivered */}
+      <section className="section-beige section-padding">
+        <div className="container-content">
+          <ScrollReveal>
+            <h2 className="text-section font-bold text-charcoal mb-8">
+              What We Delivered
+            </h2>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.1}>
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {brand.deliverables.map((item) => (
+                  <li key={item} className="flex items-start gap-3 text-warm-gray">
+                    <Check className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
 
       {/* Website Preview Modal */}
       {showWebsitePreview && brand.website && (
@@ -499,14 +633,29 @@ export default function BrandDetailPage() {
         </div>
       )}
 
-      {/* Videos Section */}
+      {/* ==================== BRAND CAMPAIGNS SECTION ==================== */}
       {brand.videos && brand.videos.length > 0 && (
-        <section className="section-light section-padding">
+        <section id="brand-campaigns" className="section-light section-padding scroll-mt-32">
           <div className="container-content">
+            {/* Section Header for GK Builders */}
+            {isGkBuilders && (
+              <ScrollReveal>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-600 to-purple-800 flex items-center justify-center">
+                    <Video className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-charcoal">Brand Campaigns</h2>
+                    <p className="text-sm text-warm-gray">Walkthrough Films & Branded Content</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            )}
+
             <ScrollReveal>
-              <h2 className="text-section font-bold text-charcoal mb-8">
-                Walkthrough Films
-              </h2>
+              <h3 className="text-xl font-bold text-charcoal mb-8">
+                Cinematic Walkthrough Films
+              </h3>
             </ScrollReveal>
 
             <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -534,14 +683,29 @@ export default function BrandDetailPage() {
         </section>
       )}
 
-      {/* Performance Ad Creatives Section */}
+      {/* ==================== PERFORMANCE ADS SECTION ==================== */}
       {brand.adCreatives && brand.adCreatives.length > 0 && (
-        <section className="section-beige section-padding">
+        <section id="performance-ads" className="section-beige section-padding scroll-mt-32">
           <div className="container-content">
+            {/* Section Header for GK Builders */}
+            {isGkBuilders && (
+              <ScrollReveal>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
+                    <Target className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-charcoal">Performance Ads</h2>
+                    <p className="text-sm text-warm-gray">ROI-Focused Meta & Google Ads</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            )}
+
             <ScrollReveal>
-              <h2 className="text-section font-bold text-charcoal mb-4">
+              <h3 className="text-xl font-bold text-charcoal mb-4">
                 Ad Creatives
-              </h2>
+              </h3>
               <p className="text-warm-gray mb-8 max-w-2xl">
                 ROI-focused ad creatives designed to drive engagement and conversions across Meta and Google platforms.
               </p>
@@ -607,16 +771,31 @@ export default function BrandDetailPage() {
         </section>
       )}
 
-      {/* Influencer Marketing Reels Section */}
+      {/* ==================== INFLUENCER MARKETING SECTION ==================== */}
       {brand.influencerReels && brand.influencerReels.length > 0 && (
-        <section className="section-dark section-padding">
+        <section id="influencer-marketing" className="section-dark section-padding scroll-mt-32">
           <div className="container-content">
+            {/* Section Header for GK Builders */}
+            {isGkBuilders && (
+              <ScrollReveal>
+                <div className="flex items-center gap-3 mb-8">
+                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-600 to-pink-800 flex items-center justify-center">
+                    <Users className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white">Influencer Marketing</h2>
+                    <p className="text-sm text-warm-gray">{brand.influencerReels.length} Influencer Collaborations</p>
+                  </div>
+                </div>
+              </ScrollReveal>
+            )}
+
             <ScrollReveal>
               <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8">
                 <div>
-                  <h2 className="text-section font-bold text-white mb-2">
+                  <h3 className="text-xl font-bold text-white mb-2">
                     Influencer Marketing Campaigns
-                  </h2>
+                  </h3>
                   <p className="text-warm-gray max-w-2xl">
                     Strategic influencer collaborations that drive reach, engagement, and brand awareness.
                   </p>
