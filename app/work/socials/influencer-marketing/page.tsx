@@ -7,6 +7,20 @@ import CTABand from '@/components/sections/CTABand'
 
 // All influencer reels from all clients
 const influencerReels = [
+  // New reels
+  { client: 'GK Builders & Developers', reelId: 'DUPnDc9D6He' },
+  { client: 'GK Builders & Developers', reelId: 'DTzaNNjiWoc' },
+  { client: 'GK Builders & Developers', reelId: 'DTkk4BEksQD' },
+  { client: 'GK Builders & Developers', reelId: 'DSHCxhbE1KR' },
+  { client: 'GK Builders & Developers', reelId: 'DSFd6CUDeHP' },
+  { client: 'GK Builders & Developers', reelId: 'DSB_iA-kcPK' },
+  { client: 'GK Builders & Developers', reelId: 'DR_mJ_zEykM' },
+  { client: 'GK Builders & Developers', reelId: 'DR9EQjCj2Uf' },
+  { client: 'GK Builders & Developers', reelId: 'DR7AwRpD7Yo' },
+  { client: 'GK Builders & Developers', reelId: 'DR6Yc3WDzRB' },
+  { client: 'GK Builders & Developers', reelId: 'DR3eKzcCCm8' },
+  { client: 'GK Builders & Developers', reelId: 'DR1H0acj8hj' },
+  { client: 'GK Builders & Developers', reelId: 'DRuqaLKD5zS' },
   // GK Builders influencer reels
   { client: 'GK Builders & Developers', reelId: 'DTnRib3kwgQ' },
   { client: 'GK Builders & Developers', reelId: 'DK0sxXwT8-N' },
