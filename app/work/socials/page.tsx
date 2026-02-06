@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import SectionLabel from '@/components/ui/SectionLabel'
 import Button from '@/components/ui/Button'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
@@ -11,48 +12,32 @@ export const metadata: Metadata = {
   description: 'AI-powered digital marketing, influencer campaigns, social media management, and real estate marketing. We turn audiences into communities and brands into movements.',
 }
 
-const categories = ['All', 'GK Builders', 'Brand Campaigns', 'Founder Branding', 'Performance Ads']
+const categories = ['All', 'Real Estate', 'Hospitality', 'Performance Ads']
 
 const projects = [
   {
     title: 'GK Builders - Full Digital Management',
     client: 'GK Builders & Developers',
-    category: 'GK Builders',
+    category: 'Real Estate',
     description: '156 posts, 1,337+ followers, website & walkthrough films',
-    image: '/images/gk-social.jpg',
+    image: '/images/websites/gk-builders-homepage.jpg',
     href: '/work/socials/gk-builders',
   },
   {
     title: 'Hotel Amaravathi - Website Development',
     client: 'Hotel Amaravathi',
-    category: 'Brand Campaigns',
+    category: 'Hospitality',
     description: 'Complete website with booking integration',
-    image: '/images/hotel-amaravathi.jpg',
+    image: '/images/websites/amaravathi-homepage.png',
     href: '/work/socials/hotel-amaravathi',
   },
   {
-    title: 'Founder Branding Strategy',
-    client: 'Multiple Clients',
-    category: 'Founder Branding',
-    description: 'Personal brand building for executives',
-    image: '/images/founder-brand.jpg',
-    href: '#',
-  },
-  {
-    title: 'Performance Ad Campaign',
-    client: 'E-commerce Brand',
+    title: 'GK Builders - Performance Ad Campaign',
+    client: 'GK Builders & Developers',
     category: 'Performance Ads',
-    description: 'ROI-focused Meta & Google campaigns',
-    image: '/images/performance-ads.jpg',
-    href: '#',
-  },
-  {
-    title: 'Influencer Marketing Campaign',
-    client: 'Consumer Brand',
-    category: 'Brand Campaigns',
-    description: 'Multi-platform influencer collaboration',
-    image: '/images/influencer.jpg',
-    href: '#',
+    description: 'ROI-focused Meta & Google ad creatives with video ads',
+    image: '/images/socials/performance-ads/ad-creative-1.png',
+    href: '/work/socials/gk-builders-ads',
   },
 ]
 
@@ -250,18 +235,21 @@ export default function SocialsPage() {
           </ScrollReveal>
 
           {/* Projects Grid */}
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {projects.map((project) => (
               <Link
                 key={project.title}
                 href={project.href}
                 className="group bg-white rounded-xl overflow-hidden hover:shadow-xl transition-shadow"
               >
-                <div className="aspect-square bg-charcoal relative">
-                  {/* Placeholder */}
-                  <div className="absolute inset-0 flex items-center justify-center text-warm-gray">
-                    <Instagram className="w-12 h-12 opacity-30" />
-                  </div>
+                <div className="aspect-video bg-charcoal relative overflow-hidden">
+                  <Image
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    unoptimized
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-deep-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
                     <span className="inline-flex items-center gap-1 text-white text-sm">

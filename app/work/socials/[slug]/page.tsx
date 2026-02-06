@@ -1,9 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Instagram, ExternalLink, Globe, Eye, Heart, MessageCircle, Play, Check } from 'lucide-react'
+import { ArrowLeft, Instagram, ExternalLink, Globe, Eye, Heart, MessageCircle, Play, Check, X, Maximize2, Monitor, Smartphone, Tablet } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 import { cn } from '@/lib/utils'
@@ -21,6 +22,7 @@ interface BrandData {
   videos?: { title: string; youtubeId: string; description?: string }[]
   websiteScreenshots?: { src: string; title: string }[]
   adCreatives?: { src: string; title: string }[]
+  adVideos?: { src: string; title: string; description?: string }[]
   influencerReels?: string[] // Instagram reel IDs
 }
 
@@ -131,12 +133,68 @@ const brandsData: Record<string, BrandData> = {
       { src: '/images/websites/amaravathi-2.png', title: 'Room Details' },
     ],
   },
+  'gk-builders-ads': {
+    id: 'gk-builders-ads',
+    name: 'GK Builders - Performance Ads',
+    tagline: 'ROI-Focused Meta & Google Ad Campaigns',
+    description: 'High-converting performance ad campaigns designed to generate qualified leads for real estate properties. From static creatives to video ads, we craft compelling content that drives results.',
+    instagram: 'https://www.instagram.com/gkbuildersdevelopers/',
+    website: 'https://gkbuildersanddevelopers.com/',
+    category: 'Performance Ads',
+    stats: [
+      { number: '6+', label: 'Ad Creatives' },
+      { number: '3', label: 'Video Ads' },
+      { number: 'Meta & Google', label: 'Platforms' },
+      { number: 'Lead Gen', label: 'Campaign Focus' },
+    ],
+    deliverables: [
+      'Static ad creatives for Meta & Google',
+      'Video ad campaigns for property showcases',
+      'A/B testing multiple ad variations',
+      'Audience targeting & optimization',
+      'Lead generation landing pages',
+      'Campaign performance tracking',
+      'ROI-focused budget allocation',
+      'Retargeting campaigns',
+    ],
+    adCreatives: [
+      { src: '/images/socials/performance-ads/ad-creative-1.png', title: 'Anjani Lake Woods - Lead Gen Ad' },
+      { src: '/images/socials/performance-ads/ad-creative-2.png', title: 'Property Features Ad' },
+      { src: '/images/socials/performance-ads/ad-creative-6.png', title: 'Investment Opportunity Ad' },
+      { src: '/images/socials/performance-ads/gk-takeoff.png', title: 'GK Takeoff Campaign' },
+    ],
+    influencerReels: [
+      'DUPnDc9D6He',
+      'DTzaNNjiWoc',
+      'DTkk4BEksQD',
+      'DSHCxhbE1KR',
+      'DSFd6CUDeHP',
+      'DSB_iA-kcPK',
+      'DR_mJ_zEykM',
+      'DR9EQjCj2Uf',
+      'DR7AwRpD7Yo',
+      'DR6Yc3WDzRB',
+      'DR3eKzcCCm8',
+      'DR1H0acj8hj',
+      'DRuqaLKD5zS',
+      'DTnRib3kwgQ',
+      'DK0sxXwT8-N',
+      'DF-UI5jTbVW',
+      'DFIL-VxTasA',
+      'DC9SAGlzy3z',
+      'C62oBQ0veed',
+      'C5I_WuDPNJ-',
+      'Cr5jtj2gBaE',
+    ],
+  },
 }
 
 export default function BrandDetailPage() {
   const params = useParams()
   const slug = params.slug as string
   const brand = brandsData[slug]
+  const [showWebsitePreview, setShowWebsitePreview] = useState(false)
+  const [previewDevice, setPreviewDevice] = useState<'desktop' | 'tablet' | 'mobile'>('desktop')
 
   if (!brand) {
     return (
@@ -276,27 +334,36 @@ export default function BrandDetailPage() {
                 <h2 className="text-section font-bold text-white">
                   Website We Built
                 </h2>
-                {brand.website && (
-                  <a
-                    href={brand.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 text-primary-red hover:text-white transition-colors mt-4 md:mt-0"
-                  >
-                    Visit Live Site <ExternalLink className="w-4 h-4" />
-                  </a>
-                )}
+                <div className="flex items-center gap-4 mt-4 md:mt-0">
+                  {brand.website && (
+                    <>
+                      <button
+                        onClick={() => setShowWebsitePreview(true)}
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red text-white rounded-lg font-semibold hover:bg-primary-red/90 transition-colors"
+                      >
+                        <Eye className="w-4 h-4" />
+                        Preview Website
+                      </button>
+                      <a
+                        href={brand.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 text-warm-gray hover:text-white transition-colors"
+                      >
+                        Open in New Tab <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </>
+                  )}
+                </div>
               </div>
             </ScrollReveal>
 
             <StaggerReveal className="grid grid-cols-1 gap-6">
-              {brand.websiteScreenshots.map((screenshot, index) => (
-                <a
+              {brand.websiteScreenshots.map((screenshot) => (
+                <button
                   key={screenshot.src}
-                  href={brand.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block group"
+                  onClick={() => setShowWebsitePreview(true)}
+                  className="block group text-left w-full"
                 >
                   <div className="relative bg-charcoal rounded-xl overflow-hidden border border-white/10 hover:border-primary-red/50 transition-colors">
                     <Image
@@ -310,15 +377,100 @@ export default function BrandDetailPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-deep-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-6">
                       <span className="text-white font-medium">{screenshot.title}</span>
                       <span className="inline-flex items-center gap-2 text-white font-semibold">
-                        Visit Website <ExternalLink className="w-5 h-5" />
+                        <Eye className="w-5 h-5" />
+                        Preview Website
                       </span>
                     </div>
                   </div>
-                </a>
+                </button>
               ))}
             </StaggerReveal>
           </div>
         </section>
+      )}
+
+      {/* Website Preview Modal */}
+      {showWebsitePreview && brand.website && (
+        <div className="fixed inset-0 z-50 bg-deep-black/95 flex flex-col">
+          {/* Modal Header */}
+          <div className="flex items-center justify-between px-4 py-3 bg-charcoal border-b border-white/10">
+            <div className="flex items-center gap-4">
+              <span className="text-white font-semibold">{brand.name}</span>
+              <span className="text-warm-gray text-sm hidden md:block">{brand.website}</span>
+            </div>
+
+            {/* Device Toggle */}
+            <div className="flex items-center gap-2 bg-ink rounded-lg p-1">
+              <button
+                onClick={() => setPreviewDevice('desktop')}
+                className={cn(
+                  "p-2 rounded-md transition-colors",
+                  previewDevice === 'desktop' ? 'bg-primary-red text-white' : 'text-warm-gray hover:text-white'
+                )}
+                title="Desktop View"
+              >
+                <Monitor className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setPreviewDevice('tablet')}
+                className={cn(
+                  "p-2 rounded-md transition-colors",
+                  previewDevice === 'tablet' ? 'bg-primary-red text-white' : 'text-warm-gray hover:text-white'
+                )}
+                title="Tablet View"
+              >
+                <Tablet className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setPreviewDevice('mobile')}
+                className={cn(
+                  "p-2 rounded-md transition-colors",
+                  previewDevice === 'mobile' ? 'bg-primary-red text-white' : 'text-warm-gray hover:text-white'
+                )}
+                title="Mobile View"
+              >
+                <Smartphone className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <a
+                href={brand.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3 py-1.5 text-sm text-warm-gray hover:text-white transition-colors"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span className="hidden md:inline">Open in New Tab</span>
+              </a>
+              <button
+                onClick={() => setShowWebsitePreview(false)}
+                className="p-2 text-warm-gray hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Iframe Container */}
+          <div className="flex-1 flex items-center justify-center p-4 overflow-hidden">
+            <div
+              className={cn(
+                "bg-white rounded-lg overflow-hidden shadow-2xl transition-all duration-300 h-full",
+                previewDevice === 'desktop' && 'w-full max-w-full',
+                previewDevice === 'tablet' && 'w-[768px] max-w-full',
+                previewDevice === 'mobile' && 'w-[375px] max-w-full'
+              )}
+            >
+              <iframe
+                src={brand.website}
+                title={`${brand.name} Website Preview`}
+                className="w-full h-full border-0"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+              />
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Videos Section */}
@@ -362,7 +514,7 @@ export default function BrandDetailPage() {
           <div className="container-content">
             <ScrollReveal>
               <h2 className="text-section font-bold text-charcoal mb-4">
-                Performance Ad Campaigns
+                Ad Creatives
               </h2>
               <p className="text-warm-gray mb-8 max-w-2xl">
                 ROI-focused ad creatives designed to drive engagement and conversions across Meta and Google platforms.
@@ -382,6 +534,45 @@ export default function BrandDetailPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-deep-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                     <span className="text-white font-medium text-sm">{ad.title}</span>
+                  </div>
+                </div>
+              ))}
+            </StaggerReveal>
+          </div>
+        </section>
+      )}
+
+      {/* Video Ads Section */}
+      {brand.adVideos && brand.adVideos.length > 0 && (
+        <section className="section-light section-padding">
+          <div className="container-content">
+            <ScrollReveal>
+              <h2 className="text-section font-bold text-charcoal mb-4">
+                Video Ad Campaigns
+              </h2>
+              <p className="text-warm-gray mb-8 max-w-2xl">
+                Engaging video content crafted for social media ads that capture attention and drive action.
+              </p>
+            </ScrollReveal>
+
+            <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {brand.adVideos.map((video) => (
+                <div key={video.src} className="bg-white rounded-xl overflow-hidden shadow-lg">
+                  <div className="relative aspect-[9/16]">
+                    <video
+                      src={video.src}
+                      controls
+                      className="absolute inset-0 w-full h-full object-cover"
+                      poster=""
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-charcoal mb-1">{video.title}</h3>
+                    {video.description && (
+                      <p className="text-sm text-warm-gray">{video.description}</p>
+                    )}
                   </div>
                 </div>
               ))}
@@ -418,32 +609,24 @@ export default function BrandDetailPage() {
               </div>
             </ScrollReveal>
 
-            <StaggerReveal className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {brand.influencerReels.slice(0, 12).map((reelId) => (
-                <a
+            <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {brand.influencerReels.slice(0, 8).map((reelId) => (
+                <div
                   key={reelId}
-                  href={`https://www.instagram.com/reel/${reelId}/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group relative aspect-[9/16] bg-charcoal rounded-xl overflow-hidden border border-white/10 hover:border-primary-red/50 transition-colors"
+                  className="bg-charcoal rounded-xl overflow-hidden border border-white/10"
                 >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <Play className="w-12 h-12 text-white/50 mx-auto mb-2" />
-                      <p className="text-warm-gray text-sm">View Reel</p>
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-red/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
-                    <span className="inline-flex items-center gap-2 text-white font-semibold text-sm">
-                      <Instagram className="w-4 h-4" />
-                      Open in Instagram
-                    </span>
-                  </div>
-                </a>
+                  <iframe
+                    src={`https://www.instagram.com/reel/${reelId}/embed/`}
+                    className="w-full aspect-[9/16] border-0"
+                    allowFullScreen
+                    scrolling="no"
+                    title={`Instagram Reel ${reelId}`}
+                  />
+                </div>
               ))}
             </StaggerReveal>
 
-            {brand.influencerReels.length > 12 && (
+            {brand.influencerReels.length > 8 && (
               <ScrollReveal delay={0.2}>
                 <div className="text-center mt-8">
                   <a
@@ -453,7 +636,7 @@ export default function BrandDetailPage() {
                     className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
                   >
                     <Instagram className="w-5 h-5" />
-                    View All {brand.influencerReels.length} Reels
+                    View All {brand.influencerReels.length} Reels on Instagram
                   </a>
                 </div>
               </ScrollReveal>
