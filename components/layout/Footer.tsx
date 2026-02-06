@@ -31,38 +31,38 @@ export default function Footer() {
 
   return (
     <footer className="bg-ink border-t border-stone/10">
-      {/* Main Footer - Evenly distributed on desktop */}
-      <div className="container-content py-10 md:py-12">
-        <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-8">
-          {/* Brand Column */}
-          <div className="flex-shrink-0 md:flex-1">
-            <Link href="/" className="group inline-block mb-4">
+      {/* Compact Footer */}
+      <div className="container-content py-6 md:py-8">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+          {/* Brand - Logo and tagline inline */}
+          <div className="flex items-center gap-4">
+            <Link href="/" className="group flex-shrink-0">
               <Image
                 src="/images/logo.png"
                 alt="Dark Bird Films"
-                width={400}
-                height={150}
-                className="h-24 md:h-32 lg:h-40 w-auto object-contain transition-opacity group-hover:opacity-80"
+                width={320}
+                height={120}
+                className="h-16 md:h-20 w-auto object-contain transition-opacity group-hover:opacity-80"
               />
             </Link>
-            <p className="text-silver text-sm md:text-base whitespace-nowrap">
+            <p className="text-silver text-sm whitespace-nowrap hidden md:block">
               Stories that move. Brands that grow.
             </p>
           </div>
 
-          {/* Links Row - Evenly distributed in center */}
-          <div className="flex flex-wrap justify-center md:justify-end gap-x-10 gap-y-6 md:gap-x-12 lg:gap-x-16 md:flex-[2]">
+          {/* Navigation Links - Horizontal on desktop */}
+          <div className="flex flex-wrap items-start justify-between lg:justify-center gap-x-8 gap-y-4 lg:gap-x-12">
             {/* Quick Links */}
             <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-3">
+              <h4 className="font-mono text-[9px] uppercase tracking-wider text-warm-gray mb-2">
                 Navigate
               </h4>
-              <ul className="space-y-2">
+              <ul className="flex flex-col gap-1">
                 {quickLinks.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-silver hover:text-accent transition-colors text-sm"
+                      className="text-silver hover:text-accent transition-colors text-xs"
                     >
                       {link.label}
                     </Link>
@@ -73,15 +73,15 @@ export default function Footer() {
 
             {/* Services */}
             <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-3">
+              <h4 className="font-mono text-[9px] uppercase tracking-wider text-warm-gray mb-2">
                 Services
               </h4>
-              <ul className="space-y-2">
+              <ul className="flex flex-col gap-1">
                 {services.map((link) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
-                      className="text-silver hover:text-accent transition-colors text-sm"
+                      className="text-silver hover:text-accent transition-colors text-xs"
                     >
                       {link.label}
                     </Link>
@@ -90,16 +90,16 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Contact */}
+            {/* Connect */}
             <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-3">
+              <h4 className="font-mono text-[9px] uppercase tracking-wider text-warm-gray mb-2">
                 Connect
               </h4>
-              <ul className="space-y-2">
+              <ul className="flex flex-col gap-1">
                 <li>
                   <a
                     href="mailto:management@darkbirdfilms.com"
-                    className="text-silver hover:text-accent transition-colors text-sm"
+                    className="text-silver hover:text-accent transition-colors text-xs"
                   >
                     Email Us
                   </a>
@@ -109,7 +109,7 @@ export default function Footer() {
                     href="https://wa.me/919876543210"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-silver hover:text-accent transition-colors text-sm"
+                    className="text-silver hover:text-accent transition-colors text-xs"
                   >
                     WhatsApp
                   </a>
@@ -117,21 +117,21 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/contact"
-                    className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors text-sm"
+                    className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors text-xs"
                   >
                     Start Project
-                    <ArrowUpRight className="w-3 h-3" />
+                    <ArrowUpRight className="w-2.5 h-2.5" />
                   </Link>
                 </li>
               </ul>
             </div>
 
-            {/* Social Links */}
+            {/* Social */}
             <div>
-              <h4 className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-3">
+              <h4 className="font-mono text-[9px] uppercase tracking-wider text-warm-gray mb-2">
                 Follow
               </h4>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 {socialLinks.map((social) => {
                   const Icon = social.icon
                   return (
@@ -140,10 +140,10 @@ export default function Footer() {
                       href={social.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-9 h-9 rounded-lg bg-charcoal flex items-center justify-center text-warm-gray hover:text-accent hover:bg-charcoal/80 transition-all"
+                      className="w-7 h-7 rounded-md bg-charcoal flex items-center justify-center text-warm-gray hover:text-accent hover:bg-charcoal/80 transition-all"
                       aria-label={social.label}
                     >
-                      <Icon className="w-4 h-4" />
+                      <Icon className="w-3.5 h-3.5" />
                     </a>
                   )
                 })}
@@ -153,12 +153,12 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar */}
+      {/* Bottom Bar - Thin */}
       <div className="border-t border-stone/10">
-        <div className="container-content py-3">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-2 text-xs text-warm-gray">
+        <div className="container-content py-2">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-1 text-[10px] text-warm-gray">
             <p className="font-mono">© {currentYear} Dark Bird Films • Bengaluru</p>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <Link href="/privacy" className="hover:text-accent transition-colors">Privacy</Link>
               <Link href="/careers" className="hover:text-accent transition-colors">Careers</Link>
             </div>
