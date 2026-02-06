@@ -28,36 +28,11 @@ const navLinks = [
     label: 'Work',
     hasDropdown: true,
     dropdownItems: [
-      {
-        href: '/work',
-        label: 'All Services',
-        description: 'Everything we offer',
-        icon: Film,
-      },
-      {
-        href: '/work/films',
-        label: 'Films',
-        description: 'Feature films, ads & music videos',
-        icon: Film,
-      },
-      {
-        href: '/work/socials',
-        label: 'Socials',
-        description: 'Digital & real estate marketing',
-        icon: Share2,
-      },
-      {
-        href: '/work/designs',
-        label: 'Designs',
-        description: 'Brand identity & motion graphics',
-        icon: Palette,
-      },
-      {
-        href: '/work/labs',
-        label: 'Labs',
-        description: 'AI-powered creative experiments',
-        icon: Cpu,
-      },
+      { href: '/work', label: 'All Services', description: 'Everything we offer', icon: Film },
+      { href: '/work/films', label: 'Films', description: 'Feature films, ads & music videos', icon: Film },
+      { href: '/work/socials', label: 'Socials', description: 'Digital & real estate marketing', icon: Share2 },
+      { href: '/work/designs', label: 'Designs', description: 'Brand identity & motion graphics', icon: Palette },
+      { href: '/work/labs', label: 'Labs', description: 'AI-powered creative experiments', icon: Cpu },
     ],
   },
   { href: '/contact', label: 'Contact' },
@@ -67,17 +42,29 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+  const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
 
-  // Handle scroll
+  // Mount check
   useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
+  // Handle scroll - only on desktop
+  useEffect(() => {
+    if (!isMounted) return
+
+    // Check if mobile
+    const isMobile = window.innerWidth < 1024
+    if (isMobile) return
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [isMounted])
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -97,8 +84,11 @@ export default function Navbar() {
     }
   }, [isMobileMenuOpen])
 
-  // Check if current page has light background
   const hasLightBackground = lightBackgroundPages.includes(pathname)
+
+  // Get current logo
+  const currentLogo = departmentLogos[pathname]?.logo || '/images/logo.png'
+  const currentAlt = departmentLogos[pathname]?.alt || 'Dark Bird Films'
 
   return (
     <>
@@ -106,40 +96,31 @@ export default function Navbar() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
           isScrolled
-            ? hasLightBackground
-              ? 'py-4 bg-ink'
-              : 'py-4 bg-transparent'
-            : hasLightBackground
-              ? 'py-6 bg-ink'
-              : 'py-6 bg-transparent'
+            ? hasLightBackground ? 'py-4 bg-ink' : 'py-4 bg-transparent'
+            : hasLightBackground ? 'py-6 bg-ink' : 'py-6 bg-transparent'
         )}
       >
         <div className="container-content">
           <div className="flex items-center justify-between">
-            {/* Logo - Shows department logo on department pages */}
-            <Link
-              href="/"
-              className="relative z-10 group"
-            >
+            {/* Logo */}
+            <Link href="/" className="relative z-10 group">
               <Image
-                src={departmentLogos[pathname]?.logo || '/images/logo.png'}
-                alt={departmentLogos[pathname]?.alt || 'Dark Bird Films'}
-                width={320}
-                height={120}
-                className="h-20 md:h-24 lg:h-32 w-auto object-contain transition-opacity group-hover:opacity-80"
+                src={currentLogo}
+                alt={currentAlt}
+                width={160}
+                height={60}
+                className="h-12 md:h-16 lg:h-20 w-auto object-contain"
                 priority
               />
             </Link>
 
-            {/* Desktop Navigation - Center */}
+            {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
                 <div
                   key={link.href}
                   className="relative"
-                  onMouseEnter={() =>
-                    link.hasDropdown && setActiveDropdown(link.href)
-                  }
+                  onMouseEnter={() => link.hasDropdown && setActiveDropdown(link.href)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
                   {link.hasDropdown ? (
@@ -173,7 +154,7 @@ export default function Navbar() {
                     </Link>
                   )}
 
-                  {/* Dropdown Menu */}
+                  {/* Dropdown - Desktop only, no backdrop-blur */}
                   {link.hasDropdown && (
                     <div
                       className={cn(
@@ -182,8 +163,7 @@ export default function Navbar() {
                       )}
                     >
                       <div className={cn(
-                        'min-w-[280px] p-2 rounded-xl border border-stone/20 backdrop-blur-xl transition-all duration-300',
-                        'bg-ink/95 shadow-dramatic',
+                        'min-w-[280px] p-2 rounded-xl border border-stone/20 bg-ink shadow-lg transition-all duration-300',
                         activeDropdown === link.href ? 'translate-y-0' : 'translate-y-2'
                       )}>
                         {link.dropdownItems?.map((item) => {
@@ -194,16 +174,12 @@ export default function Navbar() {
                               href={item.href}
                               className="flex items-center gap-3 p-3 rounded-lg hover:bg-cream/5 transition-colors group"
                             >
-                              <div className="w-9 h-9 rounded-lg bg-charcoal flex items-center justify-center flex-shrink-0 group-hover:bg-accent/10 transition-colors">
+                              <div className="w-9 h-9 rounded-lg bg-charcoal flex items-center justify-center flex-shrink-0">
                                 <Icon className="w-4 h-4 text-accent" />
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="font-medium text-cream text-sm">
-                                  {item.label}
-                                </p>
-                                <p className="text-xs text-warm-gray truncate">
-                                  {item.description}
-                                </p>
+                                <p className="font-medium text-cream text-sm">{item.label}</p>
+                                <p className="text-xs text-warm-gray truncate">{item.description}</p>
                               </div>
                             </Link>
                           )
@@ -222,128 +198,88 @@ export default function Navbar() {
                 className="group flex items-center gap-2 px-5 py-2.5 bg-accent text-cream text-sm font-medium rounded-lg hover:bg-accent-hover transition-all duration-200"
               >
                 Let&apos;s Talk
-                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-4 h-4" />
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
             <button
-              className="lg:hidden relative z-10 p-2 text-cream hover:text-accent transition-colors"
+              className="lg:hidden relative z-10 p-2 text-cream"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
-              {isMobileMenuOpen ? (
-                <X className="w-6 h-6" />
-              ) : (
-                <Menu className="w-6 h-6" />
-              )}
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
-      <div
-        className={cn(
-          'fixed inset-0 z-40 bg-ink transition-all duration-500 lg:hidden',
-          isMobileMenuOpen
-            ? 'opacity-100 visible'
-            : 'opacity-0 invisible pointer-events-none'
-        )}
-      >
-        <div className="container-content pt-28 pb-8 flex flex-col h-full">
-          <div className="flex-1 space-y-2">
-            {navLinks.map((link, index) => (
-              <div
-                key={link.href}
-                className={cn(
-                  'transition-all duration-500',
-                  isMobileMenuOpen
-                    ? 'opacity-100 translate-x-0'
-                    : 'opacity-0 translate-x-8'
-                )}
-                style={{ transitionDelay: isMobileMenuOpen ? `${index * 75}ms` : '0ms' }}
-              >
-                {link.hasDropdown ? (
-                  <>
-                    <button
-                      onClick={() =>
-                        setActiveDropdown(
-                          activeDropdown === link.href ? null : link.href
-                        )
-                      }
-                      className="flex items-center justify-between w-full py-4 text-3xl font-display text-cream border-b border-stone/20"
-                    >
-                      {link.label}
-                      <ChevronDown
-                        className={cn(
-                          'w-6 h-6 text-warm-gray transition-transform duration-300',
-                          activeDropdown === link.href && 'rotate-180 text-accent'
-                        )}
-                      />
-                    </button>
-                    <div
+      {/* Mobile Menu - Simplified */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-40 bg-ink lg:hidden">
+          <div className="container-content pt-24 pb-8 flex flex-col h-full overflow-y-auto">
+            <div className="flex-1 space-y-1">
+              {navLinks.map((link) => (
+                <div key={link.href}>
+                  {link.hasDropdown ? (
+                    <>
+                      <button
+                        onClick={() => setActiveDropdown(activeDropdown === link.href ? null : link.href)}
+                        className="flex items-center justify-between w-full py-4 text-2xl font-display text-cream border-b border-stone/20"
+                      >
+                        {link.label}
+                        <ChevronDown
+                          className={cn(
+                            'w-5 h-5 text-warm-gray transition-transform',
+                            activeDropdown === link.href && 'rotate-180 text-accent'
+                          )}
+                        />
+                      </button>
+                      {activeDropdown === link.href && (
+                        <div className="py-3 space-y-1">
+                          {link.dropdownItems?.map((item) => (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              className="block py-2 pl-4 text-lg text-warm-gray border-l-2 border-stone/30"
+                            >
+                              {item.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      href={link.href}
                       className={cn(
-                        'overflow-hidden transition-all duration-300',
-                        activeDropdown === link.href
-                          ? 'max-h-96 opacity-100'
-                          : 'max-h-0 opacity-0'
+                        'block py-4 text-2xl font-display border-b border-stone/20',
+                        pathname === link.href ? 'text-accent' : 'text-cream'
                       )}
                     >
-                      <div className="py-4 space-y-1">
-                        {link.dropdownItems?.map((item) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            className="flex items-center gap-3 py-3 pl-4 text-lg text-warm-gray hover:text-accent transition-colors border-l-2 border-stone/30 hover:border-accent"
-                          >
-                            <span className="font-mono text-xs text-accent">→</span>
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <Link
-                    href={link.href}
-                    className={cn(
-                      'block py-4 text-3xl font-display transition-colors border-b border-stone/20',
-                      pathname === link.href
-                        ? 'text-accent'
-                        : 'text-cream hover:text-accent'
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
+                      {link.label}
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
 
-          {/* Mobile CTA */}
-          <div
-            className={cn(
-              'pt-8 border-t border-stone/20 transition-all duration-500',
-              isMobileMenuOpen
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-8'
-            )}
-            style={{ transitionDelay: isMobileMenuOpen ? '400ms' : '0ms' }}
-          >
-            <Link
-              href="/contact"
-              className="flex items-center justify-center gap-2 w-full py-4 bg-accent text-cream text-lg font-medium rounded-xl hover:bg-accent-hover transition-colors"
-            >
-              Let&apos;s Talk
-              <ArrowUpRight className="w-5 h-5" />
-            </Link>
-            <p className="text-center text-warm-gray text-sm mt-4">
-              management@darkbirdfilms.com
-            </p>
+            {/* Mobile CTA */}
+            <div className="pt-6 border-t border-stone/20">
+              <Link
+                href="/contact"
+                className="flex items-center justify-center gap-2 w-full py-4 bg-accent text-cream text-lg font-medium rounded-xl"
+              >
+                Let&apos;s Talk
+                <ArrowUpRight className="w-5 h-5" />
+              </Link>
+              <p className="text-center text-warm-gray text-sm mt-4">
+                management@darkbirdfilms.com
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </>
   )
 }

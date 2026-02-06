@@ -63,23 +63,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
       <body className="font-sans bg-ink text-cream antialiased">
-        {/* Smooth scrolling provider */}
         <SmoothScroll>
-          {/* Custom cursor */}
           <CustomCursor />
-
-          {/* Subtle noise texture overlay */}
           <div className="noise-overlay" aria-hidden="true" />
-
-          {/* Navigation */}
           <Navbar />
-
-          {/* Main Content */}
           <main>
             {children}
           </main>
-
-          {/* Footer */}
           <Footer />
         </SmoothScroll>
       </body>

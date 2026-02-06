@@ -137,9 +137,6 @@ export default function FilmographyPage() {
     ? films
     : films.filter(film => film.category === activeCategory)
 
-  // Count awards
-  const awardWinningFilms = films.filter(f => f.award).length
-
   return (
     <div className="min-h-screen bg-ink">
       {/* Video Hero Banner */}
@@ -147,7 +144,6 @@ export default function FilmographyPage() {
 
       {/* Hero Section */}
       <section className="relative pt-16 pb-16 overflow-hidden">
-        {/* Background gradient */}
         <div
           className="absolute inset-0 opacity-30 pointer-events-none"
           style={{
@@ -222,7 +218,7 @@ export default function FilmographyPage() {
       </section>
 
       {/* Filter Tabs */}
-      <section className="sticky top-20 z-30 bg-ink/80 backdrop-blur-xl border-y border-stone/10">
+      <section className="sticky top-20 z-30 bg-ink border-y border-stone/10">
         <div className="container-content">
           <div className="flex items-center gap-2 py-4 overflow-x-auto scrollbar-hide">
             {categories.map((category) => (
@@ -259,7 +255,8 @@ export default function FilmographyPage() {
                       src={film.poster}
                       alt={film.title}
                       fill
-                      className="object-cover transition-all duration-700 group-hover:scale-110"
+                      sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
 
                     {/* Gradient overlay */}
@@ -268,7 +265,7 @@ export default function FilmographyPage() {
                     {/* Award badge */}
                     {film.award && (
                       <div className="absolute top-3 left-3 z-10">
-                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gold/90 backdrop-blur-sm rounded-full">
+                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-gold rounded-full">
                           <Award className="w-3 h-3 text-ink" />
                           <span className="text-[10px] font-bold text-ink uppercase tracking-wider">Award</span>
                         </div>
@@ -277,7 +274,7 @@ export default function FilmographyPage() {
 
                     {/* View button on hover */}
                     <div className="absolute top-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                         <ArrowUpRight className="w-4 h-4 text-white" />
                       </div>
                     </div>

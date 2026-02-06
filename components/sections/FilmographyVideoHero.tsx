@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface HeroSlide {
@@ -44,117 +45,152 @@ export default function FilmographyVideoHero() {
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [progress, setProgress] = useState(0)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
-  const progressRef = useRef<NodeJS.Timeout | null>(null)
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
+  const [isMounted, setIsMounted] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const SLIDE_DURATION = 20000
-  const PROGRESS_INTERVAL = 50
 
-  useEffect(() => {
-    setProgress(0)
-    progressRef.current = setInterval(() => {
-      setProgress(prev => {
-        const newProgress = prev + (PROGRESS_INTERVAL / SLIDE_DURATION) * 100
-        return newProgress >= 100 ? 100 : newProgress
-      })
-    }, PROGRESS_INTERVAL)
-
-    return () => {
-      if (progressRef.current) clearInterval(progressRef.current)
+  // Clear timers
+  const clearAllTimers = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current)
+      timerRef.current = null
     }
-  }, [currentSlide])
-
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setIsTransitioning(true)
-      setTimeout(() => {
-        setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
-        setIsTransitioning(false)
-      }, 500)
-    }, SLIDE_DURATION)
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current)
+    if (progressRef.current) {
+      clearInterval(progressRef.current)
+      progressRef.current = null
     }
-  }, [])
+  }
 
-  useEffect(() => {
-    videoRefs.current.forEach((video, index) => {
-      if (video) {
-        if (index === currentSlide) {
-          video.currentTime = 0
-          video.play().catch(() => {})
-        } else {
-          video.pause()
-        }
-      }
-    })
-  }, [currentSlide])
+  // Go to slide
+  const goToSlide = (index: number) => {
+    if (index === currentSlide || isTransitioning) return
 
-  const handleSlideClick = (index: number) => {
-    if (index === currentSlide) return
-    if (intervalRef.current) clearInterval(intervalRef.current)
-    if (progressRef.current) clearInterval(progressRef.current)
-
+    clearAllTimers()
     setIsTransitioning(true)
+
+    if (videoRef.current) {
+      videoRef.current.pause()
+    }
+
     setTimeout(() => {
       setCurrentSlide(index)
       setIsTransitioning(false)
-    }, 500)
+      setProgress(0)
+    }, 400)
+  }
 
-    intervalRef.current = setInterval(() => {
+  // Next slide
+  const nextSlide = () => {
+    goToSlide((currentSlide + 1) % heroSlides.length)
+  }
+
+  // Previous slide
+  const prevSlide = () => {
+    goToSlide((currentSlide - 1 + heroSlides.length) % heroSlides.length)
+  }
+
+  // Mount
+  useEffect(() => {
+    setIsMounted(true)
+    return () => clearAllTimers()
+  }, [])
+
+  // Auto advance and progress
+  useEffect(() => {
+    if (!isMounted) return
+
+    setProgress(0)
+
+    // Progress bar
+    progressRef.current = setInterval(() => {
+      setProgress(p => Math.min(p + 0.5, 100))
+    }, SLIDE_DURATION / 200)
+
+    // Auto advance
+    timerRef.current = setTimeout(() => {
       setIsTransitioning(true)
+      if (videoRef.current) videoRef.current.pause()
+
       setTimeout(() => {
-        setCurrentSlide((prev) => (prev + 1) % heroSlides.length)
+        setCurrentSlide(s => (s + 1) % heroSlides.length)
         setIsTransitioning(false)
-      }, 500)
+        setProgress(0)
+      }, 400)
     }, SLIDE_DURATION)
+
+    return () => clearAllTimers()
+  }, [isMounted, currentSlide])
+
+  // Load video
+  useEffect(() => {
+    if (!isMounted || !videoRef.current) return
+
+    const video = videoRef.current
+    video.src = heroSlides[currentSlide].videoSrc
+    video.load()
+    video.play().catch(() => {})
+  }, [currentSlide, isMounted])
+
+  if (!isMounted) {
+    return (
+      <section className="relative h-[70vh] md:h-[80vh] w-full bg-ink">
+        <div className="absolute inset-0 bg-charcoal" />
+      </section>
+    )
   }
 
   return (
     <section className="relative h-[70vh] md:h-[80vh] w-full overflow-hidden bg-ink">
-      {/* Background Videos */}
-      {heroSlides.map((slide, index) => (
-        <div
-          key={slide.id}
-          className={cn(
-            'absolute inset-0 transition-all duration-1000 ease-smooth',
-            index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
-          )}
-        >
-          <video
-            ref={(el) => { videoRefs.current[index] = el }}
-            src={slide.videoSrc}
-            className="absolute inset-0 w-full h-full object-cover"
-            muted
-            loop
-            playsInline
-            preload={index === 0 ? "auto" : "none"}
-          />
-        </div>
-      ))}
+      {/* Video */}
+      <div className={cn(
+        'absolute inset-0 transition-opacity duration-400',
+        isTransitioning ? 'opacity-0' : 'opacity-100'
+      )}>
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover"
+          muted
+          loop
+          playsInline
+          autoPlay
+          preload="metadata"
+        />
+      </div>
 
-      {/* Gradient overlay */}
+      {/* Overlay */}
       <div className="absolute inset-0 z-10 bg-gradient-to-t from-ink/70 via-ink/30 to-ink/40" />
 
-      {/* Main Content - Positioned at bottom */}
+      {/* Arrows */}
+      <button
+        onClick={prevSlide}
+        className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-ink/40 flex items-center justify-center text-cream/80"
+        aria-label="Previous"
+      >
+        <ChevronLeft className="w-5 h-5" />
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 rounded-full bg-ink/40 flex items-center justify-center text-cream/80"
+        aria-label="Next"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </button>
+
+      {/* Content */}
       <div className="absolute inset-0 z-20 flex flex-col justify-end">
-        {/* Content positioned above navigation */}
-        <div className="px-6 mb-24 md:mb-32">
+        <div className="px-6 mb-20 md:mb-28">
           <div className="container-content">
             <div className="max-w-xl">
-              {/* Label */}
-              <span
-                className={cn(
-                  "font-mono text-[9px] md:text-[10px] uppercase tracking-widest text-accent/80 mb-2 block transition-all duration-500",
-                  isTransitioning ? 'opacity-0' : 'opacity-100'
-                )}
-              >
+              <span className={cn(
+                "font-mono text-[9px] md:text-[10px] uppercase tracking-widest text-accent/80 mb-2 block transition-opacity duration-400",
+                isTransitioning ? 'opacity-0' : 'opacity-100'
+              )}>
                 {heroSlides[currentSlide].subtitle}
               </span>
 
-              {/* Title - Minimalistic */}
               <Link
                 href={heroSlides[currentSlide].href}
                 className={cn(
@@ -165,17 +201,13 @@ export default function FilmographyVideoHero() {
                 {heroSlides[currentSlide].title}
               </Link>
 
-              {/* Year */}
-              <span
-                className={cn(
-                  "font-mono text-[10px] text-warm-gray/70 mt-2 block transition-all duration-500",
-                  isTransitioning ? 'opacity-0' : 'opacity-100'
-                )}
-              >
+              <span className={cn(
+                "font-mono text-[10px] text-warm-gray/70 mt-2 block transition-opacity duration-400",
+                isTransitioning ? 'opacity-0' : 'opacity-100'
+              )}>
                 {heroSlides[currentSlide].year}
               </span>
 
-              {/* View Film */}
               <Link
                 href={heroSlides[currentSlide].href}
                 className={cn(
@@ -189,58 +221,54 @@ export default function FilmographyVideoHero() {
           </div>
         </div>
 
-        {/* Bottom Navigation */}
+        {/* Bottom Nav */}
         <div className="absolute bottom-0 left-0 right-0 pb-6 md:pb-8 px-6">
           <div className="container-content">
             <div className="flex items-end justify-between">
-              {/* Desktop: Project names */}
+              {/* Desktop names */}
               <div className="hidden md:flex items-center gap-8">
-                {heroSlides.map((slide, index) => (
+                {heroSlides.map((slide, i) => (
                   <button
                     key={slide.id}
-                    onClick={() => handleSlideClick(index)}
+                    onClick={() => goToSlide(i)}
                     className={cn(
-                      'relative pb-3 font-mono text-sm uppercase tracking-wider transition-all duration-300',
-                      index === currentSlide ? 'text-cream' : 'text-warm-gray hover:text-cream'
+                      'relative pb-3 font-mono text-sm uppercase tracking-wider transition-all',
+                      i === currentSlide ? 'text-cream' : 'text-warm-gray hover:text-cream'
                     )}
                   >
                     <span className="flex items-center gap-2">
-                      <span className="text-accent">{String(index + 1).padStart(2, '0')}</span>
+                      <span className="text-accent">{String(i + 1).padStart(2, '0')}</span>
                       <span>{slide.title}</span>
                     </span>
                     <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-stone/30">
                       <div
-                        className={cn(
-                          "h-full bg-accent transition-all duration-100",
-                          index === currentSlide ? 'opacity-100' : 'opacity-0'
-                        )}
-                        style={{ width: index === currentSlide ? `${progress}%` : '0%' }}
+                        className={cn("h-full bg-accent", i === currentSlide ? 'opacity-100' : 'opacity-0')}
+                        style={{ width: i === currentSlide ? `${progress}%` : '0%' }}
                       />
                     </div>
                   </button>
                 ))}
               </div>
 
-              {/* Mobile: Dots */}
-              <div className="flex md:hidden items-center gap-2">
-                {heroSlides.map((_, index) => (
+              {/* Mobile dots */}
+              <div className="flex md:hidden items-center gap-3">
+                {heroSlides.map((_, i) => (
                   <button
-                    key={index}
-                    onClick={() => handleSlideClick(index)}
+                    key={i}
+                    onClick={() => goToSlide(i)}
                     className={cn(
-                      'h-1.5 rounded-full transition-all duration-300',
-                      index === currentSlide ? 'w-6 bg-accent' : 'w-1.5 bg-cream/40'
+                      'h-2 rounded-full transition-all',
+                      i === currentSlide ? 'w-8 bg-accent' : 'w-2 bg-cream/40'
                     )}
-                    aria-label={`Go to slide ${index + 1}`}
+                    aria-label={`Slide ${i + 1}`}
                   />
                 ))}
               </div>
 
-              {/* Scroll Indicator */}
+              {/* Scroll */}
               <button
                 onClick={() => window.scrollTo({ top: window.innerHeight * 0.7, behavior: 'smooth' })}
                 className="flex flex-col items-center gap-2 text-warm-gray"
-                aria-label="Scroll to content"
               >
                 <span className="font-mono text-[10px] uppercase tracking-widest">Scroll</span>
                 <div className="w-px h-6 md:h-8 bg-gradient-to-b from-warm-gray to-transparent" />
