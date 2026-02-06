@@ -46,14 +46,27 @@ const departments = [
 ]
 
 export default function Departments() {
-  const [isMobile, setIsMobile] = useState(false)
+  const [isMobile, setIsMobile] = useState<boolean | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window || navigator.maxTouchPoints > 0)
     }
     checkMobile()
+    setIsLoaded(true)
   }, [])
+
+  // Show nothing until we know if it's mobile or desktop
+  if (isMobile === null) {
+    return (
+      <section className="section-dark py-16 md:py-24">
+        <div className="container-content">
+          <div className="h-[400px]" /> {/* Placeholder height to prevent layout shift */}
+        </div>
+      </section>
+    )
+  }
 
   // Mobile: Simplified version without images to prevent crash
   if (isMobile) {
@@ -146,7 +159,7 @@ export default function Departments() {
                     fill
                     sizes="200px"
                     className="object-contain opacity-85"
-                    loading="lazy"
+                    priority
                   />
                 </div>
               </div>
