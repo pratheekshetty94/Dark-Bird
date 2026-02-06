@@ -22,14 +22,17 @@ export default function PreloaderWrapper({ children }: PreloaderWrapperProps) {
     if (isLoading) {
       document.body.style.overflow = 'hidden'
       document.body.classList.add('preloader-active')
+      document.documentElement.classList.add('preloader-active')
     } else {
       document.body.style.overflow = ''
       document.body.classList.remove('preloader-active')
+      document.documentElement.classList.remove('preloader-active')
     }
 
     return () => {
       document.body.style.overflow = ''
       document.body.classList.remove('preloader-active')
+      document.documentElement.classList.remove('preloader-active')
     }
   }, [isLoading])
 
