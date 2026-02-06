@@ -19,6 +19,9 @@ interface BrandData {
   stats: { number: string; label: string }[]
   deliverables: string[]
   videos?: { title: string; youtubeId: string; description?: string }[]
+  websiteScreenshots?: { src: string; title: string }[]
+  adCreatives?: { src: string; title: string }[]
+  influencerReels?: string[] // Instagram reel IDs
 }
 
 const brandsData: Record<string, BrandData> = {
@@ -46,6 +49,11 @@ const brandsData: Record<string, BrandData> = {
       'Consistent brand voice across all channels',
       'NRI support integration on website',
     ],
+    websiteScreenshots: [
+      { src: '/images/websites/gk-builders-homepage.jpg', title: 'Homepage' },
+      { src: '/images/websites/gk-hill-view.png', title: 'GK Hill View Project' },
+      { src: '/images/websites/gk-anjani-lakewoods.png', title: 'Anjani Lake Woods Project' },
+    ],
     videos: [
       {
         title: 'GK Hill View Villa - Walkthrough',
@@ -62,6 +70,37 @@ const brandsData: Record<string, BrandData> = {
         youtubeId: 'MaAUPpTXbNs',
         description: 'Brand film showcasing the values of GK Builders',
       },
+    ],
+    adCreatives: [
+      { src: '/images/socials/gk-ads/ad-creative-1.png', title: 'Ad Creative 1' },
+      { src: '/images/socials/gk-ads/ad-creative-2.png', title: 'Ad Creative 2' },
+      { src: '/images/socials/gk-ads/ad-creative-6.png', title: 'Ad Creative 3' },
+      { src: '/images/socials/gk-ads/gk-takeoff.png', title: 'GK Takeoff' },
+      { src: '/images/socials/gk-ads/post-1.png', title: 'Social Post 1' },
+      { src: '/images/socials/gk-ads/post-2.png', title: 'Social Post 2' },
+    ],
+    influencerReels: [
+      'DUPnDc9D6He',
+      'DTzaNNjiWoc',
+      'DTkk4BEksQD',
+      'DSHCxhbE1KR',
+      'DSFd6CUDeHP',
+      'DSB_iA-kcPK',
+      'DR_mJ_zEykM',
+      'DR9EQjCj2Uf',
+      'DR7AwRpD7Yo',
+      'DR6Yc3WDzRB',
+      'DR3eKzcCCm8',
+      'DR1H0acj8hj',
+      'DRuqaLKD5zS',
+      'DTnRib3kwgQ',
+      'DK0sxXwT8-N',
+      'DF-UI5jTbVW',
+      'DFIL-VxTasA',
+      'DC9SAGlzy3z',
+      'C62oBQ0veed',
+      'C5I_WuDPNJ-',
+      'Cr5jtj2gBaE',
     ],
   },
   'hotel-amaravathi': {
@@ -86,6 +125,10 @@ const brandsData: Record<string, BrandData> = {
       'Contact and location integration',
       'SEO optimization for local searches',
       'Social media integration',
+    ],
+    websiteScreenshots: [
+      { src: '/images/websites/amaravathi-homepage.png', title: 'Homepage' },
+      { src: '/images/websites/amaravathi-2.png', title: 'Room Details' },
     ],
   },
 }
@@ -225,37 +268,55 @@ export default function BrandDetailPage() {
       </section>
 
       {/* Website Preview */}
-      {brand.website && (
+      {brand.websiteScreenshots && brand.websiteScreenshots.length > 0 && (
         <section className="section-dark section-padding">
           <div className="container-content">
             <ScrollReveal>
-              <h2 className="text-section font-bold text-white mb-8">
-                Website We Built
-              </h2>
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8">
+                <h2 className="text-section font-bold text-white">
+                  Website We Built
+                </h2>
+                {brand.website && (
+                  <a
+                    href={brand.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-primary-red hover:text-white transition-colors mt-4 md:mt-0"
+                  >
+                    Visit Live Site <ExternalLink className="w-4 h-4" />
+                  </a>
+                )}
+              </div>
             </ScrollReveal>
 
-            <ScrollReveal delay={0.1}>
-              <a
-                href={brand.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block group"
-              >
-                <div className="relative aspect-video bg-charcoal rounded-xl overflow-hidden border border-white/10 hover:border-primary-red/50 transition-colors">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center">
-                      <Globe className="w-16 h-16 text-warm-gray/50 mx-auto mb-4" />
-                      <p className="text-warm-gray">Click to visit {brand.website}</p>
+            <StaggerReveal className="grid grid-cols-1 gap-6">
+              {brand.websiteScreenshots.map((screenshot, index) => (
+                <a
+                  key={screenshot.src}
+                  href={brand.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block group"
+                >
+                  <div className="relative bg-charcoal rounded-xl overflow-hidden border border-white/10 hover:border-primary-red/50 transition-colors">
+                    <Image
+                      src={screenshot.src}
+                      alt={screenshot.title}
+                      width={1920}
+                      height={1080}
+                      className="w-full h-auto object-cover"
+                      unoptimized
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-deep-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-between p-6">
+                      <span className="text-white font-medium">{screenshot.title}</span>
+                      <span className="inline-flex items-center gap-2 text-white font-semibold">
+                        Visit Website <ExternalLink className="w-5 h-5" />
+                      </span>
                     </div>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-deep-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-8">
-                    <span className="inline-flex items-center gap-2 text-white font-semibold">
-                      Visit Website <ExternalLink className="w-5 h-5" />
-                    </span>
-                  </div>
-                </div>
-              </a>
-            </ScrollReveal>
+                </a>
+              ))}
+            </StaggerReveal>
           </div>
         </section>
       )}
@@ -291,6 +352,112 @@ export default function BrandDetailPage() {
                 </div>
               ))}
             </StaggerReveal>
+          </div>
+        </section>
+      )}
+
+      {/* Performance Ad Creatives Section */}
+      {brand.adCreatives && brand.adCreatives.length > 0 && (
+        <section className="section-beige section-padding">
+          <div className="container-content">
+            <ScrollReveal>
+              <h2 className="text-section font-bold text-charcoal mb-4">
+                Performance Ad Campaigns
+              </h2>
+              <p className="text-warm-gray mb-8 max-w-2xl">
+                ROI-focused ad creatives designed to drive engagement and conversions across Meta and Google platforms.
+              </p>
+            </ScrollReveal>
+
+            <StaggerReveal className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {brand.adCreatives.map((ad) => (
+                <div key={ad.src} className="group relative rounded-xl overflow-hidden shadow-lg">
+                  <Image
+                    src={ad.src}
+                    alt={ad.title}
+                    width={600}
+                    height={600}
+                    className="w-full h-auto object-cover transition-transform duration-300 group-hover:scale-105"
+                    unoptimized
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-deep-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                    <span className="text-white font-medium text-sm">{ad.title}</span>
+                  </div>
+                </div>
+              ))}
+            </StaggerReveal>
+          </div>
+        </section>
+      )}
+
+      {/* Influencer Marketing Reels Section */}
+      {brand.influencerReels && brand.influencerReels.length > 0 && (
+        <section className="section-dark section-padding">
+          <div className="container-content">
+            <ScrollReveal>
+              <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8">
+                <div>
+                  <h2 className="text-section font-bold text-white mb-2">
+                    Influencer Marketing Campaigns
+                  </h2>
+                  <p className="text-warm-gray max-w-2xl">
+                    Strategic influencer collaborations that drive reach, engagement, and brand awareness.
+                  </p>
+                </div>
+                {brand.instagram && (
+                  <a
+                    href={brand.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-primary-red hover:text-white transition-colors mt-4 md:mt-0"
+                  >
+                    <Instagram className="w-4 h-4" />
+                    View All on Instagram
+                  </a>
+                )}
+              </div>
+            </ScrollReveal>
+
+            <StaggerReveal className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {brand.influencerReels.slice(0, 12).map((reelId) => (
+                <a
+                  key={reelId}
+                  href={`https://www.instagram.com/reel/${reelId}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative aspect-[9/16] bg-charcoal rounded-xl overflow-hidden border border-white/10 hover:border-primary-red/50 transition-colors"
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center">
+                      <Play className="w-12 h-12 text-white/50 mx-auto mb-2" />
+                      <p className="text-warm-gray text-sm">View Reel</p>
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary-red/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4">
+                    <span className="inline-flex items-center gap-2 text-white font-semibold text-sm">
+                      <Instagram className="w-4 h-4" />
+                      Open in Instagram
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </StaggerReveal>
+
+            {brand.influencerReels.length > 12 && (
+              <ScrollReveal delay={0.2}>
+                <div className="text-center mt-8">
+                  <a
+                    href={brand.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
+                  >
+                    <Instagram className="w-5 h-5" />
+                    View All {brand.influencerReels.length} Reels
+                  </a>
+                </div>
+              </ScrollReveal>
+            )}
           </div>
         </section>
       )}
