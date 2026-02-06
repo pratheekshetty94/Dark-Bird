@@ -29,10 +29,12 @@ export default function ScrollReveal({
   once = true,
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [isMobile, setIsMobile] = useState(true) // Default to mobile (no animation)
+  const [isMounted, setIsMounted] = useState(false)
+  const [isMobile, setIsMobile] = useState(true)
 
   useEffect(() => {
-    // Check if mobile on client
+    setIsMounted(true)
+
     const checkMobile = () => {
       const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
       const isSmallScreen = window.innerWidth < 768
@@ -42,68 +44,77 @@ export default function ScrollReveal({
     const mobile = checkMobile()
     setIsMobile(mobile)
 
-    // If mobile, just ensure content is visible and return early
-    if (mobile) {
-      if (ref.current) {
-        ref.current.style.opacity = '1'
-        ref.current.style.transform = 'none'
-      }
-      return
-    }
+    // Mobile: just show content, no animations
+    if (mobile) return
 
-    // Only load GSAP on desktop
+    // Desktop: load GSAP
+    let cleanup: (() => void) | undefined
+
     const loadGsap = async () => {
-      const { gsap, ScrollTrigger } = await import('@/lib/gsap')
+      try {
+        const { gsap, ScrollTrigger } = await import('@/lib/gsap')
 
-      if (!ref.current) return
-      const element = ref.current
+        if (!ref.current) return
 
-      gsap.set(element, {
-        opacity,
-        y,
-        x,
-        scale,
-      })
+        const element = ref.current
 
-      const trigger = ScrollTrigger.create({
-        trigger: element,
-        start: threshold,
-        onEnter: () => {
-          gsap.to(element, {
-            opacity: 1,
-            y: 0,
-            x: 0,
-            scale: 1,
-            duration,
-            delay,
-            ease: 'power3.out',
-          })
-        },
-        onLeaveBack: once
-          ? undefined
-          : () => {
-              gsap.to(element, {
-                opacity,
-                y,
-                x,
-                scale,
-                duration: duration * 0.5,
-                ease: 'power3.in',
-              })
-            },
-      })
+        gsap.set(element, { opacity, y, x, scale })
 
-      return () => {
-        trigger.kill()
-        gsap.killTweensOf(element)
+        const trigger = ScrollTrigger.create({
+          trigger: element,
+          start: threshold,
+          onEnter: () => {
+            gsap.to(element, {
+              opacity: 1,
+              y: 0,
+              x: 0,
+              scale: 1,
+              duration,
+              delay,
+              ease: 'power3.out',
+            })
+          },
+          onLeaveBack: once
+            ? undefined
+            : () => {
+                gsap.to(element, {
+                  opacity,
+                  y,
+                  x,
+                  scale,
+                  duration: duration * 0.5,
+                  ease: 'power3.in',
+                })
+              },
+        })
+
+        cleanup = () => {
+          trigger.kill()
+          gsap.killTweensOf(element)
+        }
+      } catch (e) {
+        // If GSAP fails to load, just show content
+        if (ref.current) {
+          ref.current.style.opacity = '1'
+          ref.current.style.transform = 'none'
+        }
       }
     }
 
     loadGsap()
+
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [delay, duration, y, x, scale, opacity, threshold, once])
 
+  // Always render content visible on mobile
   return (
-    <div ref={ref} className={cn(className)} style={isMobile ? { opacity: 1 } : undefined}>
+    <div
+      ref={ref}
+      className={cn(className)}
+      style={isMobile || !isMounted ? { opacity: 1, transform: 'none' } : undefined}
+    >
       {children}
     </div>
   )
@@ -122,9 +133,12 @@ export function StaggerReveal({
   threshold?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
+  const [isMounted, setIsMounted] = useState(false)
   const [isMobile, setIsMobile] = useState(true)
 
   useEffect(() => {
+    setIsMounted(true)
+
     const checkMobile = () => {
       const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
       const isSmallScreen = window.innerWidth < 768
@@ -134,50 +148,68 @@ export function StaggerReveal({
     const mobile = checkMobile()
     setIsMobile(mobile)
 
-    if (mobile) {
-      if (ref.current) {
-        Array.from(ref.current.children).forEach((child) => {
-          (child as HTMLElement).style.opacity = '1'
-          ;(child as HTMLElement).style.transform = 'none'
-        })
-      }
-      return
-    }
+    // Mobile: no animations
+    if (mobile) return
+
+    // Desktop: load GSAP
+    let cleanup: (() => void) | undefined
 
     const loadGsap = async () => {
-      const { gsap, ScrollTrigger } = await import('@/lib/gsap')
+      try {
+        const { gsap, ScrollTrigger } = await import('@/lib/gsap')
 
-      if (!ref.current) return
-      const element = ref.current
-      const childElements = element.children
+        if (!ref.current) return
 
-      gsap.set(childElements, {
-        opacity: 0,
-        y: 20,
-      })
+        const element = ref.current
+        const childElements = element.children
 
-      const trigger = ScrollTrigger.create({
-        trigger: element,
-        start: threshold,
-        onEnter: () => {
-          gsap.to(childElements, {
-            opacity: 1,
-            y: 0,
-            duration: 0.4,
-            stagger,
-            ease: 'power3.out',
+        gsap.set(childElements, { opacity: 0, y: 20 })
+
+        const trigger = ScrollTrigger.create({
+          trigger: element,
+          start: threshold,
+          onEnter: () => {
+            gsap.to(childElements, {
+              opacity: 1,
+              y: 0,
+              duration: 0.4,
+              stagger,
+              ease: 'power3.out',
+            })
+          },
+        })
+
+        cleanup = () => {
+          trigger.kill()
+          gsap.killTweensOf(childElements)
+        }
+      } catch (e) {
+        // If GSAP fails, show content
+        if (ref.current) {
+          Array.from(ref.current.children).forEach((child) => {
+            (child as HTMLElement).style.opacity = '1'
+            ;(child as HTMLElement).style.transform = 'none'
           })
-        },
-      })
-
-      return () => {
-        trigger.kill()
-        gsap.killTweensOf(childElements)
+        }
       }
     }
 
     loadGsap()
+
+    return () => {
+      if (cleanup) cleanup()
+    }
   }, [stagger, threshold])
+
+  // Ensure children are visible on mobile
+  useEffect(() => {
+    if (isMobile && ref.current) {
+      Array.from(ref.current.children).forEach((child) => {
+        (child as HTMLElement).style.opacity = '1'
+        ;(child as HTMLElement).style.transform = 'none'
+      })
+    }
+  }, [isMobile, children])
 
   return (
     <div ref={ref} className={cn(className)}>
