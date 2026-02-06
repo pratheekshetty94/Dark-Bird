@@ -1,17 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft, Users, Instagram } from 'lucide-react'
+import { ArrowLeft, Users } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 
 // All influencer reels from all clients
 const influencerReels = [
   // GK Builders influencer reels
-  { client: 'GK Builders & Developers', reelId: 'DR6Yc3WDzRB' },
-  { client: 'GK Builders & Developers', reelId: 'DR3eKzcCCm8' },
-  { client: 'GK Builders & Developers', reelId: 'DR1H0acj8hj' },
-  { client: 'GK Builders & Developers', reelId: 'DRuqaLKD5zS' },
   { client: 'GK Builders & Developers', reelId: 'DTnRib3kwgQ' },
   { client: 'GK Builders & Developers', reelId: 'DK0sxXwT8-N' },
   { client: 'GK Builders & Developers', reelId: 'DF-UI5jTbVW' },
@@ -100,24 +96,13 @@ export default function InfluencerMarketingPage() {
       <section className="section-light section-padding">
         <div className="container-content">
           <ScrollReveal>
-            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8">
-              <h2 className="text-2xl font-bold text-charcoal">
-                Influencer Reels
-              </h2>
-              <a
-                href="https://www.instagram.com/gkbuildersdevelopers/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-primary-red hover:text-charcoal transition-colors mt-4 md:mt-0"
-              >
-                <Instagram className="w-4 h-4" />
-                View All on Instagram
-              </a>
-            </div>
+            <h2 className="text-2xl font-bold text-charcoal mb-8">
+              Influencer Reels
+            </h2>
           </ScrollReveal>
 
           <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {influencerReels.slice(0, 12).map((reel) => (
+            {influencerReels.map((reel) => (
               <div
                 key={reel.reelId}
                 className="bg-white rounded-xl overflow-hidden shadow-lg"
@@ -132,22 +117,6 @@ export default function InfluencerMarketingPage() {
               </div>
             ))}
           </StaggerReveal>
-
-          {influencerReels.length > 12 && (
-            <ScrollReveal delay={0.2}>
-              <div className="text-center mt-8">
-                <a
-                  href="https://www.instagram.com/gkbuildersdevelopers/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:opacity-90 transition-opacity"
-                >
-                  <Instagram className="w-5 h-5" />
-                  View All {influencerReels.length} Reels on Instagram
-                </a>
-              </div>
-            </ScrollReveal>
-          )}
         </div>
       </section>
 
