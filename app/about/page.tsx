@@ -65,13 +65,14 @@ const departments = [
   },
 ]
 
-// All client logos
+// All 32 client logos
 const clientLogos = [
   { name: 'Google', logo: '/images/clients/Goog;e.png' },
   { name: 'Flipkart', logo: '/images/clients/FlipKart.png' },
   { name: 'Netflix', logo: '/images/clients/Netflix.png' },
-  { name: 'Prime Video', logo: '/images/clients/Prime.png' },
+  { name: 'Amazon Prime', logo: '/images/clients/amazon Prime.png' },
   { name: 'Jio Studios', logo: '/images/clients/Jio Studios.png' },
+  { name: 'JioHotstar', logo: '/images/clients/JioHotstar.png' },
   { name: 'Viacom', logo: '/images/clients/Viacom.png' },
   { name: 'Zomato', logo: '/images/clients/Zomato.png' },
   { name: 'Shopsy', logo: '/images/clients/Shopsy.png' },
@@ -81,10 +82,10 @@ const clientLogos = [
   { name: 'Hombale Films', logo: '/images/clients/HombaleFilms.png' },
   { name: 'Paramvah Studios', logo: '/images/clients/ParamvahStudio.png' },
   { name: 'PRK Productions', logo: '/images/clients/PRK.png' },
-  { name: 'Rishab Shetty Films', logo: '/images/clients/RSF.png' },
-  { name: 'GK Builders', logo: '/images/clients/GK.png' },
+  { name: 'Rishab Shetty Films', logo: '/images/clients/rishab shetty films.png' },
+  { name: 'GK Builders', logo: '/images/clients/GK Builders.png' },
   { name: 'Mudskipper', logo: '/images/clients/MUDSKIPPER.png' },
-  { name: 'Jungle', logo: '/images/clients/Jungle.png' },
+  { name: 'Jungle Lodges', logo: '/images/clients/Jungle lodges.png' },
   { name: 'Ricky Kej', logo: '/images/clients/RickyKej.png' },
   { name: 'Raghu Dixit', logo: '/images/clients/RaghuDixit.png' },
   { name: 'Hang Massive', logo: '/images/clients/HangMassive.png' },
@@ -92,6 +93,12 @@ const clientLogos = [
   { name: 'Daali', logo: '/images/clients/Daali.png' },
   { name: 'Hangyo', logo: '/images/clients/Hangyo.png' },
   { name: 'YO Fruits', logo: '/images/clients/YO Fruits.png' },
+  { name: 'Coffee Gang', logo: '/images/clients/CoffeGang.png' },
+  { name: 'Mango Pickle', logo: '/images/clients/MangoPickle.png' },
+  { name: 'Saint Art', logo: '/images/clients/saint art.png' },
+  { name: 'Sri Devi Entertainers', logo: '/images/clients/sri devi entertainers.png' },
+  { name: 'Vaishno Studio', logo: '/images/clients/VaishnoStudio.png' },
+  { name: 'VARI', logo: '/images/clients/VARI.png' },
 ]
 
 const awards = [
@@ -385,15 +392,15 @@ export default function AboutPage() {
             </ScrollReveal>
           </div>
 
-          {/* Logo Grid - 5 columns to ensure even distribution */}
-          <StaggerReveal className="grid grid-cols-5 gap-6 md:gap-8">
+          {/* Logo Grid - 4 columns on mobile, 8 on desktop for 32 logos (4 rows) */}
+          <StaggerReveal className="grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-6">
             {clientLogos.map((client, index) => (
               <div
                 key={client.name}
                 className="flex items-center justify-center group"
-                style={{ animationDelay: `${index * 50}ms` }}
+                style={{ animationDelay: `${index * 30}ms` }}
               >
-                <div className="relative h-16 md:h-20 lg:h-24 w-full opacity-40 group-hover:opacity-100 transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-110">
+                <div className="relative h-12 md:h-16 lg:h-20 w-full opacity-50 group-hover:opacity-100 transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-110">
                   <Image
                     src={client.logo}
                     alt={client.name}
