@@ -348,17 +348,17 @@ export default function FilmDetailPage() {
             <span className="font-mono text-sm uppercase tracking-wider">Back to Filmography</span>
           </Link>
 
-          <div className="grid lg:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid lg:grid-cols-[320px_1fr] xl:grid-cols-[380px_1fr] gap-8 lg:gap-12">
             {/* Poster */}
             <div
               className={cn(
-                'lg:col-span-1 transition-all duration-700',
+                'transition-all duration-700',
                 isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               )}
               style={{ transitionDelay: '200ms' }}
             >
               <div
-                className="relative aspect-[2/3] w-full rounded-xl overflow-hidden shadow-dramatic cursor-pointer group"
+                className="relative aspect-[2/3] w-full max-w-[320px] lg:max-w-none rounded-xl overflow-hidden shadow-dramatic cursor-pointer group mx-auto lg:mx-0"
                 onClick={() => setIsTrailerOpen(true)}
               >
                 <Image
@@ -384,7 +384,7 @@ export default function FilmDetailPage() {
             </div>
 
             {/* Info */}
-            <div className="lg:col-span-2">
+            <div>
               {/* Award badge */}
               {film.award && (
                 <div
@@ -501,9 +501,9 @@ export default function FilmDetailPage() {
       {/* Synopsis & Details */}
       <section className="section-padding">
         <div className="container-content">
-          <div className="grid lg:grid-cols-3 gap-12">
+          <div className="grid lg:grid-cols-[1fr_320px] gap-12">
             {/* Synopsis */}
-            <div className="lg:col-span-2">
+            <div>
               <ScrollReveal>
                 <h2 className="font-display text-3xl text-cream mb-6">Synopsis</h2>
               </ScrollReveal>
@@ -542,7 +542,7 @@ export default function FilmDetailPage() {
             </div>
 
             {/* Cast & Crew */}
-            <div className="lg:col-span-1">
+            <div>
               {/* Dark Bird's Contribution */}
               <ScrollReveal>
                 <div className="mb-8 p-4 bg-accent/10 border border-accent/20 rounded-xl">
