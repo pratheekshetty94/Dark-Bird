@@ -9,8 +9,9 @@ const clients = [
   { name: 'Google', logo: '/images/clients/Goog;e.png' },
   { name: 'Flipkart', logo: '/images/clients/FlipKart.png' },
   { name: 'Netflix', logo: '/images/clients/Netflix.png' },
-  { name: 'Prime Video', logo: '/images/clients/Prime.png' },
+  { name: 'Amazon Prime', logo: '/images/clients/amazon Prime.png' },
   { name: 'Jio Studios', logo: '/images/clients/Jio Studios.png' },
+  { name: 'JioHotstar', logo: '/images/clients/JioHotstar.png' },
   { name: 'Viacom', logo: '/images/clients/Viacom.png' },
   { name: 'Zomato', logo: '/images/clients/Zomato.png' },
   { name: 'Shopsy', logo: '/images/clients/Shopsy.png' },
@@ -20,10 +21,10 @@ const clients = [
   { name: 'Hombale Films', logo: '/images/clients/HombaleFilms.png' },
   { name: 'Paramvah Studios', logo: '/images/clients/ParamvahStudio.png' },
   { name: 'PRK Productions', logo: '/images/clients/PRK.png' },
-  { name: 'Rishab Shetty Films', logo: '/images/clients/RSF.png' },
-  { name: 'GK Builders', logo: '/images/clients/GK.png' },
+  { name: 'Rishab Shetty Films', logo: '/images/clients/rishab shetty films.png' },
+  { name: 'GK Builders', logo: '/images/clients/GK Builders.png' },
   { name: 'Mudskipper', logo: '/images/clients/MUDSKIPPER.png' },
-  { name: 'Jungle', logo: '/images/clients/Jungle.png' },
+  { name: 'Jungle Lodges', logo: '/images/clients/Jungle lodges.png' },
   { name: 'Ricky Kej', logo: '/images/clients/RickyKej.png' },
   { name: 'Raghu Dixit', logo: '/images/clients/RaghuDixit.png' },
   { name: 'Hang Massive', logo: '/images/clients/HangMassive.png' },
@@ -31,6 +32,12 @@ const clients = [
   { name: 'Daali', logo: '/images/clients/Daali.png' },
   { name: 'Hangyo', logo: '/images/clients/Hangyo.png' },
   { name: 'YO Fruits', logo: '/images/clients/YO Fruits.png' },
+  { name: 'Coffee Gang', logo: '/images/clients/CoffeGang.png' },
+  { name: 'Mango Pickle', logo: '/images/clients/MangoPickle.png' },
+  { name: 'Saint Art', logo: '/images/clients/saint art.png' },
+  { name: 'Sri Devi Entertainers', logo: '/images/clients/sri devi entertainers.png' },
+  { name: 'Vaishno Studio', logo: '/images/clients/VaishnoStudio.png' },
+  { name: 'VARI', logo: '/images/clients/VARI.png' },
 ]
 
 interface ClientMarqueeProps {
@@ -53,8 +60,8 @@ export default function ClientMarquee({ className, showSecondRow = true }: Clien
     setIsVisible(true)
   }, [])
 
-  const firstRowClients = clients.slice(0, 13)
-  const secondRowClients = clients.slice(13)
+  const firstRowClients = clients.slice(0, 16)
+  const secondRowClients = clients.slice(16)
 
   // Show loading state while determining mobile/desktop
   if (isMobile === null) {
