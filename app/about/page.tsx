@@ -378,7 +378,7 @@ export default function AboutPage() {
       </section>
 
       {/* Client Logos */}
-      <section className="section-dark section-padding">
+      <section className="section-dark section-padding pb-8 md:pb-12">
         <div className="container-content">
           {/* Section Header */}
           <div className="text-center mb-12">
@@ -415,7 +415,7 @@ export default function AboutPage() {
       </section>
 
       {/* Awards & Recognition */}
-      <section className="section-dark section-padding pb-16 md:pb-24 relative overflow-hidden">
+      <section className="section-dark pt-8 md:pt-12 pb-16 md:pb-24 relative overflow-hidden">
         {/* Gold accent */}
         <div
           className="absolute top-0 left-0 w-1/2 h-full opacity-5 pointer-events-none"

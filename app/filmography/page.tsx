@@ -147,7 +147,7 @@ const films: FilmItem[] = [
     id: 'toby',
     title: 'Toby',
     year: '2023',
-    poster: '/images/posters/10 kotee.webp', // Placeholder - needs poster
+    poster: '/images/posters/toby-poster.jpg',
     role: 'Editor',
     category: 'feature',
     description: 'A gripping crime thriller.',
@@ -158,7 +158,7 @@ const films: FilmItem[] = [
     id: 'katha-sangama',
     title: 'Katha Sangama',
     year: '2019',
-    poster: '/images/posters/10 kotee.webp', // Placeholder - needs poster
+    poster: '/images/posters/katha-sangama-poster.jpg',
     role: 'Editor',
     category: 'feature',
     description: 'An anthology film with interconnected stories.',
@@ -169,7 +169,7 @@ const films: FilmItem[] = [
     id: 'anukta',
     title: 'Anukta',
     year: '2019',
-    poster: '/images/posters/10 kotee.webp', // Placeholder - needs poster
+    poster: '/images/posters/anukta-poster.jpg',
     role: 'Editor',
     category: 'feature',
     description: 'A thought-provoking drama.',
@@ -180,7 +180,7 @@ const films: FilmItem[] = [
     id: 'madharaasi',
     title: 'Madharaasi',
     year: '2024',
-    poster: '/images/posters/10 kotee.webp', // Placeholder - needs poster
+    poster: '/images/posters/madharaasi-poster.jpg',
     role: 'Editor',
     category: 'feature',
     description: 'A compelling regional drama.',
@@ -322,6 +322,7 @@ export default function FilmographyPage() {
                       fill
                       sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      unoptimized
                     />
 
                     {/* Gradient overlay */}
