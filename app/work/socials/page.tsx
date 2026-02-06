@@ -12,32 +12,53 @@ export const metadata: Metadata = {
   description: 'AI-powered digital marketing, influencer campaigns, social media management, and real estate marketing. We turn audiences into communities and brands into movements.',
 }
 
-const categories = ['All', 'Real Estate', 'Hospitality', 'Performance Ads']
+const categories = ['All', 'GK Builders', 'Brand Campaigns', 'Founder Branding', 'Performance Ads']
 
 const projects = [
+  // GK Builders
   {
     title: 'GK Builders - Full Digital Management',
     client: 'GK Builders & Developers',
-    category: 'Real Estate',
+    category: 'GK Builders',
     description: '156 posts, 1,337+ followers, website & walkthrough films',
     image: '/images/websites/gk-builders-homepage.jpg',
     href: '/work/socials/gk-builders',
   },
+  // Brand Campaigns
   {
     title: 'Hotel Amaravathi - Website Development',
     client: 'Hotel Amaravathi',
-    category: 'Hospitality',
+    category: 'Brand Campaigns',
     description: 'Complete website with booking integration',
     image: '/images/websites/amaravathi-homepage.png',
     href: '/work/socials/hotel-amaravathi',
   },
+  // Founder Branding
   {
-    title: 'GK Builders - Performance Ad Campaign',
+    title: 'Founder Branding Strategy',
+    client: 'Personal Brand Building',
+    category: 'Founder Branding',
+    description: 'Personal brand building for executives',
+    image: '/images/socials/gk-ads/post-1.png',
+    href: '/work/socials/gk-builders#brand-campaigns',
+  },
+  // Performance Ads
+  {
+    title: 'Performance Ad Campaign',
     client: 'GK Builders & Developers',
     category: 'Performance Ads',
-    description: 'ROI-focused Meta & Google ad creatives with video ads',
+    description: 'ROI-focused Meta & Google campaigns',
     image: '/images/socials/performance-ads/ad-creative-1.png',
-    href: '/work/socials/gk-builders-ads',
+    href: '/work/socials/gk-builders#performance-ads',
+  },
+  // Brand Campaigns - Influencer
+  {
+    title: 'Influencer Marketing Campaign',
+    client: 'GK Builders & Developers',
+    category: 'Brand Campaigns',
+    description: 'Multi-platform influencer collaboration',
+    image: '/images/socials/gk-ads/post-2.png',
+    href: '/work/socials/gk-builders#influencer-marketing',
   },
 ]
 
@@ -235,7 +256,7 @@ export default function SocialsPage() {
           </ScrollReveal>
 
           {/* Projects Grid */}
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project) => (
               <Link
                 key={project.title}
