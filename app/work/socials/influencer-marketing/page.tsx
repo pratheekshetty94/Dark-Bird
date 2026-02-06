@@ -121,9 +121,11 @@ export default function InfluencerMarketingPage() {
                 key={reel.reelId}
                 className="bg-white rounded-xl overflow-hidden shadow-lg"
               >
+                {/* Taller aspect ratio to show full embed with likes/comments/views */}
                 <iframe
                   src={`https://www.instagram.com/reel/${reel.reelId}/embed/`}
-                  className="w-full aspect-[9/16] border-0"
+                  className="w-full border-0"
+                  style={{ height: '580px', minHeight: '580px' }}
                   allowFullScreen
                   scrolling="no"
                   title={`Instagram Reel ${reel.reelId}`}
