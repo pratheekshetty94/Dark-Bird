@@ -15,12 +15,20 @@ const categories = ['All', 'GK Builders', 'Brand Campaigns', 'Founder Branding',
 
 const projects = [
   {
-    title: 'GK Builders - Full Social Management',
+    title: 'GK Builders - Full Digital Management',
     client: 'GK Builders & Developers',
     category: 'GK Builders',
-    description: '156 posts, 1,337+ followers grown from zero',
+    description: '156 posts, 1,337+ followers, website & walkthrough films',
     image: '/images/gk-social.jpg',
     href: '/work/socials/gk-builders',
+  },
+  {
+    title: 'Hotel Amaravathi - Website Development',
+    client: 'Hotel Amaravathi',
+    category: 'Brand Campaigns',
+    description: 'Complete website with booking integration',
+    image: '/images/hotel-amaravathi.jpg',
+    href: '/work/socials/hotel-amaravathi',
   },
   {
     title: 'Property Launch Campaign',
@@ -28,7 +36,7 @@ const projects = [
     category: 'GK Builders',
     description: 'Anjani Lake Woods digital launch',
     image: '/images/gk-launch.jpg',
-    href: '#',
+    href: '/work/socials/gk-builders',
   },
   {
     title: 'Founder Branding Strategy',
@@ -52,14 +60,6 @@ const projects = [
     category: 'Brand Campaigns',
     description: 'Multi-platform influencer collaboration',
     image: '/images/influencer.jpg',
-    href: '#',
-  },
-  {
-    title: 'Social Media Rebranding',
-    client: 'Startup',
-    category: 'Brand Campaigns',
-    description: 'Complete visual identity refresh',
-    image: '/images/rebrand.jpg',
     href: '#',
   },
 ]
