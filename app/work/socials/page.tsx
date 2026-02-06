@@ -15,32 +15,32 @@ export const metadata: Metadata = {
 const categories = ['All', 'Brand Campaigns', 'Performance Ads', 'Influencer Marketing']
 
 const projects = [
-  // Brand Campaigns
+  // Brand Campaigns - links to category page showing all clients
   {
     title: 'Brand Campaigns',
-    client: 'GK Builders & Developers',
+    client: 'All Clients',
     category: 'Brand Campaigns',
-    description: 'Walkthrough films & branded content for real estate',
+    description: 'Walkthrough films & branded content',
     image: '/images/socials/gk-ads/post-1.png',
-    href: '/work/socials/gk-builders#brand-campaigns',
+    href: '/work/socials/brand-campaigns',
   },
-  // Performance Ads
+  // Performance Ads - links to category page showing all clients
   {
     title: 'Performance Ads',
-    client: 'GK Builders & Developers',
+    client: 'All Clients',
     category: 'Performance Ads',
     description: 'ROI-focused Meta & Google ad campaigns',
     image: '/images/socials/performance-ads/ad-creative-1.png',
-    href: '/work/socials/gk-builders#performance-ads',
+    href: '/work/socials/performance-ads',
   },
-  // Influencer Marketing
+  // Influencer Marketing - links to category page showing all clients
   {
     title: 'Influencer Marketing Campaign',
-    client: 'GK Builders & Developers',
+    client: 'All Clients',
     category: 'Influencer Marketing',
-    description: '34 influencer collaborations for property promotion',
+    description: '34 influencer collaborations',
     image: '/images/socials/gk-ads/post-2.png',
-    href: '/work/socials/gk-builders#influencer-marketing',
+    href: '/work/socials/influencer-marketing',
   },
 ]
 
