@@ -115,19 +115,18 @@ export default function InfluencerMarketingPage() {
             </h2>
           </ScrollReveal>
 
-          <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {influencerReels.map((reel) => (
               <div
                 key={reel.reelId}
-                className="bg-white rounded-xl overflow-hidden shadow-lg"
+                className="bg-white rounded-2xl overflow-hidden shadow-lg"
               >
-                {/* Full height to show entire embed with header, video, likes/comments */}
+                {/* Instagram embed - fixed height to show full content */}
                 <iframe
-                  src={`https://www.instagram.com/reel/${reel.reelId}/embed/captioned/`}
+                  src={`https://www.instagram.com/reel/${reel.reelId}/embed/`}
                   className="w-full border-0"
-                  style={{ height: '750px', minHeight: '750px' }}
+                  style={{ height: '680px' }}
                   allowFullScreen
-                  scrolling="yes"
                   title={`Instagram Reel ${reel.reelId}`}
                 />
               </div>
