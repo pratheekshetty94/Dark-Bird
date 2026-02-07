@@ -166,6 +166,10 @@
     @apply bg-cream text-ink;
   }
 
+  .section-beige {
+    @apply bg-[#f5f0e8] text-charcoal;
+  }
+
   /* ===== TYPOGRAPHY COMPONENTS ===== */
   .text-gradient {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-cream to-silver;

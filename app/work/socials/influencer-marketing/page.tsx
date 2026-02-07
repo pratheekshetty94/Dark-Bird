@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft, Users } from 'lucide-react'
+import { ArrowLeft, Users, Play, ExternalLink } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 
@@ -98,15 +98,17 @@ export default function InfluencerMarketingPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.4}>
-            <div className="flex items-center gap-4 text-warm-gray">
-              <span className="text-4xl font-display text-primary-red">{influencerReels.length}</span>
-              <span>Influencer Collaborations</span>
+            <div className="flex flex-wrap items-center gap-8 text-warm-gray">
+              <div className="flex items-center gap-3">
+                <span className="text-4xl font-display text-primary-red">{influencerReels.length}</span>
+                <span>Influencer<br/>Collaborations</span>
+              </div>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Reels Grid */}
+      {/* Reels Grid - Instagram Embeds */}
       <section className="section-light section-padding">
         <div className="container-content">
           <ScrollReveal>
@@ -115,20 +117,43 @@ export default function InfluencerMarketingPage() {
             </h2>
           </ScrollReveal>
 
-          <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {influencerReels.map((reel) => (
               <div
                 key={reel.reelId}
-                className="bg-white rounded-2xl overflow-hidden shadow-lg"
+                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
               >
-                {/* Instagram embed - fixed height to show full content */}
-                <iframe
-                  src={`https://www.instagram.com/reel/${reel.reelId}/embed/`}
-                  className="w-full border-0"
-                  style={{ height: '680px' }}
-                  allowFullScreen
-                  title={`Instagram Reel ${reel.reelId}`}
-                />
+                {/* Instagram embed - wider to fill vertical, centered for horizontal */}
+                <div
+                  className="relative overflow-hidden"
+                  style={{
+                    height: '400px',
+                    background: '#ffffff'
+                  }}
+                >
+                  <iframe
+                    src={`https://www.instagram.com/reel/${reel.reelId}/embed/`}
+                    className="absolute border-0"
+                    style={{
+                      width: '150%',
+                      height: '580px',
+                      top: '-50px',
+                      left: '-25%'
+                    }}
+                    scrolling="no"
+                    title={`Instagram Reel ${reel.reelId}`}
+                  />
+                </div>
+                {/* Footer with link - brand color */}
+                <a
+                  href={`https://www.instagram.com/reel/${reel.reelId}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between px-4 py-3 bg-primary-red hover:bg-red-700 transition-colors"
+                >
+                  <span className="text-white text-sm font-medium">Watch on Instagram</span>
+                  <ExternalLink className="w-4 h-4 text-white" />
+                </a>
               </div>
             ))}
           </StaggerReveal>

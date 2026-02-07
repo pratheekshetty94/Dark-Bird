@@ -7,57 +7,62 @@ import { ArrowLeft, Target, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 
-// All performance ads from all clients
+// All performance ads from all clients (no duplicates)
 const performanceAds = [
-  {
-    client: 'GK Builders & Developers',
-    title: 'Ad Creative 1',
-    src: '/images/socials/gk-ads/ad-creative-1.png',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Ad Creative 2',
-    src: '/images/socials/gk-ads/ad-creative-2.png',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Ad Creative 3',
-    src: '/images/socials/gk-ads/ad-creative-6.png',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'GK Takeoff',
-    src: '/images/socials/gk-ads/gk-takeoff.png',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Social Post 1',
-    src: '/images/socials/gk-ads/post-1.png',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Social Post 2',
-    src: '/images/socials/gk-ads/post-2.png',
-  },
   {
     client: 'GK Builders & Developers',
     title: 'Anjani Lake Woods - Lead Gen Ad',
     src: '/images/socials/performance-ads/ad-creative-1.png',
+    type: 'image',
   },
   {
     client: 'GK Builders & Developers',
     title: 'Property Features Ad',
     src: '/images/socials/performance-ads/ad-creative-2.png',
+    type: 'image',
   },
   {
     client: 'GK Builders & Developers',
     title: 'Investment Opportunity Ad',
     src: '/images/socials/performance-ads/ad-creative-6.png',
+    type: 'image',
   },
   {
     client: 'GK Builders & Developers',
     title: 'GK Takeoff Campaign',
     src: '/images/socials/performance-ads/gk-takeoff.png',
+    type: 'image',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Social Post 1',
+    src: '/images/socials/gk-ads/post-1.png',
+    type: 'image',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Social Post 2',
+    src: '/images/socials/gk-ads/post-2.png',
+    type: 'image',
+  },
+]
+
+// Video ads
+const videoAds = [
+  {
+    client: 'GK Builders & Developers',
+    title: 'Anjani Lake Woods - Kids to Old Age',
+    src: '/images/socials/performance-ads/videos/anjani-kids-oldage.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Anjani Lake Woods - Amenities',
+    src: '/images/socials/performance-ads/videos/anjani-amenities.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Anjani Lake Woods - Sundowner',
+    src: '/images/socials/performance-ads/videos/anjani-sundowner.mp4',
   },
 ]
 
@@ -168,6 +173,41 @@ export default function PerformanceAdsPage() {
                   <span className="text-white/60 text-xs mt-1">Click to view fullscreen</span>
                 </div>
               </button>
+            ))}
+          </StaggerReveal>
+        </div>
+      </section>
+
+      {/* Video Ads Section */}
+      <section className="section-dark section-padding">
+        <div className="container-content">
+          <ScrollReveal>
+            <h2 className="text-2xl font-bold text-white mb-8">
+              Video Ad Creatives
+            </h2>
+          </ScrollReveal>
+
+          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {videoAds.map((video) => (
+              <div
+                key={video.src}
+                className="rounded-xl overflow-hidden shadow-lg bg-charcoal"
+              >
+                <video
+                  src={video.src}
+                  controls
+                  className="w-full aspect-[9/16] object-cover"
+                  poster=""
+                >
+                  Your browser does not support the video tag.
+                </video>
+                <div className="p-4">
+                  <span className="text-xs text-primary-red font-medium uppercase tracking-wider">
+                    {video.client}
+                  </span>
+                  <h3 className="text-white font-medium mt-1">{video.title}</h3>
+                </div>
+              </div>
             ))}
           </StaggerReveal>
         </div>

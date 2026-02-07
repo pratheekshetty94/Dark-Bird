@@ -12,8 +12,6 @@ export const metadata: Metadata = {
   description: 'Brand campaigns, performance ads, and influencer marketing. We turn audiences into communities and brands into movements.',
 }
 
-const categories = ['All', 'Brand Campaigns', 'Performance Ads', 'Influencer Marketing']
-
 const projects = [
   // Brand Campaigns - links to category page showing all clients
   {
@@ -21,7 +19,7 @@ const projects = [
     client: 'All Clients',
     category: 'Brand Campaigns',
     description: 'Walkthrough films & branded content',
-    image: '/images/socials/gk-ads/post-1.png',
+    image: '/images/socials/thumbnails/brand-campaigns.png',
     href: '/work/socials/brand-campaigns',
   },
   // Performance Ads - links to category page showing all clients
@@ -30,7 +28,7 @@ const projects = [
     client: 'All Clients',
     category: 'Performance Ads',
     description: 'ROI-focused Meta & Google ad campaigns',
-    image: '/images/socials/performance-ads/ad-creative-1.png',
+    image: '/images/socials/thumbnails/performance-ads.png',
     href: '/work/socials/performance-ads',
   },
   // Influencer Marketing - links to category page showing all clients
@@ -38,8 +36,8 @@ const projects = [
     title: 'Influencer Marketing Campaign',
     client: 'All Clients',
     category: 'Influencer Marketing',
-    description: '34 influencer collaborations',
-    image: '/images/socials/gk-ads/post-2.png',
+    description: '43 influencer collaborations',
+    image: '/images/socials/thumbnails/influencer-marketing.png',
     href: '/work/socials/influencer-marketing',
   },
 ]
@@ -214,27 +212,9 @@ export default function SocialsPage() {
             <SectionLabel>Portfolio</SectionLabel>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-charcoal mt-4 mb-8">
+            <h2 className="text-section font-bold text-charcoal mt-4 mb-12">
               Our Social Media Work
             </h2>
-          </ScrollReveal>
-
-          {/* Filter Tabs */}
-          <ScrollReveal delay={0.2}>
-            <div className="flex flex-wrap gap-2 mb-12">
-              {categories.map((category, index) => (
-                <button
-                  key={category}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    index === 0
-                      ? 'bg-primary-red text-white'
-                      : 'bg-white text-charcoal hover:bg-primary-red hover:text-white'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
           </ScrollReveal>
 
           {/* Projects Grid */}
