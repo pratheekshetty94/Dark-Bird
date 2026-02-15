@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowLeft, Video, Instagram } from 'lucide-react'
+import Image from 'next/image'
+import { ArrowLeft, Video, Palette } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 
@@ -57,49 +58,141 @@ const brandCampaigns = [
   },
 ]
 
-// Property Launch Campaign videos
-const launchCampaigns = [
+// Social Media Reels
+const socialReels = [
   {
     client: 'GK Builders & Developers',
-    title: 'Anjani Lake Woods - Launch Film',
-    src: '/images/socials/brand-campaigns/videos/anjani-launch.mp4',
-    description: 'Grand launch announcement for Anjani Lake Woods project',
+    title: 'Investor Spotlight',
+    src: '/images/socials/brand-campaigns/reels/investor-video.mp4',
   },
   {
     client: 'GK Builders & Developers',
-    title: 'Anjani Lake Woods - Countdown',
-    src: '/images/socials/brand-campaigns/videos/anjani-countdown.mp4',
-    description: 'Launch countdown teaser',
+    title: "A Dog's Hope",
+    src: '/images/socials/brand-campaigns/reels/dogs-hope.mp4',
   },
   {
     client: 'GK Builders & Developers',
-    title: 'Anjani Lake Woods - Launch Teaser',
-    src: '/images/socials/brand-campaigns/videos/anjani-launch-short.mp4',
-    description: 'Short launch teaser for social media',
+    title: 'Celebrities Together',
+    src: '/images/socials/brand-campaigns/reels/celebrities-together.mp4',
   },
   {
     client: 'GK Builders & Developers',
-    title: 'GK Hill View - Launch Film',
-    src: '/images/socials/brand-campaigns/videos/hillview-launch.mp4',
-    description: 'Launch announcement for Hill View Villa project',
+    title: 'Anjani Lake Woods Launch',
+    src: '/images/socials/brand-campaigns/reels/anjani-launch.mp4',
   },
   {
     client: 'GK Builders & Developers',
-    title: 'GK Hill View - Countdown',
-    src: '/images/socials/brand-campaigns/videos/hillview-countdown.mp4',
-    description: 'Launch countdown teaser',
+    title: '2025 Year in Review',
+    src: '/images/socials/brand-campaigns/reels/2025-wrap-up.mp4',
   },
   {
     client: 'GK Builders & Developers',
-    title: "A Dog's Hope - Brand Film",
-    src: '/images/socials/brand-campaigns/videos/dogs-hope.mp4',
-    description: 'Emotional brand film showcasing GK Builders values',
+    title: 'Republic Day',
+    src: '/images/socials/brand-campaigns/reels/republic-day.mp4',
   },
   {
     client: 'GK Builders & Developers',
-    title: 'GK Hill View - Launch Film 2',
-    src: '/images/socials/brand-campaigns/videos/hillview-launch-2.mp4',
-    description: 'Additional launch film for Hill View Villa project',
+    title: 'Nature Meets AI',
+    src: '/images/socials/brand-campaigns/reels/nature-ai.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Collect Things',
+    src: '/images/socials/brand-campaigns/reels/collect-things.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Why Not Now',
+    src: '/images/socials/brand-campaigns/reels/why-not-now.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Kannada Rajyotsava',
+    src: '/images/socials/brand-campaigns/reels/kannada-rajyotsava.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Christmas',
+    src: '/images/socials/brand-campaigns/reels/christmas.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Hill View Countdown',
+    src: '/images/socials/brand-campaigns/reels/hillview-countdown.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Hill View Launch',
+    src: '/images/socials/brand-campaigns/reels/hillview-launch.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Move Your Thumb',
+    src: '/images/socials/brand-campaigns/reels/move-your-thumb.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Deepavali',
+    src: '/images/socials/brand-campaigns/reels/deepavali.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Kids',
+    src: '/images/socials/brand-campaigns/reels/kids.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Intro Board',
+    src: '/images/socials/brand-campaigns/reels/intro-board.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Gandhi Jayanti',
+    src: '/images/socials/brand-campaigns/reels/gandhi-jayanti.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Car Parking',
+    src: '/images/socials/brand-campaigns/reels/car-parking.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Dussehra',
+    src: '/images/socials/brand-campaigns/reels/dusshera.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'National Youth Day',
+    src: '/images/socials/brand-campaigns/reels/national-youth-day.mp4',
+  },
+  {
+    client: 'GK Builders & Developers',
+    title: 'Sankranti',
+    src: '/images/socials/brand-campaigns/reels/sankranti.mp4',
+  },
+]
+
+// Branding & Logo Design
+const brandingLogos = [
+  {
+    name: 'Ashi',
+    src: '/images/designs/logos/ashi.jpg',
+  },
+  {
+    name: 'Bake A Luru',
+    src: '/images/designs/logos/bake-a-luru.png',
+  },
+  {
+    name: 'Great Indian Salon',
+    src: '/images/designs/logos/great-indian-salon.jpg',
+  },
+  {
+    name: 'Lorem Picsome',
+    src: '/images/designs/logos/lorem-picsome.png',
+  },
+  {
+    name: 'Vanas',
+    src: '/images/designs/logos/vanas.png',
   },
 ]
 
@@ -184,30 +277,74 @@ export default function BrandCampaignsPage() {
         </div>
       </section>
 
-      {/* Property Launch Campaigns - Vertical Videos */}
+      {/* Social Media Reels */}
       <section className="section-dark section-padding">
         <div className="container-content">
           <ScrollReveal>
-            <h2 className="text-2xl font-bold text-white mb-8">
-              Property Launch Campaigns
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Social Media Reels
             </h2>
+            <p className="text-warm-gray mb-8">
+              Scroll-stopping vertical content crafted for Instagram, YouTube Shorts & beyond.
+            </p>
           </ScrollReveal>
 
           <StaggerReveal className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {launchCampaigns.map((campaign) => (
-              <div key={campaign.src} className="bg-charcoal rounded-xl overflow-hidden shadow-lg">
+            {socialReels.map((reel) => (
+              <div key={reel.src} className="bg-charcoal rounded-xl overflow-hidden shadow-lg">
                 <video
-                  src={campaign.src}
+                  src={reel.src}
                   controls
-                  className="w-full aspect-[9/16] object-cover"
+                  preload="metadata"
+                  className="w-full aspect-[9/16] object-cover bg-ink"
                 >
                   Your browser does not support the video tag.
                 </video>
                 <div className="p-3">
                   <span className="text-xs text-primary-red font-medium uppercase tracking-wider">
-                    {campaign.client}
+                    {reel.client}
                   </span>
-                  <h3 className="font-semibold text-white text-sm mt-1">{campaign.title}</h3>
+                  <h3 className="font-semibold text-white text-sm mt-1">{reel.title}</h3>
+                </div>
+              </div>
+            ))}
+          </StaggerReveal>
+        </div>
+      </section>
+
+      {/* Branding & Logo Design */}
+      <section className="section-light section-padding">
+        <div className="container-content">
+          <ScrollReveal>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                <Palette className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-charcoal">
+                  Branding & Logo Design
+                </h2>
+                <p className="text-sm text-warm-gray">
+                  Identities built to last. Logos designed with cinematic precision.
+                </p>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          <StaggerReveal className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6">
+            {brandingLogos.map((logo) => (
+              <div
+                key={logo.name}
+                className="bg-white rounded-xl p-6 shadow-lg flex items-center justify-center aspect-square border border-gray-100"
+              >
+                <div className="relative w-full h-full">
+                  <Image
+                    src={logo.src}
+                    alt={logo.name}
+                    fill
+                    className="object-contain p-2"
+                    loading="lazy"
+                  />
                 </div>
               </div>
             ))}
@@ -219,7 +356,7 @@ export default function BrandCampaignsPage() {
       <CTABand
         headline="Need a Brand Campaign?"
         description="Let us create cinematic content that tells your brand's story."
-        buttonText="Let's Talk"
+        buttonText="Let&apos;s Talk"
         buttonHref="/contact"
       />
     </>
