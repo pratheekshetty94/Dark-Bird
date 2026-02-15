@@ -106,7 +106,7 @@ export default function Testimonials() {
               <Quote className="hidden md:block absolute -top-4 -left-2 w-10 h-10 text-accent/20" />
 
               <blockquote className="md:pl-8">
-                <p className="text-sm md:text-xl text-cream leading-relaxed mb-3 md:mb-8 line-clamp-4 md:line-clamp-6">
+                <p className="text-sm md:text-lg text-cream leading-relaxed mb-3 md:mb-8 line-clamp-4 md:line-clamp-none">
                   &ldquo;{currentTestimonial.quote}&rdquo;
                 </p>
 
