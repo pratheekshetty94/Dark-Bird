@@ -35,7 +35,7 @@ const testimonials = [
   },
   {
     id: '4',
-    quote: "I worked with Pratheek for my music video for one of my songs 'Alemaari', which not only demanded great visuals but also a very intense story telling. Pratheek Shetty is a cinematographer and editor of rare, instinctive brilliance. He doesn\u2019t just capture images\u2014he captures emotion, rhythm, and intent. Every frame he composes and every cut he makes feels purposeful, sensitive, and deeply cinematic. His ability to seamlessly balance visual beauty with storytelling clarity sets him apart, making him an invaluable creative partner on any project. He is a committed artist who doesn\u2019t settle for the ordinary. His constant relentless pursuit of perfection makes him a great asset for anyone who works with him!",
+    quote: "I worked with Pratheek for my music video for one of my songs 'Alemaari', which not only demanded great visuals but also a very intense story telling. Pratheek Shetty is a cinematographer and editor of rare, instinctive brilliance. He doesn't just capture images—he captures emotion, rhythm, and intent. Every frame he composes and every cut he makes feels purposeful, sensitive, and deeply cinematic. His ability to seamlessly balance visual beauty with storytelling clarity sets him apart, making him an invaluable creative partner on any project. He is a committed artist who doesn't settle for the ordinary. His constant relentless pursuit of perfection makes him a great asset for anyone who works with him!",
     author: 'Raghu Dixit',
     title: 'Singer & Composer',
     company: 'The Raghu Dixit Project',
@@ -86,7 +86,7 @@ export default function Testimonials() {
         <div className="relative max-w-5xl mx-auto">
           <div className="flex flex-col items-center md:grid md:grid-cols-5 gap-4 md:gap-12 md:items-start">
             {/* Image */}
-            <div className="md:col-span-2 flex justify-center items-start">
+            <div className="md:col-span-2 flex justify-center">
               <div className="relative w-32 h-32 md:w-72 md:h-72 rounded-xl md:rounded-2xl overflow-hidden border-2 border-accent/50">
                 <Image
                   key={currentTestimonial.id}

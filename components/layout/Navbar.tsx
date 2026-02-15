@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { Menu, X, ChevronDown, Film, Share2, Palette, Cpu, ArrowUpRight } from 'lucide-react'
+import { Menu, X, ArrowUpRight } from 'lucide-react'
 
 // Department logos mapping
 const departmentLogos: Record<string, { logo: string; alt: string }> = {
@@ -22,26 +22,16 @@ const lightBackgroundPages = ['/work/designs']
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
-  { href: '/filmography', label: 'Filmography' },
-  {
-    href: '/work',
-    label: 'Work',
-    hasDropdown: true,
-    dropdownItems: [
-      { href: '/work', label: 'All Services', description: 'Everything we offer', icon: Film },
-      { href: '/work/films', label: 'Films', description: 'Feature films, ads & music videos', icon: Film },
-      { href: '/work/socials', label: 'Socials', description: 'Digital & real estate marketing', icon: Share2 },
-      { href: '/work/designs', label: 'Designs', description: 'Brand identity & motion graphics', icon: Palette },
-      { href: '/work/labs', label: 'Labs', description: 'AI-powered creative experiments', icon: Cpu },
-    ],
-  },
+  { href: '/filmography', label: 'Films' },
+  { href: '/work/socials', label: 'Socials' },
+  { href: '/work/designs', label: 'Designs' },
+  { href: '/work/labs', label: 'Labs' },
   { href: '/contact', label: 'Contact' },
 ]
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
 
@@ -69,7 +59,6 @@ export default function Navbar() {
   // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false)
-    setActiveDropdown(null)
   }, [pathname])
 
   // Prevent body scroll when mobile menu is open
@@ -117,77 +106,18 @@ export default function Navbar() {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
-                <div
+                <Link
                   key={link.href}
-                  className="relative"
-                  onMouseEnter={() => link.hasDropdown && setActiveDropdown(link.href)}
-                  onMouseLeave={() => setActiveDropdown(null)}
+                  href={link.href}
+                  className={cn(
+                    'px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg block',
+                    pathname === link.href
+                      ? 'text-accent'
+                      : 'text-cream/70 hover:text-cream hover:bg-cream/5'
+                  )}
                 >
-                  {link.hasDropdown ? (
-                    <button
-                      className={cn(
-                        'flex items-center gap-1 px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg',
-                        pathname.startsWith(link.href)
-                          ? 'text-accent'
-                          : 'text-cream/70 hover:text-cream hover:bg-cream/5'
-                      )}
-                    >
-                      {link.label}
-                      <ChevronDown
-                        className={cn(
-                          'w-3.5 h-3.5 transition-transform duration-200',
-                          activeDropdown === link.href && 'rotate-180'
-                        )}
-                      />
-                    </button>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className={cn(
-                        'px-4 py-2 text-sm font-medium transition-all duration-200 rounded-lg block',
-                        pathname === link.href
-                          ? 'text-accent'
-                          : 'text-cream/70 hover:text-cream hover:bg-cream/5'
-                      )}
-                    >
-                      {link.label}
-                    </Link>
-                  )}
-
-                  {/* Dropdown - Desktop only, no backdrop-blur */}
-                  {link.hasDropdown && (
-                    <div
-                      className={cn(
-                        'absolute top-full left-0 pt-2',
-                        activeDropdown === link.href ? 'opacity-100 visible' : 'opacity-0 invisible'
-                      )}
-                    >
-                      <div className={cn(
-                        'min-w-[280px] p-2 rounded-xl border border-stone/20 bg-ink shadow-lg transition-all duration-300',
-                        activeDropdown === link.href ? 'translate-y-0' : 'translate-y-2'
-                      )}>
-                        {link.dropdownItems?.map((item) => {
-                          const Icon = item.icon
-                          return (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              className="flex items-center gap-3 p-3 rounded-lg hover:bg-cream/5 transition-colors group"
-                            >
-                              <div className="w-9 h-9 rounded-lg bg-charcoal flex items-center justify-center flex-shrink-0">
-                                <Icon className="w-4 h-4 text-accent" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-cream text-sm">{item.label}</p>
-                                <p className="text-xs text-warm-gray truncate">{item.description}</p>
-                              </div>
-                            </Link>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                  {link.label}
+                </Link>
               ))}
             </div>
 
@@ -220,47 +150,16 @@ export default function Navbar() {
           <div className="container-content pt-24 pb-8 flex flex-col h-full overflow-y-auto">
             <div className="flex-1 space-y-1">
               {navLinks.map((link) => (
-                <div key={link.href}>
-                  {link.hasDropdown ? (
-                    <>
-                      <button
-                        onClick={() => setActiveDropdown(activeDropdown === link.href ? null : link.href)}
-                        className="flex items-center justify-between w-full py-4 text-2xl font-display text-cream border-b border-stone/20"
-                      >
-                        {link.label}
-                        <ChevronDown
-                          className={cn(
-                            'w-5 h-5 text-warm-gray transition-transform',
-                            activeDropdown === link.href && 'rotate-180 text-accent'
-                          )}
-                        />
-                      </button>
-                      {activeDropdown === link.href && (
-                        <div className="py-3 space-y-1">
-                          {link.dropdownItems?.map((item) => (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              className="block py-2 pl-4 text-lg text-warm-gray border-l-2 border-stone/30"
-                            >
-                              {item.label}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className={cn(
-                        'block py-4 text-2xl font-display border-b border-stone/20',
-                        pathname === link.href ? 'text-accent' : 'text-cream'
-                      )}
-                    >
-                      {link.label}
-                    </Link>
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    'block py-4 text-2xl font-display border-b border-stone/20',
+                    pathname === link.href ? 'text-accent' : 'text-cream'
                   )}
-                </div>
+                >
+                  {link.label}
+                </Link>
               ))}
             </div>
 

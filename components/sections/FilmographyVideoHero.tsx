@@ -39,6 +39,30 @@ const heroSlides: HeroSlide[] = [
     href: '/filmography/gandhada-gudi',
     year: '2022',
   },
+  {
+    id: 'shpsk',
+    title: 'SHPSK',
+    subtitle: 'National Award Winner',
+    videoSrc: '/videos/shpsk-banner.mp4',
+    href: '/filmography/shpsk',
+    year: '2018',
+  },
+  {
+    id: 'flipkart',
+    title: 'Flipkart',
+    subtitle: 'Brand Campaign',
+    videoSrc: '/videos/flipkart-banner.mp4',
+    href: '/work/films',
+    year: '2023',
+  },
+  {
+    id: 'yo-fruits',
+    title: 'YO Fruits',
+    subtitle: 'Brand Campaign',
+    videoSrc: '/videos/yo-fruits-banner.mp4',
+    href: '/work/films',
+    year: '2024',
+  },
 ]
 
 export default function FilmographyVideoHero() {

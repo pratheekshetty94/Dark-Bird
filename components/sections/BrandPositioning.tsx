@@ -2,7 +2,6 @@
 
 import React from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 
 export default function BrandPositioning() {
   return (
@@ -68,16 +67,17 @@ export default function BrandPositioning() {
             </div>
           </div>
 
-          {/* Right Column */}
-          <div className="lg:col-span-5 hidden lg:flex items-center justify-center">
-            <div className="relative w-full max-w-lg">
-              <Image
-                src="/images/we tell stories 9 years of story telling.png"
-                alt="9 Years of Storytelling"
-                width={600}
-                height={600}
-                className="w-full h-auto object-contain"
-                loading="lazy"
+          {/* Right Column - Spline 3D */}
+          <div className="lg:col-span-5 flex items-center justify-center">
+            <div className="relative w-48 md:w-72 lg:w-full max-w-lg aspect-square pointer-events-none">
+              <iframe
+                src="https://my.spline.design/futuristicgeometricengine-RUax9SYC45XvFHnJmoQYxf8i/"
+                frameBorder="0"
+                width="100%"
+                height="100%"
+                className="w-full h-full pointer-events-none"
+                style={{ border: 'none' }}
+                allow="autoplay"
               />
             </div>
           </div>

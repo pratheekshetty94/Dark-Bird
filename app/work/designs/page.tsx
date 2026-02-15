@@ -107,28 +107,15 @@ const projects = [
 export default function DesignsPage() {
   return (
     <>
-      {/* Hero */}
-      <section className="section-light pt-48 pb-16">
-        <div className="container-content">
-          <ScrollReveal>
-            <h1 className="text-hero font-bold text-charcoal mb-6">
-              We Make Brands Look Expensive.
-            </h1>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <p className="text-xl text-warm-gray max-w-3xl mb-8">
-              We design everything from the brand identity that defines you to the
-              WhatsApp sticker your audience obsesses over. Each project gets the same
-              treatment: visual excellence rooted in strategic thinking. Design should
-              look incredible and perform even better.
-            </p>
-          </ScrollReveal>
-          <ScrollReveal delay={0.3}>
-            <Button href="/contact">
-              Let's Do This
-            </Button>
-          </ScrollReveal>
-        </div>
+      {/* Hero - Spline */}
+      <section className="relative h-[60vh] w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden bg-deep-black">
+        <iframe
+          src="https://my.spline.design/distortingtypography-hPokmKHcpEyzmpOzHEo02lEj/"
+          frameBorder="0"
+          className="absolute inset-0"
+          style={{ border: 'none', width: '100vw', height: '100%' }}
+          allow="autoplay"
+        />
       </section>
 
       {/* Services */}

@@ -3,8 +3,7 @@
 import dynamic from 'next/dynamic'
 
 // Components - loaded dynamically
-const PreloaderWrapper = dynamic(() => import('@/components/preloader/PreloaderWrapper'), { ssr: false })
-const VideoHero = dynamic(() => import('@/components/sections/VideoHero'), { ssr: false })
+const HomeVideoHero = dynamic(() => import('@/components/sections/HomeVideoHero'), { ssr: false })
 const MetricsBar = dynamic(() => import('@/components/sections/MetricsBar'), { ssr: false })
 const ClientMarquee = dynamic(() => import('@/components/sections/ClientMarquee'), { ssr: false })
 const BrandPositioning = dynamic(() => import('@/components/sections/BrandPositioning'), { ssr: false })
@@ -16,8 +15,8 @@ const CTABand = dynamic(() => import('@/components/sections/CTABand'), { ssr: fa
 
 export default function Home() {
   return (
-    <PreloaderWrapper>
-      <VideoHero />
+    <>
+      <HomeVideoHero />
       <MetricsBar />
       <ClientMarquee />
       <BrandPositioning />
@@ -26,6 +25,6 @@ export default function Home() {
       <Departments />
       <DarkBirdWay />
       <CTABand />
-    </PreloaderWrapper>
+    </>
   )
 }

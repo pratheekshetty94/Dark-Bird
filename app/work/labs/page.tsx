@@ -1,14 +1,10 @@
-import { Metadata } from 'next'
+'use client'
+
 import SectionLabel from '@/components/ui/SectionLabel'
 import Button from '@/components/ui/Button'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 import { Cpu, Sparkles, Film, Music, Zap, Bot } from 'lucide-react'
-
-export const metadata: Metadata = {
-  title: 'Dark Bird Labs | AI-Powered Creative Experiments',
-  description: 'We bend reality for brands. AI short films, AI commercials, AI music videos, and marketing automation. The future of storytelling.',
-}
 
 const categories = ['All AI Work', 'Short Films', 'Commercials', 'Music', 'Automation']
 
@@ -87,27 +83,22 @@ const projects = [
 export default function LabsPage() {
   return (
     <>
-      {/* Hero - Dark & Futuristic */}
-      <section className="relative pt-32 pb-section overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-deep-black">
-          {/* Grid Pattern */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `
-                linear-gradient(rgba(224, 32, 32, 0.5) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(224, 32, 32, 0.5) 1px, transparent 1px)
-              `,
-              backgroundSize: '50px 50px',
-            }}
-          />
-          {/* Gradient Overlays */}
-          <div className="absolute top-0 left-0 w-1/2 h-1/2 bg-gradient-to-br from-primary-red/10 to-transparent" />
-          <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-to-tl from-primary-red/5 to-transparent" />
-        </div>
+      {/* Spline Hero */}
+      <section className="relative h-[60vh] w-full overflow-hidden bg-deep-black">
+        <iframe
+          src="https://my.spline.design/nexbotrobotcharacterconcept-4WsTjTGsSlJH27BcJUDBbHnQ/"
+          frameBorder="0"
+          width="100%"
+          height="100%"
+          className="absolute inset-0 w-full h-full"
+          style={{ border: 'none' }}
+          allow="autoplay"
+        />
+      </section>
 
-        <div className="container-content relative z-10">
+      {/* Hero Content - Below Spline */}
+      <section className="relative py-20 bg-deep-black">
+        <div className="container-content text-center">
           <ScrollReveal>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-red/10 border border-primary-red/30 rounded-full mb-6">
               <Cpu className="w-4 h-4 text-primary-red" />
@@ -122,20 +113,12 @@ export default function LabsPage() {
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
-            <p className="text-xl text-warm-gray max-w-3xl mb-8">
-              We experiment, prototype, and produce AI-driven films and brand visuals
-              that feel bold, cinematic, and culturally current. This is storytelling
-              at the speed of imagination — without sacrificing craft.
+            <p className="text-xl text-warm-gray max-w-2xl mx-auto mb-8">
+              AI-driven films and brand visuals that feel bold, cinematic, and culturally current.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.3}>
-            <p className="text-primary-red text-lg font-medium mb-8">
-              Curious? Good.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.4}>
             <Button href="/contact" className="glow-red">
               Step Inside the Lab
             </Button>
