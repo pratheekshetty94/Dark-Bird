@@ -124,13 +124,6 @@ const engagementModels = [
   },
 ]
 
-const caseStudyResults = [
-  { number: '156', label: 'Posts Created' },
-  { number: '1,337+', label: 'Followers Grown' },
-  { number: '2', label: 'Walkthrough Films' },
-  { number: '100%', label: 'Client Retention' },
-]
-
 export default function SocialsPage() {
   return (
     <>
@@ -340,73 +333,6 @@ export default function SocialsPage() {
               </div>
             ))}
           </StaggerReveal>
-        </div>
-      </section>
-
-      {/* Case Study: GK Builders */}
-      <section className="section-beige section-padding">
-        <div className="container-content">
-          <ScrollReveal>
-            <SectionLabel>Case Study</SectionLabel>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-charcoal mt-4 mb-4">
-              GK Builders & Developers
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <p className="text-body text-warm-gray max-w-2xl mb-8">
-              Long-term retainer partnership managing end-to-end digital presence and
-              cinematic property walkthroughs. From zero to a thriving social presence.
-            </p>
-          </ScrollReveal>
-
-          {/* Results */}
-          <ScrollReveal delay={0.3}>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
-              {caseStudyResults.map((result) => (
-                <div key={result.label} className="text-center">
-                  <span className="block text-4xl md:text-5xl font-display text-primary-red">
-                    {result.number}
-                  </span>
-                  <span className="text-sm text-warm-gray">{result.label}</span>
-                </div>
-              ))}
-            </div>
-          </ScrollReveal>
-
-          {/* Achievements */}
-          <ScrollReveal delay={0.4}>
-            <div className="bg-white p-8 rounded-xl">
-              <h3 className="text-lg font-semibold text-charcoal mb-4">What We Delivered:</h3>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <li className="flex items-start gap-2 text-warm-gray">
-                  <Check className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
-                  156 posts created and published across platforms
-                </li>
-                <li className="flex items-start gap-2 text-warm-gray">
-                  <Check className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
-                  1,337+ Instagram followers grown from zero
-                </li>
-                <li className="flex items-start gap-2 text-warm-gray">
-                  <Check className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
-                  Multiple property launches: Anjani Lake Woods, Hill View
-                </li>
-                <li className="flex items-start gap-2 text-warm-gray">
-                  <Check className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
-                  End-to-end: strategy + content + ads + community
-                </li>
-                <li className="flex items-start gap-2 text-warm-gray">
-                  <Check className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
-                  2 cinematic walkthrough films produced
-                </li>
-                <li className="flex items-start gap-2 text-warm-gray">
-                  <Check className="w-5 h-5 text-primary-red flex-shrink-0 mt-0.5" />
-                  Consistent brand voice across all channels
-                </li>
-              </ul>
-            </div>
-          </ScrollReveal>
         </div>
       </section>
 

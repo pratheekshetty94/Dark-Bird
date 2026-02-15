@@ -5,7 +5,7 @@ import SectionLabel from '@/components/ui/SectionLabel'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 import SplineBanner from '@/components/SplineBanner'
-import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink } from 'lucide-react'
+import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink, Megaphone } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Dark Bird Designs | Brand Identity & Motion Graphics',
@@ -68,6 +68,20 @@ const offlineDesigns = [
   { src: '/images/designs/offline/anjani-arch.jpg', title: 'Anjani Arch Design' },
   { src: '/images/designs/offline/tent.jpg', title: 'Tent Design' },
   { src: '/images/designs/offline/anjani-tent.jpg', title: 'Anjani Tent Design' },
+]
+
+// Digital Designs / Ad Posters
+const adPosters = [
+  { src: '/images/designs/ad-posters/ad-creative_1-1.png', title: 'Ad Creative' },
+  { src: '/images/designs/ad-posters/ad-creative_2.png', title: 'Ad Creative' },
+  { src: '/images/designs/ad-posters/ad-creative_6.png', title: 'Ad Creative' },
+  { src: '/images/designs/ad-posters/banana-chips.png', title: 'Banana Chips Ad' },
+  { src: '/images/designs/ad-posters/gk_takeoff.png', title: 'GK Takeoff Ad' },
+  { src: '/images/designs/ad-posters/loveisinthehair_gis.png', title: 'Love Is In The Hair - GIS' },
+  { src: '/images/designs/ad-posters/masala-peanut.png', title: 'Masala Peanut Ad' },
+  { src: '/images/designs/ad-posters/routemap_01.png', title: 'Route Map Design' },
+  { src: '/images/designs/ad-posters/styleword_gis.png', title: 'StyleWord - GIS' },
+  { src: '/images/designs/ad-posters/ponpon.png', title: 'PonPon Ad' },
 ]
 
 // Website Projects
@@ -272,6 +286,43 @@ export default function DesignsPage() {
               <div
                 key={design.src}
                 className="relative aspect-[4/3] rounded-xl overflow-hidden bg-charcoal shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <Image
+                  src={design.src}
+                  alt={design.title}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+              </div>
+            ))}
+          </StaggerReveal>
+        </div>
+      </section>
+
+      {/* Digital Designs / Ad Posters */}
+      <section className="section-light section-padding">
+        <div className="container-content">
+          <ScrollReveal>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-500 to-red-600 flex items-center justify-center">
+                <Megaphone className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-charcoal">
+                Digital Designs & Ad Posters
+              </h2>
+            </div>
+            <p className="text-warm-gray mb-10">
+              Scroll-stopping ad creatives and digital posters designed to convert.
+            </p>
+          </ScrollReveal>
+
+          <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {adPosters.map((design) => (
+              <div
+                key={design.src}
+                className="relative aspect-[4/3] rounded-xl overflow-hidden bg-gray-100 shadow-lg hover:shadow-xl transition-shadow"
               >
                 <Image
                   src={design.src}
