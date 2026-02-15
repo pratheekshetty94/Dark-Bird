@@ -35,7 +35,7 @@ const testimonials = [
   },
   {
     id: '4',
-    quote: 'Dark Bird Films captured the essence of my music beautifully. Their cinematic approach and attention to detail made the collaboration seamless and the end result truly special.',
+    quote: "I worked with Pratheek for my music video for one of my songs 'Alemaari', which not only demanded great visuals but also a very intense story telling. Pratheek Shetty is a cinematographer and editor of rare, instinctive brilliance. He doesn\u2019t just capture images\u2014he captures emotion, rhythm, and intent. Every frame he composes and every cut he makes feels purposeful, sensitive, and deeply cinematic. His ability to seamlessly balance visual beauty with storytelling clarity sets him apart, making him an invaluable creative partner on any project. He is a committed artist who doesn\u2019t settle for the ordinary. His constant relentless pursuit of perfection makes him a great asset for anyone who works with him!",
     author: 'Raghu Dixit',
     title: 'Singer & Composer',
     company: 'The Raghu Dixit Project',
@@ -84,16 +84,16 @@ export default function Testimonials() {
 
         {/* Testimonial Content */}
         <div className="relative max-w-5xl mx-auto">
-          <div className="flex flex-col md:grid md:grid-cols-5 gap-4 md:gap-12 items-center">
+          <div className="flex flex-col items-center md:grid md:grid-cols-5 gap-4 md:gap-12 md:items-start">
             {/* Image */}
-            <div className="md:col-span-2 flex justify-center">
-              <div className="relative w-24 h-24 md:w-56 md:h-56 rounded-xl md:rounded-2xl overflow-hidden border-2 border-accent/50">
+            <div className="md:col-span-2 flex justify-center items-start">
+              <div className="relative w-32 h-32 md:w-72 md:h-72 rounded-xl md:rounded-2xl overflow-hidden border-2 border-accent/50">
                 <Image
                   key={currentTestimonial.id}
                   src={currentTestimonial.image}
                   alt={currentTestimonial.author}
                   fill
-                  sizes="(max-width: 768px) 96px, 224px"
+                  sizes="(max-width: 768px) 128px, 288px"
                   className={`object-cover ${currentTestimonial.imagePosition}`}
                   priority={currentIndex === 0}
                   loading={currentIndex === 0 ? 'eager' : 'lazy'}
@@ -106,7 +106,7 @@ export default function Testimonials() {
               <Quote className="hidden md:block absolute -top-4 -left-2 w-10 h-10 text-accent/20" />
 
               <blockquote className="md:pl-8">
-                <p className="text-sm md:text-2xl text-cream leading-relaxed mb-3 md:mb-8 line-clamp-4 md:line-clamp-none">
+                <p className="text-sm md:text-xl text-cream leading-relaxed mb-3 md:mb-8 line-clamp-4 md:line-clamp-6">
                   &ldquo;{currentTestimonial.quote}&rdquo;
                 </p>
 
