@@ -94,7 +94,7 @@ export default function DesignsPage() {
       {/* Opening Hero - Logo centered with Spline background */}
       <section className="relative min-h-screen overflow-hidden bg-ink">
         {/* Spline 3D Background - bigger and centered */}
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 pointer-events-none">
           <SplineBanner
             scene="https://prod.spline.design/0AxnVdsvhUNmSUcJ/scene.splinecode"
             height="h-full"
@@ -107,36 +107,38 @@ export default function DesignsPage() {
         <div className="absolute inset-0 bg-ink/30 z-[1] pointer-events-none" />
 
         {/* Centered content */}
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-center">
-          {/* Logo */}
-          <div className="mb-8 md:mb-12">
-            <Image
-              src="/images/logo-designs.png"
-              alt="Dark Bird Designs"
-              width={220}
-              height={220}
-              className="w-[160px] h-[160px] md:w-[220px] md:h-[220px] object-contain drop-shadow-[0_0_40px_rgba(232,90,63,0.3)]"
-              priority
-            />
-          </div>
-
-          {/* Headline */}
-          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-cream leading-[1.1] mb-6">
-            Design That{' '}
-            <span className="text-accent italic">Performs</span>
-          </h1>
-
-          {/* Supporting text */}
-          <p className="max-w-2xl mx-auto text-base md:text-lg text-warm-gray leading-relaxed text-center">
-            From the identity that defines you to the smallest digital touchpoint — every project gets the same obsession: strategic thinking wrapped in visual excellence.
-          </p>
-
-          {/* Scroll indicator */}
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-            <div className="flex flex-col items-center gap-2 animate-bounce-slow">
-              <span className="text-warm-gray text-xs uppercase tracking-widest font-mono">Scroll</span>
-              <div className="w-[1px] h-8 bg-gradient-to-b from-warm-gray to-transparent" />
+        <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+          <div className="flex flex-col items-center justify-center w-full px-6 text-center">
+            {/* Logo */}
+            <div className="mb-8 md:mb-12">
+              <Image
+                src="/images/logo-designs.png"
+                alt="Dark Bird Designs"
+                width={220}
+                height={220}
+                className="w-[160px] h-[160px] md:w-[220px] md:h-[220px] object-contain drop-shadow-[0_0_40px_rgba(232,90,63,0.3)]"
+                priority
+              />
             </div>
+
+            {/* Headline */}
+            <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-cream leading-[1.1] mb-6">
+              Design That{' '}
+              <span className="text-accent italic">Performs</span>
+            </h1>
+
+            {/* Supporting text */}
+            <p className="max-w-2xl mx-auto text-base md:text-lg text-warm-gray leading-relaxed text-center">
+              From the identity that defines you to the smallest digital touchpoint — every project gets the same obsession: strategic thinking wrapped in visual excellence.
+            </p>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10">
+          <div className="flex flex-col items-center gap-2 animate-bounce-slow">
+            <span className="text-warm-gray text-xs uppercase tracking-widest font-mono">Scroll</span>
+            <div className="w-[1px] h-8 bg-gradient-to-b from-warm-gray to-transparent" />
           </div>
         </div>
       </section>
