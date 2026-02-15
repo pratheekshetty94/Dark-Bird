@@ -127,7 +127,7 @@ export default function DesignsPage() {
           </h1>
 
           {/* Supporting text */}
-          <p className="max-w-2xl text-base md:text-lg text-warm-gray leading-relaxed">
+          <p className="max-w-2xl mx-auto text-base md:text-lg text-warm-gray leading-relaxed text-center">
             From the identity that defines you to the smallest digital touchpoint — every project gets the same obsession: strategic thinking wrapped in visual excellence.
           </p>
 
