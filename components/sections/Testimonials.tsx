@@ -13,7 +13,6 @@ const testimonials = [
     title: 'Actor & Director',
     company: 'Film Industry',
     image: '/images/testimonials/Raj-B-Shetty-5-oEpkW16944.jpg',
-    // Portrait 1440x1800 — face at ~15% from top
     objectPosition: '50% 15%',
   },
   {
@@ -23,7 +22,6 @@ const testimonials = [
     title: 'VP of Branding',
     company: 'Hangyo Ice Cream Pvt. Ltd',
     image: '/images/testimonials/Deepa hangyo.png',
-    // Portrait 610x909 — face at ~10% from top
     objectPosition: '50% 10%',
   },
   {
@@ -33,7 +31,6 @@ const testimonials = [
     title: '3-time Grammy Award Winner',
     company: 'Music Industry',
     image: '/images/testimonials/3-time_Grammy®_Award-winner,_Ricky_Kej.jpg',
-    // Very tall portrait 3467x5200 — face at ~15% from top
     objectPosition: '50% 15%',
   },
   {
@@ -43,7 +40,6 @@ const testimonials = [
     title: 'Singer & Composer',
     company: 'The Raghu Dixit Project',
     image: '/images/testimonials/raghu dixit.jpg',
-    // Landscape 640x480 — face at ~40% from left, ~20% from top
     objectPosition: '40% 15%',
   },
   {
@@ -53,7 +49,6 @@ const testimonials = [
     title: 'Grammy Nominee',
     company: 'Music Industry',
     image: '/images/testimonials/Varijashree-Venugopal- grammy nominee.jpg',
-    // Square 1000x1000 — face at ~20% from top
     objectPosition: '50% 20%',
   },
 ]
@@ -89,41 +84,93 @@ export default function Testimonials() {
 
         {/* Testimonial Content */}
         <div className="relative max-w-5xl mx-auto">
-          {/* Fixed-height wrapper so navigation stays in same place */}
-          <div className="md:min-h-[280px]">
-            <div className="flex flex-col items-center md:flex-row md:items-start gap-4 md:gap-12">
-              {/* Image — fixed dimensions, pinned to top */}
-              <div className="flex-shrink-0 flex justify-center md:justify-start md:w-[224px]">
-                <div
-                  className="relative overflow-hidden rounded-xl md:rounded-2xl border-2 border-accent/50 w-24 h-24 md:w-[224px] md:h-[224px]"
-                >
-                  <Image
-                    key={currentTestimonial.id}
-                    src={currentTestimonial.image}
-                    alt={currentTestimonial.author}
-                    fill
-                    sizes="(max-width: 768px) 96px, 224px"
-                    style={{ objectFit: 'cover', objectPosition: currentTestimonial.objectPosition }}
-                    priority={currentIndex === 0}
-                    loading={currentIndex === 0 ? 'eager' : 'lazy'}
-                  />
-                </div>
+          {/* Testimonial card — image left, quote right on desktop */}
+          <div
+            className="flex flex-col items-center gap-4 md:gap-0"
+            style={{
+              minHeight: '280px',
+            }}
+          >
+            {/* Desktop: absolute position the image so it never affects text flow */}
+            <div className="relative w-full hidden md:block" style={{ minHeight: '240px' }}>
+              {/* Image pinned to top-left */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '224px',
+                  height: '224px',
+                }}
+                className="rounded-2xl overflow-hidden border-2 border-accent/50"
+              >
+                <Image
+                  key={`desktop-${currentTestimonial.id}`}
+                  src={currentTestimonial.image}
+                  alt={currentTestimonial.author}
+                  fill
+                  sizes="224px"
+                  style={{ objectFit: 'cover', objectPosition: currentTestimonial.objectPosition }}
+                  priority={currentIndex === 0}
+                  loading={currentIndex === 0 ? 'eager' : 'lazy'}
+                />
               </div>
 
-              {/* Quote Content — takes remaining space */}
-              <div className="flex-1 relative text-center md:text-left min-w-0">
-                <Quote className="hidden md:block absolute -top-4 -left-2 w-10 h-10 text-accent/20" />
+              {/* Quote content — offset to the right */}
+              <div style={{ marginLeft: '272px' }} className="relative text-left">
+                <Quote className="absolute -top-4 -left-2 w-10 h-10 text-accent/20" />
 
-                <blockquote className="md:pl-8">
-                  <p className="text-sm md:text-xl text-cream leading-relaxed mb-3 md:mb-8 line-clamp-4 md:line-clamp-5">
+                <blockquote className="pl-8">
+                  <p className="text-xl text-cream leading-relaxed mb-8 line-clamp-5">
                     &ldquo;{currentTestimonial.quote}&rdquo;
                   </p>
 
                   <footer>
-                    <cite className="not-italic font-display text-base md:text-2xl text-accent">
+                    <cite className="not-italic font-display text-2xl text-accent">
                       {currentTestimonial.author}
                     </cite>
-                    <p className="font-mono text-[9px] md:text-sm text-warm-gray uppercase tracking-wider mt-1">
+                    <p className="font-mono text-sm text-warm-gray uppercase tracking-wider mt-1">
+                      {currentTestimonial.title}
+                    </p>
+                  </footer>
+                </blockquote>
+              </div>
+            </div>
+
+            {/* Mobile layout — stacked */}
+            <div className="md:hidden flex flex-col items-center gap-4 w-full">
+              <div
+                style={{
+                  width: '96px',
+                  height: '96px',
+                  position: 'relative',
+                  flexShrink: 0,
+                }}
+                className="rounded-xl overflow-hidden border-2 border-accent/50"
+              >
+                <Image
+                  key={`mobile-${currentTestimonial.id}`}
+                  src={currentTestimonial.image}
+                  alt={currentTestimonial.author}
+                  fill
+                  sizes="96px"
+                  style={{ objectFit: 'cover', objectPosition: currentTestimonial.objectPosition }}
+                  priority={currentIndex === 0}
+                  loading={currentIndex === 0 ? 'eager' : 'lazy'}
+                />
+              </div>
+
+              <div className="text-center">
+                <blockquote>
+                  <p className="text-sm text-cream leading-relaxed mb-3 line-clamp-4">
+                    &ldquo;{currentTestimonial.quote}&rdquo;
+                  </p>
+
+                  <footer>
+                    <cite className="not-italic font-display text-base text-accent">
+                      {currentTestimonial.author}
+                    </cite>
+                    <p className="font-mono text-[9px] text-warm-gray uppercase tracking-wider mt-1">
                       {currentTestimonial.title}
                     </p>
                   </footer>
