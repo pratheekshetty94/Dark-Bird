@@ -63,15 +63,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${spaceGrotesk.variable} ${playfair.variable} ${jetbrainsMono.variable}`}>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if (window.location.pathname === '/') {
-                document.documentElement.classList.add('preloader-active');
-              }
-            `,
-          }}
-        />
       </head>
       <body className="font-sans bg-ink text-cream antialiased">
         <SmoothScroll>

@@ -1,11 +1,29 @@
 'use client'
 
-import React from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import Link from 'next/link'
 
 export default function BrandPositioning() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const [showSpline, setShowSpline] = useState(false)
+
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setShowSpline(entry.isIntersecting)
+      },
+      { rootMargin: '200px 0px' }
+    )
+
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <section className="relative min-h-[60vh] md:min-h-[80vh] flex items-center overflow-hidden">
+    <section ref={sectionRef} className="relative min-h-[60vh] md:min-h-[80vh] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <video
@@ -53,7 +71,7 @@ export default function BrandPositioning() {
             </p>
 
             <p className="text-xs md:text-base text-cream/80 mb-6 md:mb-8 max-w-2xl">
-              We're a team of filmmakers who believe every brand deserves to be seen and
+              We&apos;re a team of filmmakers who believe every brand deserves to be seen and
               felt like a film.
             </p>
 
@@ -67,18 +85,21 @@ export default function BrandPositioning() {
             </div>
           </div>
 
-          {/* Right Column - Spline 3D */}
+          {/* Right Column - Spline 3D (only renders when section is visible) */}
           <div className="lg:col-span-5 flex items-center justify-center">
             <div className="relative w-48 md:w-72 lg:w-full max-w-lg aspect-square pointer-events-none">
-              <iframe
-                src="https://my.spline.design/futuristicgeometricengine-RUax9SYC45XvFHnJmoQYxf8i/"
-                frameBorder="0"
-                width="100%"
-                height="100%"
-                className="w-full h-full pointer-events-none"
-                style={{ border: 'none' }}
-                allow="autoplay"
-              />
+              {showSpline && (
+                <iframe
+                  src="https://my.spline.design/futuristicgeometricengine-RUax9SYC45XvFHnJmoQYxf8i/"
+                  frameBorder="0"
+                  width="100%"
+                  height="100%"
+                  className="w-full h-full pointer-events-none"
+                  style={{ border: 'none' }}
+                  allow="autoplay"
+                  loading="lazy"
+                />
+              )}
             </div>
           </div>
         </div>
