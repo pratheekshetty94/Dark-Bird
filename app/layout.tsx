@@ -79,7 +79,7 @@ export default function RootLayout({
           <CustomCursor />
           <div className="noise-overlay" aria-hidden="true" />
           <Navbar />
-          <main>
+          <main className="min-h-screen">
             {children}
           </main>
           <Footer />

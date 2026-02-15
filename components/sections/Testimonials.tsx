@@ -13,7 +13,7 @@ const testimonials = [
     title: 'Actor & Director',
     company: 'Film Industry',
     image: '/images/testimonials/Raj-B-Shetty-5-oEpkW16944.jpg',
-    imagePosition: 'object-center',
+    imagePosition: 'object-[50%_15%]',
   },
   {
     id: '2',
@@ -22,7 +22,7 @@ const testimonials = [
     title: 'VP of Branding',
     company: 'Hangyo Ice Cream Pvt. Ltd',
     image: '/images/testimonials/Deepa hangyo.png',
-    imagePosition: 'object-top',
+    imagePosition: 'object-[50%_15%]',
   },
   {
     id: '3',
@@ -31,7 +31,7 @@ const testimonials = [
     title: '3-time Grammy Award Winner',
     company: 'Music Industry',
     image: '/images/testimonials/3-time_Grammy®_Award-winner,_Ricky_Kej.jpg',
-    imagePosition: 'object-top',
+    imagePosition: 'object-[50%_20%]',
   },
   {
     id: '4',
@@ -40,7 +40,7 @@ const testimonials = [
     title: 'Singer & Composer',
     company: 'The Raghu Dixit Project',
     image: '/images/testimonials/raghu dixit.jpg',
-    imagePosition: 'object-top',
+    imagePosition: 'object-[30%_20%]',
   },
   {
     id: '5',
@@ -49,7 +49,7 @@ const testimonials = [
     title: 'Grammy Nominee',
     company: 'Music Industry',
     image: '/images/testimonials/Varijashree-Venugopal- grammy nominee.jpg',
-    imagePosition: 'object-top',
+    imagePosition: 'object-[50%_20%]',
   },
 ]
 

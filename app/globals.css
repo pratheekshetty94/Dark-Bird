@@ -45,14 +45,10 @@
     font-feature-settings: 'kern' 1, 'liga' 1;
   }
 
-  /* Hide footer and navbar during preloader - use visibility for instant hide */
+  /* Hide footer and navbar during preloader */
   html.preloader-active footer,
-  html.preloader-active nav,
-  body.preloader-active footer,
-  body.preloader-active nav {
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
+  html.preloader-active nav {
+    display: none !important;
   }
 
   /* Custom Selection */
