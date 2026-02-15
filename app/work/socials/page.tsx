@@ -13,12 +13,12 @@ export const metadata: Metadata = {
 }
 
 const projects = [
-  // Brand Campaigns - links to category page showing all clients
+  // Brand Campaigns - walkthrough films, reels, posts & branding
   {
     title: 'Brand Campaigns',
     client: 'All Clients',
     category: 'Brand Campaigns',
-    description: 'Walkthrough films & branded content',
+    description: 'Walkthrough films, social media reels, posts & branding',
     image: '/images/socials/thumbnails/brand-campaigns.png',
     href: '/work/socials/brand-campaigns',
   },

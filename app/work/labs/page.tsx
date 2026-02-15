@@ -6,8 +6,6 @@ import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollRevea
 import CTABand from '@/components/sections/CTABand'
 import { Cpu, Sparkles, Film, Music, Zap, Bot } from 'lucide-react'
 
-const categories = ['All AI Work', 'Short Films', 'Commercials', 'Music', 'Automation']
-
 const services = [
   {
     icon: Film,
@@ -38,45 +36,6 @@ const services = [
     icon: Bot,
     title: 'Marketing Automation',
     description: 'AI agents and workflows that scale your marketing efforts.',
-  },
-]
-
-const projects = [
-  {
-    title: 'Neural Dreams',
-    category: 'Short Films',
-    description: 'AI-generated narrative exploring consciousness',
-    badge: 'AI Film',
-  },
-  {
-    title: 'Product X Launch',
-    category: 'Commercials',
-    description: 'Impossible product visualization',
-    badge: 'AI Commercial',
-  },
-  {
-    title: 'Synthetic Memories',
-    category: 'Music',
-    description: 'Music video with AI-generated visuals',
-    badge: 'AI Music Video',
-  },
-  {
-    title: 'Brand Avatar System',
-    category: 'Automation',
-    description: 'AI-powered brand ambassador',
-    badge: 'AI Agent',
-  },
-  {
-    title: 'Future Nostalgia',
-    category: 'Short Films',
-    description: 'Retro-futuristic visual journey',
-    badge: 'AI Film',
-  },
-  {
-    title: 'Concept Car Reveal',
-    category: 'Commercials',
-    description: 'Automotive visualization experiment',
-    badge: 'AI Commercial',
   },
 ]
 
@@ -159,89 +118,6 @@ export default function LabsPage() {
                 </div>
               )
             })}
-          </StaggerReveal>
-        </div>
-      </section>
-
-      {/* Work Showcase */}
-      <section className="relative section-padding">
-        <div className="absolute inset-0 bg-deep-black" />
-        <div className="container-content relative z-10">
-          <ScrollReveal>
-            <SectionLabel>Experiments</SectionLabel>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-white mt-4 mb-8">
-              From The Lab
-            </h2>
-          </ScrollReveal>
-
-          {/* Filter Tabs */}
-          <ScrollReveal delay={0.2}>
-            <div className="flex flex-wrap gap-2 mb-12">
-              {categories.map((category, index) => (
-                <button
-                  key={category}
-                  className={`px-4 py-2 rounded-full text-sm font-mono transition-colors ${
-                    index === 0
-                      ? 'bg-primary-red text-white'
-                      : 'bg-white/5 text-warm-gray border border-white/10 hover:border-primary-red hover:text-primary-red'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </ScrollReveal>
-
-          {/* Projects Grid */}
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
-              <div
-                key={project.title}
-                className="group cursor-pointer"
-              >
-                <div className="aspect-video bg-charcoal rounded-xl overflow-hidden relative border border-white/5 hover:border-primary-red/50 transition-colors">
-                  {/* AI Badge */}
-                  <div className="absolute top-4 left-4 z-10">
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-primary-red/90 text-white text-xs font-mono rounded">
-                      <Cpu className="w-3 h-3" />
-                      {project.badge}
-                    </span>
-                  </div>
-
-                  {/* Placeholder Pattern */}
-                  <div className="absolute inset-0">
-                    <div
-                      className="absolute inset-0 opacity-20"
-                      style={{
-                        backgroundImage: `
-                          radial-gradient(circle at 30% 70%, rgba(224, 32, 32, 0.3) 0%, transparent 50%),
-                          radial-gradient(circle at 70% 30%, rgba(224, 32, 32, 0.2) 0%, transparent 50%)
-                        `,
-                      }}
-                    />
-                  </div>
-
-                  {/* Hover Glitch Effect */}
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <span className="text-primary-red font-mono text-sm glitch">
-                      [LOADING...]
-                    </span>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <span className="text-primary-red text-xs font-mono uppercase tracking-wider">
-                    {project.category}
-                  </span>
-                  <h3 className="text-white font-semibold mt-1 group-hover:text-primary-red transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-warm-gray text-sm">{project.description}</p>
-                </div>
-              </div>
-            ))}
           </StaggerReveal>
         </div>
       </section>

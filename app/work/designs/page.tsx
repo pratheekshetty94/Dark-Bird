@@ -2,17 +2,15 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import SectionLabel from '@/components/ui/SectionLabel'
-import Button from '@/components/ui/Button'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
-import { Palette, Layout, Box, MessageSquare, Sparkles, Video, ExternalLink } from 'lucide-react'
+import SplineBanner from '@/components/SplineBanner'
+import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Dark Bird Designs | Brand Identity & Motion Graphics',
   description: 'We make brands look expensive. Website design, brand identity, motion graphics, 3D modelling, and social media templates with cinematic quality.',
 }
-
-const categories = ['All Designs', 'Brand Identity', 'Motion Graphics', 'Web Design', '3D Modelling', 'Social Templates']
 
 const services = [
   {
@@ -47,79 +45,104 @@ const services = [
   },
 ]
 
-const projects = [
+// Offline / Print Designs
+const offlineDesigns = [
+  { src: '/images/designs/offline/billboard-1.png', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-2.png', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-3.png', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-4.png', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-5.png', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-6.png', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-7.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-8.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-9.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-10.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-11.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-12.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-13.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-14.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-15.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/board.png', title: 'Board Design' },
+  { src: '/images/designs/offline/signboards.jpg', title: 'Signboard Design' },
+  { src: '/images/designs/offline/arch.jpg', title: 'Arch Design' },
+  { src: '/images/designs/offline/anjani-arch.jpg', title: 'Anjani Arch Design' },
+  { src: '/images/designs/offline/tent.jpg', title: 'Tent Design' },
+  { src: '/images/designs/offline/anjani-tent.jpg', title: 'Anjani Tent Design' },
+]
+
+// Website Projects
+const websiteProjects = [
   {
-    title: 'GK Builders Website',
-    category: 'Web Design',
-    description: 'Complete website design & development for real estate developer',
-    image: '/images/websites/gk-builders-homepage.jpg',
-    href: 'https://gkbuildersanddevelopers.com/',
+    client: 'GK Builders & Developers',
+    description: 'Premium real estate website with luxury villa project showcases',
+    thumbnail: '/images/designs/websites/screengrabs/gk-website/home-page.jpeg',
+    href: '/work/designs/websites/gk-builders',
+    liveUrl: 'https://gkbuildersanddevelopers.com/',
   },
   {
-    title: 'Hotel Amaravathi Website',
-    category: 'Web Design',
-    description: 'Hospitality website with booking integration',
-    image: '/images/websites/amaravathi-homepage.png',
-    href: 'https://hotelamaravathi.in/',
-  },
-  {
-    title: 'Brand Identity System',
-    category: 'Brand Identity',
-    description: 'Complete visual identity for tech startup',
-  },
-  {
-    title: 'E-commerce Website',
-    category: 'Web Design',
-    description: 'High-converting online store design',
-  },
-  {
-    title: 'Product Launch Animation',
-    category: 'Motion Graphics',
-    description: '3D animated reveal sequence',
-  },
-  {
-    title: 'Social Media Kit',
-    category: 'Social Templates',
-    description: '50+ templates for Instagram & LinkedIn',
-  },
-  {
-    title: 'Architectural Visualization',
-    category: '3D Modelling',
-    description: 'Photorealistic property renders',
-  },
-  {
-    title: 'Logo Animation',
-    category: 'Motion Graphics',
-    description: 'Dynamic logo reveal for brand launch',
-  },
-  {
-    title: 'App UI Design',
-    category: 'Web Design',
-    description: 'Mobile app interface design',
-  },
-  {
-    title: 'Packaging Design',
-    category: 'Brand Identity',
-    description: 'Premium product packaging',
+    client: 'Hotel Amaravathi',
+    description: 'Sophisticated hospitality website with seamless booking integration',
+    thumbnail: '/images/designs/websites/screengrabs/amaravathi/amaravathi-1.png',
+    href: '/work/designs/websites/amaravathi',
+    liveUrl: 'https://hotelamaravathi.in/',
   },
 ]
 
 export default function DesignsPage() {
   return (
     <>
-      {/* Hero - Spline */}
-      <section className="relative h-[60vh] w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden bg-deep-black">
-        <iframe
-          src="https://my.spline.design/distortingtypography-hPokmKHcpEyzmpOzHEo02lEj/"
-          frameBorder="0"
-          className="absolute inset-0"
-          style={{ border: 'none', width: '100vw', height: '100%' }}
-          allow="autoplay"
-        />
+      {/* Opening Hero - Logo centered with Spline background */}
+      <section className="relative min-h-screen overflow-hidden bg-ink">
+        {/* Spline 3D Background - bigger and centered */}
+        <div className="absolute inset-0 z-0">
+          <SplineBanner
+            scene="https://prod.spline.design/0AxnVdsvhUNmSUcJ/scene.splinecode"
+            height="h-full"
+            scale={3}
+          />
+        </div>
+
+        {/* Gradient overlays for readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-ink/20 z-[2] pointer-events-none" />
+        <div className="absolute inset-0 bg-ink/30 z-[1] pointer-events-none" />
+
+        {/* Centered content */}
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-center">
+          {/* Logo */}
+          <div className="mb-8 md:mb-12">
+            <Image
+              src="/images/logo-designs.png"
+              alt="Dark Bird Designs"
+              width={220}
+              height={220}
+              className="w-[160px] h-[160px] md:w-[220px] md:h-[220px] object-contain drop-shadow-[0_0_40px_rgba(232,90,63,0.3)]"
+              priority
+            />
+          </div>
+
+          {/* Headline */}
+          <h1 className="font-display text-4xl md:text-6xl lg:text-7xl font-bold text-cream leading-[1.1] mb-6">
+            Design That{' '}
+            <span className="text-accent italic">Performs</span>
+          </h1>
+
+          {/* Supporting text */}
+          <p className="max-w-2xl text-base md:text-lg text-warm-gray leading-relaxed">
+            From the identity that defines you to the smallest digital touchpoint — every project gets the same obsession: strategic thinking wrapped in visual excellence.
+          </p>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+            <div className="flex flex-col items-center gap-2 animate-bounce-slow">
+              <span className="text-warm-gray text-xs uppercase tracking-widest font-mono">Scroll</span>
+              <div className="w-[1px] h-8 bg-gradient-to-b from-warm-gray to-transparent" />
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Services */}
-      <section className="section-dark section-padding">
+      <section className="section-dark section-padding -mt-1">
         <div className="container-content">
           <ScrollReveal>
             <SectionLabel>Our Services</SectionLabel>
@@ -154,100 +177,92 @@ export default function DesignsPage() {
         </div>
       </section>
 
-      {/* Work Showcase */}
-      <section className="section-cream section-padding">
+      {/* Website Designs */}
+      <section className="section-light section-padding">
         <div className="container-content">
           <ScrollReveal>
-            <SectionLabel>Portfolio</SectionLabel>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-charcoal mt-4 mb-8">
-              Let's Tell Your Story Together
-            </h2>
-          </ScrollReveal>
-
-          {/* Filter Tabs */}
-          <ScrollReveal delay={0.2}>
-            <div className="flex flex-wrap gap-2 mb-12">
-              {categories.map((category, index) => (
-                <button
-                  key={category}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    index === 0
-                      ? 'bg-primary-red text-white'
-                      : 'bg-white text-charcoal hover:bg-primary-red hover:text-white'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                <Monitor className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-charcoal">
+                Website Designs
+              </h2>
             </div>
+            <p className="text-warm-gray mb-10">
+              Premium web experiences built for conversion and visual impact.
+            </p>
           </ScrollReveal>
 
-          {/* Projects Grid - Masonry Style */}
-          <StaggerReveal className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-            {projects.map((project, index) => {
-              // Vary heights for masonry effect (use aspect-video for projects with images)
-              const heights = ['aspect-square', 'aspect-[4/5]', 'aspect-[3/4]', 'aspect-video']
-              const heightClass = project.image ? 'aspect-video' : heights[index % heights.length]
-
-              const CardContent = (
-                <div className={`${heightClass} bg-charcoal rounded-xl overflow-hidden relative`}>
-                  {/* Image or Placeholder */}
-                  {project.image ? (
-                    <Image
-                      src={project.image}
-                      alt={project.title}
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
-                  ) : (
-                    <>
-                      <div className="absolute inset-0 bg-gradient-to-br from-primary-red/5 to-charcoal" />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Palette className="w-12 h-12 text-white/10" />
-                      </div>
-                    </>
-                  )}
-
-                  {/* Hover Overlay */}
-                  <div className="absolute inset-0 bg-primary-red/90 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div className="text-center text-white p-4">
-                      <span className="text-xs uppercase tracking-wider opacity-80">
-                        {project.category}
-                      </span>
-                      <h3 className="text-xl font-bold mt-2">{project.title}</h3>
-                      <p className="text-sm opacity-80 mt-1">{project.description}</p>
-                      {project.href && (
-                        <span className="inline-flex items-center gap-1 mt-3 text-sm font-medium">
-                          Visit Website <ExternalLink className="w-4 h-4" />
-                        </span>
-                      )}
-                    </div>
+          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {websiteProjects.map((project) => (
+              <Link
+                key={project.client}
+                href={project.href}
+                className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all"
+              >
+                <div className="relative aspect-video bg-gray-100 overflow-hidden">
+                  <Image
+                    src={project.thumbnail}
+                    alt={project.client}
+                    fill
+                    className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+                    <span className="inline-flex items-center gap-1 text-white text-sm font-medium">
+                      View Project <ExternalLink className="w-4 h-4" />
+                    </span>
                   </div>
                 </div>
-              )
-
-              return project.href ? (
-                <a
-                  key={project.title}
-                  href={project.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="break-inside-avoid group cursor-pointer block"
-                >
-                  {CardContent}
-                </a>
-              ) : (
-                <div
-                  key={project.title}
-                  className="break-inside-avoid group cursor-pointer"
-                >
-                  {CardContent}
+                <div className="p-5">
+                  <span className="text-xs text-primary-red font-medium uppercase tracking-wider">Website Design</span>
+                  <h3 className="text-lg font-semibold text-charcoal mt-1 mb-2 group-hover:text-primary-red transition-colors">
+                    {project.client}
+                  </h3>
+                  <p className="text-warm-gray text-sm">{project.description}</p>
                 </div>
-              )
-            })}
+              </Link>
+            ))}
+          </StaggerReveal>
+        </div>
+      </section>
+
+      {/* Offline / Print Designs */}
+      <section className="section-dark section-padding">
+        <div className="container-content">
+          <ScrollReveal>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center">
+                <Printer className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-white">
+                Offline & Print Designs
+              </h2>
+            </div>
+            <p className="text-warm-gray mb-10">
+              Billboards, signboards, arch gates and tent designs that command attention in the real world.
+            </p>
+          </ScrollReveal>
+
+          <StaggerReveal className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {offlineDesigns.map((design) => (
+              <div
+                key={design.src}
+                className="relative aspect-[4/3] rounded-xl overflow-hidden bg-charcoal shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <Image
+                  src={design.src}
+                  alt={design.title}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+              </div>
+            ))}
           </StaggerReveal>
         </div>
       </section>

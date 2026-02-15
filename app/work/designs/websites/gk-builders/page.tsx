@@ -9,19 +9,19 @@ import CTABand from '@/components/sections/CTABand'
 
 const websiteScreens = [
   {
-    src: '/images/designs/websites/gk-builders/homepage.jpeg',
+    src: '/images/designs/websites/screengrabs/gk-website/home-page.jpeg',
     alt: 'GK Builders Homepage',
     title: 'Homepage',
     description: 'Clean, modern homepage showcasing premium villa projects',
   },
   {
-    src: '/images/designs/websites/gk-builders/hillview-project.png',
+    src: '/images/designs/websites/screengrabs/gk-website/hill-view.png',
     alt: 'GK Hill View Project Page',
     title: 'Hill View Project',
     description: 'Detailed project page with amenities and specifications',
   },
   {
-    src: '/images/designs/websites/gk-builders/anjani-project.png',
+    src: '/images/designs/websites/screengrabs/gk-website/anjani-lakewoods.png',
     alt: 'Anjani Lake Woods Project Page',
     title: 'Anjani Lake Woods Project',
     description: 'Premium villa plots project showcase',

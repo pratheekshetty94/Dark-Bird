@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Video, Palette } from 'lucide-react'
+import { ArrowLeft, Video, Palette, ImageIcon } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 
@@ -196,6 +196,55 @@ const brandingLogos = [
   },
 ]
 
+// Social Media Posts
+const socialPosts = [
+  { src: '/images/socials/brand-campaigns/static-posts/anjani-scroll-1.webp', title: 'Anjani Lake Woods' },
+  { src: '/images/socials/brand-campaigns/static-posts/anjani-scroll-2.webp', title: 'Anjani Lake Woods' },
+  { src: '/images/socials/brand-campaigns/static-posts/announcement.jpg', title: 'Announcement' },
+  { src: '/images/socials/brand-campaigns/static-posts/ayudha-pooja.png', title: 'Ayudha Pooja' },
+  { src: '/images/socials/brand-campaigns/static-posts/banana-chips.png', title: 'Banana Chips' },
+  { src: '/images/socials/brand-campaigns/static-posts/best-of-both.webp', title: 'Best of Both' },
+  { src: '/images/socials/brand-campaigns/static-posts/button-post-1.webp', title: 'Button Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-1.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-2.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-3.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-4.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-5.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/congrats-india.png', title: 'Congrats India' },
+  { src: '/images/socials/brand-campaigns/static-posts/deepavali-2.png', title: 'Deepavali' },
+  { src: '/images/socials/brand-campaigns/static-posts/deepavali-next-year.png', title: 'Deepavali' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover-1.webp', title: 'Discover' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover-2.webp', title: 'Discover' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover-3.webp', title: 'Discover' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover-4.webp', title: 'Discover' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover.webp', title: 'Discover' },
+  { src: '/images/socials/brand-campaigns/static-posts/dressed-for-celebration.png', title: 'Dressed for Celebration' },
+  { src: '/images/socials/brand-campaigns/static-posts/evening-gk.png', title: 'Evening at GK' },
+  { src: '/images/socials/brand-campaigns/static-posts/gk-penguin.png', title: 'GK Penguin' },
+  { src: '/images/socials/brand-campaigns/static-posts/happy-diwali-lake-view.png', title: 'Happy Diwali - Lake View' },
+  { src: '/images/socials/brand-campaigns/static-posts/happy-diwali.png', title: 'Happy Diwali' },
+  { src: '/images/socials/brand-campaigns/static-posts/lake-mirrors.png', title: 'Lake Mirrors' },
+  { src: '/images/socials/brand-campaigns/static-posts/light-up-acres.png', title: 'Light Up Acres' },
+  { src: '/images/socials/brand-campaigns/static-posts/love-is-in-the-hair.png', title: 'Love is in the Hair' },
+  { src: '/images/socials/brand-campaigns/static-posts/masala-peanut.png', title: 'Masala Peanut' },
+  { src: '/images/socials/brand-campaigns/static-posts/ms-pp.png', title: 'MS PP' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-1.webp', title: 'New Year' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-2.webp', title: 'New Year' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-3.webp', title: 'New Year' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-4.webp', title: 'New Year' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-5.webp', title: 'New Year' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-6.webp', title: 'New Year' },
+  { src: '/images/socials/brand-campaigns/static-posts/park-benches.png', title: 'Park Benches' },
+  { src: '/images/socials/brand-campaigns/static-posts/post-03-a.png', title: 'Brand Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/post-03-b.png', title: 'Brand Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/puzzle-gk.png', title: 'Puzzle GK' },
+  { src: '/images/socials/brand-campaigns/static-posts/rcb-women.jpg', title: 'RCB Women' },
+  { src: '/images/socials/brand-campaigns/static-posts/routemap.png', title: 'Route Map' },
+  { src: '/images/socials/brand-campaigns/static-posts/rules-break-1.webp', title: 'Rules Break' },
+  { src: '/images/socials/brand-campaigns/static-posts/rules-break-2.webp', title: 'Rules Break' },
+  { src: '/images/socials/brand-campaigns/static-posts/style-word.png', title: 'Style Word' },
+]
+
 export default function BrandCampaignsPage() {
   return (
     <>
@@ -278,7 +327,7 @@ export default function BrandCampaignsPage() {
       </section>
 
       {/* Social Media Reels */}
-      <section className="section-dark section-padding">
+      <section id="reels" className="section-dark section-padding">
         <div className="container-content">
           <ScrollReveal>
             <h2 className="text-2xl font-bold text-white mb-2">
@@ -293,9 +342,11 @@ export default function BrandCampaignsPage() {
             {socialReels.map((reel) => (
               <div key={reel.src} className="bg-charcoal rounded-xl overflow-hidden shadow-lg">
                 <video
-                  src={reel.src}
+                  src={`${reel.src}#t=0.5`}
                   controls
                   preload="metadata"
+                  playsInline
+                  muted
                   className="w-full aspect-[9/16] object-cover bg-ink"
                 >
                   Your browser does not support the video tag.
@@ -312,8 +363,45 @@ export default function BrandCampaignsPage() {
         </div>
       </section>
 
+      {/* Social Media Posts */}
+      <section id="posts" className="section-light section-padding">
+        <div className="container-content">
+          <ScrollReveal>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center">
+                <ImageIcon className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-charcoal">
+                Social Media Posts
+              </h2>
+            </div>
+            <p className="text-warm-gray mb-8">
+              Thumb-stopping static creatives designed for engagement and brand recall.
+            </p>
+          </ScrollReveal>
+
+          <StaggerReveal className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {socialPosts.map((post) => (
+              <div
+                key={post.src}
+                className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-md hover:shadow-xl transition-shadow"
+              >
+                <Image
+                  src={post.src}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+                />
+              </div>
+            ))}
+          </StaggerReveal>
+        </div>
+      </section>
+
       {/* Branding & Logo Design */}
-      <section className="section-light section-padding">
+      <section className="section-dark section-padding">
         <div className="container-content">
           <ScrollReveal>
             <div className="flex items-center gap-3 mb-6">
@@ -321,7 +409,7 @@ export default function BrandCampaignsPage() {
                 <Palette className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-charcoal">
+                <h2 className="text-2xl font-bold text-white">
                   Branding & Logo Design
                 </h2>
                 <p className="text-sm text-warm-gray">
