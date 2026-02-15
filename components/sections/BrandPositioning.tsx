@@ -1,29 +1,12 @@
 'use client'
 
-import React, { useRef, useState, useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function BrandPositioning() {
-  const sectionRef = useRef<HTMLElement>(null)
-  const [showSpline, setShowSpline] = useState(false)
-
-  useEffect(() => {
-    const section = sectionRef.current
-    if (!section) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setShowSpline(entry.isIntersecting)
-      },
-      { rootMargin: '200px 0px' }
-    )
-
-    observer.observe(section)
-    return () => observer.disconnect()
-  }, [])
-
   return (
-    <section ref={sectionRef} className="relative min-h-[60vh] md:min-h-[80vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[60vh] md:min-h-[80vh] flex items-center overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <video
@@ -85,21 +68,16 @@ export default function BrandPositioning() {
             </div>
           </div>
 
-          {/* Right Column - Spline 3D (only renders when section is visible) */}
-          <div className="lg:col-span-5 flex items-center justify-center">
-            <div className="relative w-48 md:w-72 lg:w-full max-w-lg aspect-square pointer-events-none">
-              {showSpline && (
-                <iframe
-                  src="https://my.spline.design/futuristicgeometricengine-RUax9SYC45XvFHnJmoQYxf8i/"
-                  frameBorder="0"
-                  width="100%"
-                  height="100%"
-                  className="w-full h-full pointer-events-none"
-                  style={{ border: 'none' }}
-                  allow="autoplay"
-                  loading="lazy"
-                />
-              )}
+          {/* Right Column - Story telling visual */}
+          <div className="hidden lg:col-span-5 lg:flex items-center justify-center">
+            <div className="relative w-full max-w-md aspect-square">
+              <Image
+                src="/images/we tell stories 9 years of story telling.png"
+                alt="9 Years of Storytelling"
+                fill
+                className="object-contain"
+                loading="lazy"
+              />
             </div>
           </div>
         </div>
