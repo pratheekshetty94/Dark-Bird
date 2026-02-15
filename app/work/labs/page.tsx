@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
+import ScrollReveal from '@/components/animations/ScrollReveal'
 import {
   Sparkles,
   Brain,
@@ -11,69 +11,55 @@ import {
   Eye,
   ChevronDown,
   ArrowUpRight,
+  ArrowRight,
 } from 'lucide-react'
 
 /* ─── Data ─── */
 
-const services = [
+const capabilities = [
   {
     icon: Sparkles,
     title: 'GenAI Marketing & Content',
+    shortTitle: 'GenAI Content',
     description:
       'Content that hits different. We use AI to create marketing that actually stops the scroll — cinematic, on-trend, and absurdly fast to produce.',
+    longDescription:
+      "Imagine your audience starring in a movie trailer with their favourite actor. Or getting a custom lullaby generated for their kid. We're building the kind of hyper-personalised experiences that make people screenshot and share — not skip. This is a level of user personalisation never seen before.",
+    pullQuote: 'Personalisation so good it feels like main character energy.',
+    image: '/images/labs/ai-commercials.jpeg',
   },
   {
     icon: Brain,
     title: 'Custom LLM Deployments',
+    shortTitle: 'Custom LLMs',
     description:
       'Your own AI brain, trained on your data. Not some generic chatbot — a language model that actually gets your business and plugs right into your stack.',
+    longDescription:
+      "Generic AI is mid. We build custom language models that live inside your tech stack and actually understand your business. Need smarter customer support? Automated content that sounds like your brand? Decisions backed by real data? We got you. Your data becomes your superpower.",
+    pullQuote: 'From raw data to big moves — no middleman.',
+    image: '/images/labs/ai-visual-experiments.jpeg',
   },
   {
     icon: Workflow,
     title: 'Workflow Automation',
+    shortTitle: 'Automation',
     description:
       'We find the boring stuff in your workflow and delete it. AI agents that handle the grind so your team can focus on work that actually matters.',
+    longDescription:
+      "Let's be real — half your team's day is spent on tasks a robot could handle better. We identify the bottlenecks, build the automations, and give your people their time back. Less busywork, fewer errors, and your operations running like clockwork while you focus on the stuff that actually moves the needle.",
+    pullQuote: 'Delete the busywork. Keep the brilliance.',
+    image: '/images/labs/ai-launch-trailers.jpeg',
   },
   {
     icon: Eye,
     title: 'Vision Applications',
+    shortTitle: 'Vision AI',
     description:
       'Teaching machines to see. From spotting defects on a factory line to generating wild visuals — if it involves pixels, we can make AI do something useful with them.',
-  },
-]
-
-const deepDive = [
-  {
-    label: 'What We Build',
-    icon: Sparkles,
-    title: 'Experiences that slap',
-    body: "Imagine your audience starring in a movie trailer with their favourite actor. Or getting a custom lullaby generated for their kid. We're building the kind of hyper-personalised experiences that make people screenshot and share — not skip.",
-    pullQuote: 'Personalisation so good it feels like main character energy.',
-    accent: 'Personalisation at scale',
-  },
-  {
-    label: 'Custom LLMs',
-    icon: Brain,
-    title: 'Your AI, your rules',
-    body: "Generic AI is mid. We build custom language models that live inside your tech stack and actually understand your business. Need smarter customer support? Automated content that sounds like your brand? Decisions backed by real data? We got you. Your data becomes your superpower.",
-    pullQuote: 'From raw data to big moves — no middleman.',
-    accent: 'Custom language models',
-  },
-  {
-    label: 'Automation',
-    icon: Workflow,
-    title: 'Efficiency on steroids',
-    body: "Let's be real — half your team's day is spent on tasks a robot could handle better. We identify the bottlenecks, build the automations, and give your people their time back. Less busywork, fewer errors, and your operations running like clockwork while you focus on the stuff that actually moves the needle.",
-    pullQuote: 'Delete the busywork. Keep the brilliance.',
-    accent: 'End-to-end automation',
-  },
-  {
-    label: 'Vision',
-    icon: Eye,
-    title: 'Pixels with purpose',
-    body: "Computer vision that does real things — not just tech demos. We build solutions that recognize, analyse, and act on visual data. Quality control on production lines, security monitoring that never sleeps, video analysis at scale. If your business deals with images or footage, we can make that data work harder than it ever has.",
+    longDescription:
+      "Computer vision that does real things — not just tech demos. We build solutions that recognize, analyse, and act on visual data. Quality control on production lines, security monitoring that never sleeps, video analysis at scale. If your business deals with images or footage, we can make that data work harder than it ever has.",
     pullQuote: 'Every pixel earns its keep.',
-    accent: 'Computer vision solutions',
+    image: '/images/labs/ai-music-videos.jpeg',
   },
 ]
 
@@ -84,6 +70,154 @@ const experiments = [
   { src: '/images/labs/ai-commercials.jpeg', title: 'AI Commercials' },
   { src: '/images/labs/ai-short-films.jpeg', title: 'AI Short Films' },
 ]
+
+/* ─── What We Do — Interactive Section (Aeos-inspired) ─── */
+
+function WhatWeDo() {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const active = capabilities[activeIndex]
+  const Icon = active.icon
+
+  return (
+    <section className="relative bg-[#080808] overflow-hidden">
+      <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
+        {/* Section header */}
+        <ScrollReveal>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-[2px] h-5 bg-accent" />
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+              What We Do
+            </span>
+          </div>
+        </ScrollReveal>
+
+        <ScrollReveal delay={0.1}>
+          <h2 className="font-display text-[clamp(1.75rem,4vw,3rem)] leading-[1.15] text-cream mb-16 md:mb-20">
+            AI, engineering &amp; content —{' '}
+            <span className="text-accent italic">we do it all</span>
+          </h2>
+        </ScrollReveal>
+
+        {/* Interactive card — cream/light background like Aeos */}
+        <ScrollReveal delay={0.15}>
+          <div className="rounded-[25px] bg-cream/[0.04] border border-white/[0.1] overflow-hidden">
+            <div className="grid grid-cols-1 lg:grid-cols-12">
+              {/* Left nav — service list */}
+              <div className="lg:col-span-4 border-b lg:border-b-0 lg:border-r border-white/[0.06] p-6 md:p-10">
+                <div className="flex lg:flex-col gap-2 lg:gap-0 overflow-x-auto lg:overflow-visible">
+                  {capabilities.map((cap, i) => (
+                    <button
+                      key={cap.title}
+                      onClick={() => setActiveIndex(i)}
+                      className={`group flex items-center gap-4 text-left w-full py-3 lg:py-5 px-4 lg:px-0 rounded-xl lg:rounded-none whitespace-nowrap lg:whitespace-normal transition-all duration-300 ${
+                        i !== capabilities.length - 1
+                          ? 'lg:border-b lg:border-white/[0.06]'
+                          : ''
+                      } ${
+                        i === activeIndex
+                          ? 'bg-white/[0.06] lg:bg-transparent'
+                          : ''
+                      }`}
+                    >
+                      {/* Number */}
+                      <span
+                        className={`hidden lg:block font-mono text-[11px] transition-colors duration-300 shrink-0 ${
+                          i === activeIndex
+                            ? 'text-accent'
+                            : 'text-cream/20'
+                        }`}
+                      >
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+
+                      {/* Title + accent underline */}
+                      <div className="relative">
+                        <span
+                          className={`text-sm lg:text-base font-medium transition-colors duration-300 ${
+                            i === activeIndex
+                              ? 'text-cream'
+                              : 'text-cream/40 group-hover:text-cream/60'
+                          }`}
+                        >
+                          <span className="hidden lg:inline">{cap.title}</span>
+                          <span className="lg:hidden">{cap.shortTitle}</span>
+                        </span>
+                        {/* Active underline */}
+                        <div
+                          className={`absolute -bottom-1 left-0 h-[2px] bg-accent transition-all duration-300 ${
+                            i === activeIndex ? 'w-full' : 'w-0'
+                          }`}
+                        />
+                      </div>
+
+                      {/* Arrow on active */}
+                      <ArrowRight
+                        className={`hidden lg:block w-4 h-4 ml-auto shrink-0 transition-all duration-300 ${
+                          i === activeIndex
+                            ? 'text-accent opacity-100 translate-x-0'
+                            : 'text-cream/20 opacity-0 -translate-x-2'
+                        }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right content — image + description */}
+              <div className="lg:col-span-8 p-6 md:p-10">
+                {/* Image */}
+                <div className="relative aspect-[16/9] rounded-[18px] overflow-hidden mb-8 border border-white/[0.06]">
+                  {capabilities.map((cap, i) => (
+                    <Image
+                      key={cap.title}
+                      src={cap.image}
+                      alt={cap.title}
+                      fill
+                      className={`object-cover transition-all duration-700 ease-out ${
+                        i === activeIndex
+                          ? 'opacity-100 scale-100'
+                          : 'opacity-0 scale-[1.03]'
+                      }`}
+                      sizes="(max-width: 1024px) 100vw, 800px"
+                      priority={i === 0}
+                    />
+                  ))}
+                  {/* Bottom gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#080808]/50 via-transparent to-transparent pointer-events-none" />
+                </div>
+
+                {/* Text content */}
+                <div className="flex items-start gap-4 mb-6">
+                  <Icon className="w-6 h-6 text-accent shrink-0 mt-1" />
+                  <div>
+                    <h3 className="text-cream text-xl md:text-2xl font-display mb-1">
+                      {active.title}
+                    </h3>
+                    <span className="font-mono text-[10px] text-accent/60 uppercase tracking-[0.15em]">
+                      {active.shortTitle}
+                    </span>
+                  </div>
+                </div>
+
+                <p className="text-cream/50 text-sm md:text-base leading-[1.8] mb-6">
+                  {active.longDescription}
+                </p>
+
+                {/* Pull quote */}
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-[1px] bg-accent/40" />
+                  <p className="font-display text-sm text-cream/70 italic">
+                    {active.pullQuote}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  )
+}
 
 /* ─── Experiments Banner ─── */
 
@@ -223,168 +357,8 @@ export default function LabsPage() {
         </div>
       </section>
 
-      {/* ━━━ CAPABILITIES ━━━ */}
-      <section className="relative bg-[#080808] overflow-hidden">
-        <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
-          {/* Section header */}
-          <ScrollReveal>
-            <div className="flex items-center gap-3 mb-8">
-              <div className="w-[2px] h-5 bg-accent" />
-              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
-                Capabilities
-              </span>
-            </div>
-          </ScrollReveal>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-16 md:mb-24">
-            <div className="lg:col-span-7">
-              <ScrollReveal delay={0.1}>
-                <h2 className="font-display text-[clamp(1.75rem,4vw,3rem)] leading-[1.15] text-cream">
-                  AI, engineering &amp; content —{' '}
-                  <span className="text-accent italic">we do it all</span>
-                </h2>
-              </ScrollReveal>
-            </div>
-            <div className="lg:col-span-5 flex items-end">
-              <ScrollReveal delay={0.2}>
-                <p className="text-base text-cream/50 leading-relaxed">
-                  No cookie-cutter solutions. We look at your problem fresh,
-                  build something that actually fits, and plug it straight into
-                  your existing setup.
-                </p>
-              </ScrollReveal>
-            </div>
-          </div>
-
-          {/* Service cards — Aeos glassmorphic style */}
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {services.map((service, i) => {
-              const Icon = service.icon
-              return (
-                <div
-                  key={service.title}
-                  className="group relative rounded-[25px] border border-white/[0.12] bg-white/[0.03]
-                             backdrop-blur-sm p-8 md:p-10
-                             hover:border-accent/40 hover:bg-white/[0.05]
-                             transition-all duration-500 ease-out"
-                >
-                  {/* Number */}
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-3">
-                      <div className="w-[2px] h-4 bg-accent/50" />
-                      <span className="font-mono text-[11px] text-cream/25 group-hover:text-accent/60 transition-colors duration-300">
-                        {String(i + 1).padStart(2, '0')}
-                      </span>
-                    </div>
-                    <Icon className="w-5 h-5 text-cream/20 group-hover:text-accent transition-colors duration-300" />
-                  </div>
-
-                  <h3 className="text-cream text-xl font-semibold mb-3 tracking-[-0.01em]">
-                    {service.title}
-                  </h3>
-                  <p className="text-cream/45 text-sm leading-relaxed">
-                    {service.description}
-                  </p>
-                </div>
-              )
-            })}
-          </StaggerReveal>
-        </div>
-      </section>
-
-      {/* ━━━ DEEP DIVE SECTIONS ━━━ */}
-      {deepDive.map((section, i) => {
-        const Icon = section.icon
-        const isReversed = i % 2 !== 0
-
-        return (
-          <section
-            key={section.title}
-            className={`relative overflow-hidden ${
-              i % 2 === 0 ? 'bg-[#080808]' : 'bg-[#0d0d0d]'
-            }`}
-          >
-            {/* Subtle glow */}
-            <div
-              className={`absolute inset-0 pointer-events-none ${
-                isReversed
-                  ? 'bg-[radial-gradient(ellipse_at_20%_50%,rgba(232,90,63,0.04),transparent_60%)]'
-                  : 'bg-[radial-gradient(ellipse_at_80%_50%,rgba(232,90,63,0.04),transparent_60%)]'
-              }`}
-            />
-
-            <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
-              <div
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center ${
-                  isReversed ? '' : ''
-                }`}
-              >
-                {/* Text side */}
-                <div className={isReversed ? 'lg:order-2' : 'lg:order-1'}>
-                  <ScrollReveal>
-                    <div className="flex items-center gap-3 mb-8">
-                      <div className="w-[2px] h-5 bg-accent" />
-                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
-                        {section.label}
-                      </span>
-                    </div>
-                  </ScrollReveal>
-
-                  <ScrollReveal delay={0.1}>
-                    <h2 className="font-display text-[clamp(1.75rem,4vw,3rem)] leading-[1.15] text-cream mb-8">
-                      {section.title.split(' ').slice(0, -1).join(' ')}{' '}
-                      <span className="text-accent italic">
-                        {section.title.split(' ').slice(-1)}
-                      </span>
-                    </h2>
-                  </ScrollReveal>
-
-                  <ScrollReveal delay={0.2}>
-                    <p className="text-base text-cream/50 leading-[1.8] mb-6">
-                      {section.body}
-                    </p>
-                  </ScrollReveal>
-
-                  {section === deepDive[0] && (
-                    <ScrollReveal delay={0.25}>
-                      <p className="text-sm text-cream/35 italic">
-                        {section.pullQuote}
-                      </p>
-                    </ScrollReveal>
-                  )}
-                </div>
-
-                {/* Quote card — Aeos glassmorphic */}
-                <div className={isReversed ? 'lg:order-1' : 'lg:order-2'}>
-                  <ScrollReveal delay={0.15}>
-                    <div className="relative rounded-[25px] border border-white/[0.12] bg-white/[0.03] backdrop-blur-sm p-10 md:p-14">
-                      {/* Accent marker */}
-                      <div
-                        className={`absolute top-0 ${
-                          isReversed ? 'right-10' : 'left-10'
-                        } w-10 h-[2px] bg-accent`}
-                      />
-
-                      <Icon className="w-8 h-8 text-accent/40 mb-8" />
-
-                      <p className="font-display text-xl md:text-2xl text-cream/90 leading-snug italic">
-                        &ldquo;{section.pullQuote}&rdquo;
-                      </p>
-
-                      <div className="flex items-center gap-3 mt-8">
-                        <div className="w-8 h-[1px] bg-cream/15" />
-                        <span className="font-mono text-[10px] text-cream/30 uppercase tracking-[0.15em]">
-                          {section.accent}
-                        </span>
-                      </div>
-                    </div>
-                  </ScrollReveal>
-                </div>
-              </div>
-            </div>
-          </section>
-        )
-      })}
+      {/* ━━━ WHAT WE DO — Interactive (Aeos-inspired) ━━━ */}
+      <WhatWeDo />
 
       {/* ━━━ AI EXPERIMENTS — Interactive Banner ━━━ */}
       <ExperimentsBanner />
