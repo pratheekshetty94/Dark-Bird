@@ -97,7 +97,7 @@ export default function Departments() {
                     fill
                     sizes="200px"
                     className="object-contain opacity-85"
-                    priority
+                    loading="lazy"
                   />
                 </div>
               </div>

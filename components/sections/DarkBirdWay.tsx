@@ -44,6 +44,7 @@ export default function DarkBirdWay() {
                   alt="Creative Trust"
                   fill
                   className="object-contain p-8"
+                  loading="lazy"
                 />
               </div>
               {/* Decorative overlays */}
