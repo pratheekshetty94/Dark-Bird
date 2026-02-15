@@ -40,7 +40,7 @@ export default function SplineHero() {
       )}>
         {showSpline && (
           <iframe
-            src='https://my.spline.design/kingfisherinmotion-5yhKkvqpaQHj7H2EDnE8Vzd8/'
+            src='https://prod.spline.design/xdicw7G6UV0NqTOO/scene.splinecode'
             frameBorder='0'
             width='100%'
             height='100%'

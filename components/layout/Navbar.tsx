@@ -85,7 +85,7 @@ export default function Navbar() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
           isScrolled
-            ? hasLightBackground ? 'py-4 bg-ink' : 'py-4 bg-transparent'
+            ? hasLightBackground ? 'py-4 bg-ink' : 'py-4 backdrop-blur-xl bg-ink/90'
             : hasLightBackground ? 'py-6 bg-ink' : 'py-6 bg-transparent'
         )}
       >

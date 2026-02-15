@@ -194,10 +194,10 @@ export default function PerformanceAdsPage() {
                 className="rounded-xl overflow-hidden shadow-lg bg-charcoal"
               >
                 <video
-                  src={video.src}
+                  src={`${video.src}#t=0.5`}
                   controls
+                  preload="metadata"
                   className="w-full aspect-[9/16] object-cover"
-                  poster=""
                 >
                   Your browser does not support the video tag.
                 </video>

@@ -44,6 +44,16 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       touchMultiplier: 2,
     })
 
+    // Sync Lenis scroll position with GSAP ScrollTrigger
+    let ScrollTriggerModule: typeof import('gsap/ScrollTrigger').ScrollTrigger | null = null
+
+    import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
+      ScrollTriggerModule = ScrollTrigger
+      lenisRef.current?.on('scroll', () => {
+        ScrollTriggerModule?.update()
+      })
+    })
+
     let isRunning = true
 
     function raf(time: number) {

@@ -290,6 +290,23 @@ const filmsData: Record<string, FilmData> = {
     imdb: 'https://www.imdb.com/title/tt28252563/',
     wiki: 'https://en.wikipedia.org/wiki/Madharaasi',
   },
+  'who-is-baul': {
+    id: 'who-is-baul',
+    title: 'Who Is Baul',
+    year: '2021',
+    poster: '/images/posters/who-is-baul.jpg',
+    role: 'DOP & Editor',
+    category: 'documentary',
+    description: 'An epic documentary on the mystic music traditions of the Bauls of Bengal, featuring music by Grammy winner Ricky Kej.',
+    platform: 'Amazon Prime Video',
+    director: 'Sairam Sagiraju',
+    cast: ['Sairam Sagiraju', 'Ricky Kej'],
+    genre: ['Documentary', 'Music'],
+    runtime: '54 min',
+    language: 'English / Bengali',
+    synopsis: 'Who Is Baul is an epic documentary exploring the mystic music traditions of the Bauls of Bengal. Declared an Intangible Heritage of Humanity by UNESCO, the Bauls have kept their philosophies alive for over 1,000 years through music as their path to spirituality. The film captures their nonconformist way of life — free of dogmas, rituals, and religious institutions — while highlighting how modern demands threaten their simple, enlightened lifestyles. Produced by Vikram Sampath with an original score and music supervision by Grammy Award winner Ricky Kej, the documentary releases globally in 4K Ultra HD.',
+    imdb: 'https://www.imdb.com/title/tt14273058/',
+  },
 }
 
 export default function FilmDetailPage() {

@@ -32,7 +32,7 @@ export default function Parallax({
         trigger: element,
         start: 'top bottom',
         end: 'bottom top',
-        scrub: true,
+        scrub: 1,
       },
     })
 

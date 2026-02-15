@@ -192,6 +192,18 @@ const films: FilmItem[] = [
     wikiUrl: 'https://en.wikipedia.org/wiki/Madharaasi',
     imdbUrl: 'https://www.imdb.com/title/tt28252563/',
   },
+  {
+    id: 'who-is-baul',
+    title: 'Who Is Baul',
+    year: '2021',
+    poster: '/images/posters/who-is-baul.jpg',
+    role: 'DOP & Editor',
+    category: 'documentary',
+    description: 'An epic documentary on the mystic music traditions of the Bauls of Bengal.',
+    platform: 'Amazon Prime Video',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Baul',
+    imdbUrl: 'https://www.imdb.com/title/tt14273058/',
+  },
 ]
 
 const categories = [
@@ -699,9 +711,12 @@ export default function FilmographyPage() {
             <SectionLabel>Feature Films & Trailers</SectionLabel>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-charcoal mt-4 mb-12">
-              Our Work Lives on Screens Across India
-            </h2>
+            <Link href="/work/films" className="group flex items-center gap-4 mt-4 mb-12">
+              <h2 className="text-section font-bold text-charcoal group-hover:text-accent transition-colors">
+                Our Work Lives on Screens Across India
+              </h2>
+              <ArrowUpRight className="w-6 h-6 text-charcoal/40 group-hover:text-accent group-hover:translate-x-1 group-hover:-translate-y-1 transition-all shrink-0" />
+            </Link>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
@@ -717,9 +732,12 @@ export default function FilmographyPage() {
             <SectionLabel>Ad Films & Commercials</SectionLabel>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-white mt-4 mb-4">
-              Brand Campaigns
-            </h2>
+            <Link href="/work/films" className="group flex items-center gap-4 mt-4 mb-4">
+              <h2 className="text-section font-bold text-white group-hover:text-accent transition-colors">
+                Brand Campaigns
+              </h2>
+              <ArrowUpRight className="w-6 h-6 text-white/40 group-hover:text-accent group-hover:translate-x-1 group-hover:-translate-y-1 transition-all shrink-0" />
+            </Link>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
             <p className="text-warm-gray mb-12">
@@ -740,9 +758,12 @@ export default function FilmographyPage() {
             <SectionLabel>Music Videos</SectionLabel>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-charcoal mt-4 mb-12">
-              The Sounds We've Turned Into Visuals
-            </h2>
+            <Link href="/work/films" className="group flex items-center gap-4 mt-4 mb-12">
+              <h2 className="text-section font-bold text-charcoal group-hover:text-accent transition-colors">
+                The Sounds We&apos;ve Turned Into Visuals
+              </h2>
+              <ArrowUpRight className="w-6 h-6 text-charcoal/40 group-hover:text-accent group-hover:translate-x-1 group-hover:-translate-y-1 transition-all shrink-0" />
+            </Link>
           </ScrollReveal>
 
           <ScrollReveal delay={0.2}>
