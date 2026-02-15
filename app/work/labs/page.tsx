@@ -1,11 +1,21 @@
 'use client'
 
+import { useRef, useEffect, useState } from 'react'
 import Image from 'next/image'
-import SectionLabel from '@/components/ui/SectionLabel'
-import Button from '@/components/ui/Button'
+import Link from 'next/link'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
-import { Cpu, Sparkles, Brain, Workflow, Eye, ChevronDown } from 'lucide-react'
+import {
+  Cpu,
+  Sparkles,
+  Brain,
+  Workflow,
+  Eye,
+  ChevronDown,
+  ArrowUpRight,
+} from 'lucide-react'
+
+/* ─── Data ─── */
 
 const services = [
   {
@@ -34,143 +44,173 @@ const services = [
   },
 ]
 
-const experiments = [
+const deepDive = [
   {
-    src: '/images/labs/ai-launch-trailers.jpeg',
-    title: 'AI Launch Trailers',
+    label: 'What We Build',
+    icon: Sparkles,
+    title: 'Magical customer experiences',
+    body: 'Allow your customers & audience to be part of a movie trailer with their favourite actor or create a custom lullaby for their kids. Create unique marketing experiences & content to maximise reach and engagement.',
+    pullQuote: 'This is a level of user personalisation never seen before.',
+    accent: 'Personalisation at scale',
   },
   {
-    src: '/images/labs/ai-visual-experiments.jpeg',
-    title: 'AI Visual Experiments',
+    label: 'Custom LLMs',
+    icon: Brain,
+    title: 'Intelligence built for you',
+    body: "Improve your business's decision-making, automate content generation or handle customer queries at scale. We integrate seamlessly with your existing tech stack — these LLMs are tailored to meet your specific needs, enabling more effective communication and smarter decision-making processes. Let us help you transform your data into decisions, and decisions into action.",
+    pullQuote: 'Transform data into decisions, and decisions into action.',
+    accent: 'Custom language models',
   },
   {
-    src: '/images/labs/ai-music-videos.jpeg',
-    title: 'AI Music Videos',
+    label: 'Automation',
+    icon: Workflow,
+    title: 'Efficiency maxed',
+    body: 'Work with us to identify bottlenecks in your organisation. Automate your day-to-day tasks with our Workflow Automation services. We focus on eliminating manual work wherever possible, from data processing to complex operational tasks, freeing up time to focus on more important things. Ensure that your business runs smoothly and efficiently, with consistent quality and reduced chances for errors.',
+    pullQuote: 'Eliminate manual work, focus on what matters.',
+    accent: 'End-to-end automation',
   },
   {
-    src: '/images/labs/ai-commercials.jpeg',
-    title: 'AI Commercials & Concept Films',
-  },
-  {
-    src: '/images/labs/ai-short-films.jpeg',
-    title: 'AI Short Films',
+    label: 'Vision',
+    icon: Eye,
+    title: 'Convert Pixels to Action',
+    body: 'Use computer vision technology to provide practical, real-world solutions for your business. From recognizing faces and objects in images to analyzing video footage, we can help you automate and refine processes that require visual data interpretation. These applications are ideal for improving security, monitoring, quality control and operational efficiency across various sectors.',
+    pullQuote: 'Convert pixels to action.',
+    accent: 'Computer vision solutions',
   },
 ]
+
+const experiments = [
+  { src: '/images/labs/ai-launch-trailers.jpeg', title: 'AI Launch Trailers' },
+  { src: '/images/labs/ai-visual-experiments.jpeg', title: 'AI Visual Experiments' },
+  { src: '/images/labs/ai-music-videos.jpeg', title: 'AI Music Videos' },
+  { src: '/images/labs/ai-commercials.jpeg', title: 'AI Commercials' },
+  { src: '/images/labs/ai-short-films.jpeg', title: 'AI Short Films' },
+]
+
+/* ─── Page ─── */
 
 export default function LabsPage() {
   return (
     <>
-      {/* ─── Spline Hero ─── */}
-      <section className="relative h-[60vh] md:h-[70vh] w-full overflow-hidden bg-ink">
-        <iframe
-          src="https://my.spline.design/nexbotrobotcharacterconcept-4WsTjTGsSlJH27BcJUDBbHnQ/"
-          frameBorder="0"
-          width="100%"
-          height="100%"
-          className="absolute inset-0 w-full h-full"
-          style={{ border: 'none' }}
-          allow="autoplay"
-        />
-        {/* Bottom gradient fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-ink to-transparent pointer-events-none" />
-        {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-          <ChevronDown className="w-6 h-6 text-cream/40 animate-bounce" />
+      {/* ━━━ HERO: Spline + Content ━━━ */}
+      <section className="relative min-h-screen w-full overflow-hidden bg-[#080808]">
+        {/* Spline 3D background */}
+        <div className="absolute inset-0">
+          <iframe
+            src="https://my.spline.design/nexbotrobotcharacterconcept-4WsTjTGsSlJH27BcJUDBbHnQ/"
+            frameBorder="0"
+            width="100%"
+            height="100%"
+            className="absolute inset-0 w-full h-full"
+            style={{ border: 'none' }}
+            allow="autoplay"
+          />
+        </div>
+
+        {/* Layered overlays — Aeos-style depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#080808]/40 via-transparent to-[#080808] pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,#080808_80%)] pointer-events-none" />
+
+        {/* Hero content — bottom-aligned */}
+        <div className="relative z-10 min-h-screen flex flex-col justify-end pb-16 md:pb-24 px-6 md:px-12 lg:px-20">
+          <div className="max-w-[1200px] mx-auto w-full">
+            {/* Accent divider */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-[2px] h-5 bg-accent" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+                Experimental Division
+              </span>
+            </div>
+
+            <h1 className="font-display text-[clamp(2.5rem,8vw,6rem)] leading-[1.05] tracking-[-0.02em] text-cream mb-6">
+              We Bend Reality
+              <br />
+              <span className="text-accent italic">For Brands.</span>
+            </h1>
+
+            <p className="text-lg md:text-xl text-cream/60 max-w-xl mb-10 leading-relaxed">
+              AI-driven films and brand visuals that feel bold, cinematic, and
+              culturally current.
+            </p>
+
+            <Link
+              href="/contact"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-accent text-cream rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_0_40px_rgba(232,90,63,0.4)]"
+            >
+              Step Inside the Lab
+              <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </Link>
+          </div>
+
+          {/* Scroll indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+            <ChevronDown className="w-5 h-5 text-cream/25 animate-bounce" />
+          </div>
         </div>
       </section>
 
-      {/* ─── Hero Content ─── */}
-      <section className="relative py-16 md:py-24 bg-ink overflow-hidden">
-        {/* Background glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(232,90,63,0.06),transparent_70%)] pointer-events-none" />
-
-        <div className="container-content relative z-10 text-center">
+      {/* ━━━ CAPABILITIES ━━━ */}
+      <section className="relative bg-[#080808] overflow-hidden">
+        <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
+          {/* Section header */}
           <ScrollReveal>
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-accent/10 border border-accent/20 rounded-full mb-8 animate-[pulse_3s_ease-in-out_infinite]">
-              <Cpu className="w-4 h-4 text-accent" />
-              <span className="text-accent text-sm font-medium tracking-wide">
-                Experimental Division
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-[2px] h-5 bg-accent" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+                Capabilities
               </span>
             </div>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.1}>
-            <h1 className="font-display text-hero text-cream mt-2 mb-6">
-              We Bend Reality
-              <br />
-              <em className="text-accent">For Brands.</em>
-            </h1>
-          </ScrollReveal>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 mb-16 md:mb-24">
+            <div className="lg:col-span-7">
+              <ScrollReveal delay={0.1}>
+                <h2 className="font-display text-[clamp(1.75rem,4vw,3rem)] leading-[1.15] text-cream">
+                  We bring AI, engineering &amp; content{' '}
+                  <span className="text-accent italic">expertise</span>
+                </h2>
+              </ScrollReveal>
+            </div>
+            <div className="lg:col-span-5 flex items-end">
+              <ScrollReveal delay={0.2}>
+                <p className="text-base text-cream/50 leading-relaxed">
+                  Each problem is looked at from a fresh lens to provide you
+                  with a solution that solves your specific requirements and
+                  integrates with your existing infrastructure.
+                </p>
+              </ScrollReveal>
+            </div>
+          </div>
 
-          <ScrollReveal delay={0.2}>
-            <p className="text-body-lg text-silver max-w-2xl mx-auto mb-10">
-              AI-driven films and brand visuals that feel bold, cinematic, and
-              culturally current.
-            </p>
-          </ScrollReveal>
-
-          <ScrollReveal delay={0.3}>
-            <Button href="/contact" className="glow-accent">
-              Step Inside the Lab
-            </Button>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* ─── Capabilities ─── */}
-      <section className="relative section-padding overflow-hidden">
-        <div className="absolute inset-0 bg-charcoal" />
-        <div className="container-content relative z-10">
-          <ScrollReveal>
-            <SectionLabel>Capabilities</SectionLabel>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h2 className="font-display text-section text-cream mt-4 mb-4">
-              We bring AI, engineering &amp; content{' '}
-              <em className="text-accent">expertise</em>
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.15}>
-            <p className="text-body text-silver max-w-3xl mb-14">
-              Each problem is looked at from a fresh lens to provide you with a
-              solution that solves your specific requirements and integrates with
-              your existing infrastructure.
-            </p>
-          </ScrollReveal>
-
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Service cards — Aeos glassmorphic style */}
+          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {services.map((service, i) => {
               const Icon = service.icon
               return (
                 <div
                   key={service.title}
-                  className="relative p-8 bg-ink/60 border border-cream/[0.08] rounded-2xl
-                             hover:border-accent/30 hover:shadow-glow
-                             transition-all duration-300 group overflow-hidden"
+                  className="group relative rounded-[25px] border border-white/[0.12] bg-white/[0.03]
+                             backdrop-blur-sm p-8 md:p-10
+                             hover:border-accent/40 hover:bg-white/[0.05]
+                             transition-all duration-500 ease-out"
                 >
-                  {/* Number label */}
-                  <span className="absolute top-6 right-7 font-mono text-xs text-cream/10 group-hover:text-accent/40 transition-colors duration-300">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-
-                  {/* Top accent bar on hover */}
-                  <div className="absolute top-0 left-0 h-[2px] w-0 bg-accent group-hover:w-full transition-all duration-500 ease-out" />
-
-                  <div className="flex items-start gap-5">
-                    {/* Accent bar */}
-                    <div className="hidden md:block w-[2px] h-[22px] bg-accent/60 mt-1 shrink-0" />
-                    <div>
-                      <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-5 group-hover:bg-accent group-hover:scale-105 transition-all duration-300">
-                        <Icon className="w-6 h-6 text-accent group-hover:text-cream transition-colors duration-300" />
-                      </div>
-                      <h3 className="text-cream font-semibold text-lg mb-2">
-                        {service.title}
-                      </h3>
-                      <p className="text-warm-gray text-sm leading-relaxed">
-                        {service.description}
-                      </p>
+                  {/* Number */}
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-3">
+                      <div className="w-[2px] h-4 bg-accent/50" />
+                      <span className="font-mono text-[11px] text-cream/25 group-hover:text-accent/60 transition-colors duration-300">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
                     </div>
+                    <Icon className="w-5 h-5 text-cream/20 group-hover:text-accent transition-colors duration-300" />
                   </div>
+
+                  <h3 className="text-cream text-xl font-semibold mb-3 tracking-[-0.01em]">
+                    {service.title}
+                  </h3>
+                  <p className="text-cream/45 text-sm leading-relaxed">
+                    {service.description}
+                  </p>
                 </div>
               )
             })}
@@ -178,222 +218,147 @@ export default function LabsPage() {
         </div>
       </section>
 
-      {/* ─── Magical Experiences ─── */}
-      <section className="relative section-padding bg-ink overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(232,90,63,0.05),transparent_60%)] pointer-events-none" />
+      {/* ━━━ DEEP DIVE SECTIONS ━━━ */}
+      {deepDive.map((section, i) => {
+        const Icon = section.icon
+        const isReversed = i % 2 !== 0
 
-        <div className="container-content relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div>
-              <ScrollReveal>
-                <SectionLabel>What We Build</SectionLabel>
-              </ScrollReveal>
-              <ScrollReveal delay={0.1}>
-                <h2 className="font-display text-section text-cream mt-4 mb-6">
-                  Magical customer{' '}
-                  <em className="text-accent">experiences</em>
-                </h2>
-              </ScrollReveal>
-              <ScrollReveal delay={0.2}>
-                <p className="text-body-lg text-silver mb-6 leading-relaxed">
-                  Allow your customers &amp; audience to be part of a movie
-                  trailer with their favourite actor or create a custom lullaby
-                  for their kids. Create unique marketing experiences &amp;
-                  content to maximise reach and engagement.
-                </p>
-              </ScrollReveal>
-              <ScrollReveal delay={0.25}>
-                <p className="text-body text-warm-gray italic">
-                  This is a level of user personalisation never seen before.
-                </p>
-              </ScrollReveal>
-            </div>
+        return (
+          <section
+            key={section.title}
+            className={`relative overflow-hidden ${
+              i % 2 === 0 ? 'bg-[#080808]' : 'bg-[#0d0d0d]'
+            }`}
+          >
+            {/* Subtle glow */}
+            <div
+              className={`absolute inset-0 pointer-events-none ${
+                isReversed
+                  ? 'bg-[radial-gradient(ellipse_at_20%_50%,rgba(232,90,63,0.04),transparent_60%)]'
+                  : 'bg-[radial-gradient(ellipse_at_80%_50%,rgba(232,90,63,0.04),transparent_60%)]'
+              }`}
+            />
 
-            {/* Visual card */}
-            <ScrollReveal delay={0.15}>
-              <div className="relative rounded-2xl border border-cream/[0.08] bg-charcoal/40 p-10 md:p-14">
-                <div className="absolute top-0 left-8 w-12 h-[2px] bg-accent" />
-                <Sparkles className="w-10 h-10 text-accent/60 mb-6" />
-                <p className="font-display text-2xl md:text-3xl text-cream leading-snug">
-                  &ldquo;Be part of a movie trailer with your favourite actor&rdquo;
-                </p>
-                <p className="font-mono text-xs text-warm-gray/60 mt-6 uppercase tracking-wider">
-                  Personalisation at scale
-                </p>
+            <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
+              <div
+                className={`grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center ${
+                  isReversed ? '' : ''
+                }`}
+              >
+                {/* Text side */}
+                <div className={isReversed ? 'lg:order-2' : 'lg:order-1'}>
+                  <ScrollReveal>
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="w-[2px] h-5 bg-accent" />
+                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+                        {section.label}
+                      </span>
+                    </div>
+                  </ScrollReveal>
+
+                  <ScrollReveal delay={0.1}>
+                    <h2 className="font-display text-[clamp(1.75rem,4vw,3rem)] leading-[1.15] text-cream mb-8">
+                      {section.title.split(' ').slice(0, -1).join(' ')}{' '}
+                      <span className="text-accent italic">
+                        {section.title.split(' ').slice(-1)}
+                      </span>
+                    </h2>
+                  </ScrollReveal>
+
+                  <ScrollReveal delay={0.2}>
+                    <p className="text-base text-cream/50 leading-[1.8] mb-6">
+                      {section.body}
+                    </p>
+                  </ScrollReveal>
+
+                  {section === deepDive[0] && (
+                    <ScrollReveal delay={0.25}>
+                      <p className="text-sm text-cream/35 italic">
+                        {section.pullQuote}
+                      </p>
+                    </ScrollReveal>
+                  )}
+                </div>
+
+                {/* Quote card — Aeos glassmorphic */}
+                <div className={isReversed ? 'lg:order-1' : 'lg:order-2'}>
+                  <ScrollReveal delay={0.15}>
+                    <div className="relative rounded-[25px] border border-white/[0.12] bg-white/[0.03] backdrop-blur-sm p-10 md:p-14">
+                      {/* Accent marker */}
+                      <div
+                        className={`absolute top-0 ${
+                          isReversed ? 'right-10' : 'left-10'
+                        } w-10 h-[2px] bg-accent`}
+                      />
+
+                      <Icon className="w-8 h-8 text-accent/40 mb-8" />
+
+                      <p className="font-display text-xl md:text-2xl text-cream/90 leading-snug italic">
+                        &ldquo;{section.pullQuote}&rdquo;
+                      </p>
+
+                      <div className="flex items-center gap-3 mt-8">
+                        <div className="w-8 h-[1px] bg-cream/15" />
+                        <span className="font-mono text-[10px] text-cream/30 uppercase tracking-[0.15em]">
+                          {section.accent}
+                        </span>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                </div>
               </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Intelligence Section ─── */}
-      <section className="relative section-padding overflow-hidden">
-        <div className="absolute inset-0 bg-charcoal" />
-        <div className="container-content relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Visual card */}
-            <ScrollReveal delay={0.15}>
-              <div className="relative rounded-2xl border border-cream/[0.08] bg-ink/40 p-10 md:p-14 order-2 lg:order-1">
-                <div className="absolute top-0 right-8 w-12 h-[2px] bg-accent" />
-                <Brain className="w-10 h-10 text-accent/60 mb-6" />
-                <p className="font-display text-2xl md:text-3xl text-cream leading-snug">
-                  &ldquo;Transform data into decisions, and decisions into action&rdquo;
-                </p>
-                <p className="font-mono text-xs text-warm-gray/60 mt-6 uppercase tracking-wider">
-                  Custom language models
-                </p>
-              </div>
-            </ScrollReveal>
-
-            <div className="order-1 lg:order-2">
-              <ScrollReveal>
-                <SectionLabel>Custom LLMs</SectionLabel>
-              </ScrollReveal>
-              <ScrollReveal delay={0.1}>
-                <h2 className="font-display text-section text-cream mt-4 mb-6">
-                  Intelligence built{' '}
-                  <em className="text-accent">for you</em>
-                </h2>
-              </ScrollReveal>
-              <ScrollReveal delay={0.2}>
-                <p className="text-body text-silver leading-relaxed">
-                  Improve your business&apos;s decision-making, automate content
-                  generation or handle customer queries at scale. We integrate
-                  seamlessly with your existing tech stack — these LLMs are
-                  tailored to meet your specific needs, enabling more effective
-                  communication and smarter decision-making processes. Let us
-                  help you transform your data into decisions, and decisions
-                  into action.
-                </p>
-              </ScrollReveal>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        )
+      })}
 
-      {/* ─── Efficiency Section ─── */}
-      <section className="relative section-padding bg-ink overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(232,90,63,0.04),transparent_60%)] pointer-events-none" />
-
-        <div className="container-content relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div>
-              <ScrollReveal>
-                <SectionLabel>Automation</SectionLabel>
-              </ScrollReveal>
-              <ScrollReveal delay={0.1}>
-                <h2 className="font-display text-section text-cream mt-4 mb-6">
-                  Efficiency{' '}
-                  <em className="text-accent">maxed</em>
-                </h2>
-              </ScrollReveal>
-              <ScrollReveal delay={0.2}>
-                <p className="text-body text-silver leading-relaxed">
-                  Work with us to identify bottlenecks in your organisation.
-                  Automate your day-to-day tasks with our Workflow Automation
-                  services. We focus on eliminating manual work wherever
-                  possible, from data processing to complex operational tasks,
-                  freeing up time to focus on more important things. Ensure that
-                  your business runs smoothly and efficiently, with consistent
-                  quality and reduced chances for errors.
-                </p>
-              </ScrollReveal>
-            </div>
-
-            {/* Visual card */}
-            <ScrollReveal delay={0.15}>
-              <div className="relative rounded-2xl border border-cream/[0.08] bg-charcoal/40 p-10 md:p-14">
-                <div className="absolute top-0 left-8 w-12 h-[2px] bg-accent" />
-                <Workflow className="w-10 h-10 text-accent/60 mb-6" />
-                <p className="font-display text-2xl md:text-3xl text-cream leading-snug">
-                  &ldquo;Eliminate manual work, focus on what matters&rdquo;
-                </p>
-                <p className="font-mono text-xs text-warm-gray/60 mt-6 uppercase tracking-wider">
-                  End-to-end automation
-                </p>
-              </div>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Vision Section ─── */}
-      <section className="relative section-padding overflow-hidden">
-        <div className="absolute inset-0 bg-charcoal" />
-        <div className="container-content relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Visual card */}
-            <ScrollReveal delay={0.15}>
-              <div className="relative rounded-2xl border border-cream/[0.08] bg-ink/40 p-10 md:p-14 order-2 lg:order-1">
-                <div className="absolute top-0 right-8 w-12 h-[2px] bg-accent" />
-                <Eye className="w-10 h-10 text-accent/60 mb-6" />
-                <p className="font-display text-2xl md:text-3xl text-cream leading-snug">
-                  &ldquo;Convert pixels to action&rdquo;
-                </p>
-                <p className="font-mono text-xs text-warm-gray/60 mt-6 uppercase tracking-wider">
-                  Computer vision solutions
-                </p>
-              </div>
-            </ScrollReveal>
-
-            <div className="order-1 lg:order-2">
-              <ScrollReveal>
-                <SectionLabel>Vision</SectionLabel>
-              </ScrollReveal>
-              <ScrollReveal delay={0.1}>
-                <h2 className="font-display text-section text-cream mt-4 mb-6">
-                  Convert Pixels to{' '}
-                  <em className="text-accent">Action</em>
-                </h2>
-              </ScrollReveal>
-              <ScrollReveal delay={0.2}>
-                <p className="text-body text-silver leading-relaxed">
-                  Use computer vision technology to provide practical,
-                  real-world solutions for your business. From recognizing faces
-                  and objects in images to analyzing video footage, we can help
-                  you automate and refine processes that require visual data
-                  interpretation. These applications are ideal for improving
-                  security, monitoring, quality control and operational
-                  efficiency across various sectors.
-                </p>
-              </ScrollReveal>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ─── AI Experiments Gallery ─── */}
-      <section className="relative section-padding bg-ink overflow-hidden">
-        <div className="container-content">
+      {/* ━━━ AI EXPERIMENTS GALLERY ━━━ */}
+      <section className="relative bg-[#080808] overflow-hidden">
+        <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
           <ScrollReveal>
-            <SectionLabel>Lab Output</SectionLabel>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h2 className="font-display text-section text-cream mt-4 mb-12">
-              AI Visual <em className="text-accent">Experiments</em>
-            </h2>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-[2px] h-5 bg-accent" />
+              <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+                Lab Output
+              </span>
+            </div>
           </ScrollReveal>
 
-          <StaggerReveal className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+            <div className="lg:col-span-7">
+              <ScrollReveal delay={0.1}>
+                <h2 className="font-display text-[clamp(1.75rem,4vw,3rem)] leading-[1.15] text-cream">
+                  AI Visual <span className="text-accent italic">Experiments</span>
+                </h2>
+              </ScrollReveal>
+            </div>
+          </div>
+
+          <StaggerReveal className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
             {experiments.map((item) => (
               <div
                 key={item.title}
-                className="group relative aspect-[3/4] rounded-2xl overflow-hidden border border-cream/[0.06] hover:border-accent/20 transition-colors duration-300"
+                className="group relative aspect-[3/4] rounded-[20px] overflow-hidden
+                           border border-white/[0.08] hover:border-accent/25
+                           transition-all duration-500"
               >
                 <Image
                   src={item.src}
                   alt={item.title}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                   sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 />
-                {/* Always-visible bottom gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent pointer-events-none" />
+                {/* Persistent bottom gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#080808]/80 via-transparent to-transparent pointer-events-none" />
                 {/* Hover overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
-                  <span className="font-mono text-[10px] md:text-xs text-cream/90 tracking-wide uppercase">
-                    {item.title}
-                  </span>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#080808]/95 via-[#080808]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-4 md:p-5">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-[2px] h-3 bg-accent" />
+                    <span className="font-mono text-[9px] md:text-[10px] text-cream/80 uppercase tracking-[0.15em]">
+                      {item.title}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -401,14 +366,51 @@ export default function LabsPage() {
         </div>
       </section>
 
-      {/* ─── CTA ─── */}
-      <CTABand
-        variant="dark"
-        headline="Ready to Explore the Future?"
-        description="Let's push the boundaries of what's possible with AI-powered creativity."
-        buttonText="Enter the Lab"
-        buttonHref="/contact"
-      />
+      {/* ━━━ CTA ━━━ */}
+      <section className="relative bg-[#080808] overflow-hidden">
+        <div className="max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 py-24 md:py-40">
+          <div className="relative rounded-[25px] border border-white/[0.12] bg-white/[0.03] backdrop-blur-sm p-12 md:p-20 text-center overflow-hidden">
+            {/* Background glow */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(232,90,63,0.08),transparent_70%)] pointer-events-none" />
+
+            <div className="relative z-10">
+              <div className="flex items-center justify-center gap-3 mb-8">
+                <div className="w-8 h-[1px] bg-cream/15" />
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-cream/40">
+                  Start a Project
+                </span>
+                <div className="w-8 h-[1px] bg-cream/15" />
+              </div>
+
+              <h2 className="font-display text-[clamp(1.75rem,5vw,3.5rem)] leading-[1.1] text-cream mb-6">
+                Ready to Explore the{' '}
+                <span className="text-accent italic">Future?</span>
+              </h2>
+
+              <p className="text-base text-cream/45 max-w-lg mx-auto mb-10 leading-relaxed">
+                Let&apos;s push the boundaries of what&apos;s possible with
+                AI-powered creativity.
+              </p>
+
+              <Link
+                href="/contact"
+                className="group inline-flex items-center gap-3 px-8 py-4 bg-accent text-cream rounded-full font-medium text-sm tracking-wide transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_0_40px_rgba(232,90,63,0.4)]"
+              >
+                Enter the Lab
+                <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+
+              <div className="flex items-center justify-center gap-4 mt-14">
+                <div className="w-12 h-[1px] bg-cream/10" />
+                <span className="font-mono text-[10px] text-cream/25 tracking-wider">
+                  management@darkbirdfilms.com
+                </span>
+                <div className="w-12 h-[1px] bg-cream/10" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   )
 }
