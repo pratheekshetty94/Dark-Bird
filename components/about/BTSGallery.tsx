@@ -52,11 +52,11 @@ export default function BTSGallery({ images }: BTSGalleryProps) {
   return (
     <>
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 will-change-transform">
         {images.map((img, index) => (
           <div
             key={img.src}
-            className="group relative overflow-hidden rounded-2xl bg-charcoal cursor-pointer"
+            className="group relative overflow-hidden rounded-2xl bg-charcoal cursor-pointer will-change-transform"
             onClick={() => openLightbox(index)}
           >
             <div className="relative w-full aspect-[4/3]">
@@ -67,6 +67,7 @@ export default function BTSGallery({ images }: BTSGalleryProps) {
                 className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 unoptimized
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-ink/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-500">

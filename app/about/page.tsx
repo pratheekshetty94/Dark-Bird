@@ -486,29 +486,23 @@ export default function AboutPage() {
         <div className="container-content">
           <div className="grid lg:grid-cols-12 gap-8 mb-16">
             <div className="lg:col-span-5">
-              <ScrollReveal>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-8 h-px bg-accent" />
-                  <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">
-                    Behind the Scenes
-                  </span>
-                </div>
-              </ScrollReveal>
-              <ScrollReveal delay={0.1}>
-                <h2 className="font-display text-display text-cream">
-                  Where the<br />
-                  <em className="text-accent">magic happens</em>
-                </h2>
-              </ScrollReveal>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-8 h-px bg-accent" />
+                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-accent">
+                  Behind the Scenes
+                </span>
+              </div>
+              <h2 className="font-display text-display text-cream">
+                Where the<br />
+                <em className="text-accent">magic happens</em>
+              </h2>
             </div>
             <div className="lg:col-span-7 lg:flex lg:items-end">
-              <ScrollReveal delay={0.2}>
-                <p className="text-body text-warm-gray max-w-lg">
-                  Big cameras, bigger ambitions. From smoky studio setups with
-                  cinema-grade rigs to golden hour shoots in the Western Ghats
-                  &mdash; this is what production looks like at Dark Bird.
-                </p>
-              </ScrollReveal>
+              <p className="text-body text-warm-gray max-w-lg">
+                Big cameras, bigger ambitions. From smoky studio setups with
+                cinema-grade rigs to golden hour shoots in the Western Ghats
+                &mdash; this is what production looks like at Dark Bird.
+              </p>
             </div>
           </div>
 
