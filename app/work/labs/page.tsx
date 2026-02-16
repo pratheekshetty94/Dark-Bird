@@ -692,18 +692,18 @@ function ProjectsCarousel() {
 export default function LabsPage() {
   return (
     <>
-      {/* ━━━ FIXED SPLINE 3D BACKGROUND ━━━ */}
+      {/* ━━━ FIXED NEBULA BACKGROUND ━━━ */}
       <div className="fixed inset-0 z-0">
-        <iframe
-          src="https://prod.spline.design/xdicw7G6UV0NqTOO/scene.splinecode"
-          frameBorder="0"
-          width="100%"
-          height="100%"
-          className="absolute inset-0 w-full h-full"
-          style={{ border: 'none' }}
-          allow="autoplay"
+        <Image
+          src="/images/labs/labs-bg-nebula.jpg"
+          alt=""
+          fill
+          className="object-cover blur-[2px] scale-110"
+          sizes="100vw"
+          priority
+          unoptimized
         />
-        <div className="absolute inset-0 bg-[#080808]/70 pointer-events-none" />
+        <div className="absolute inset-0 bg-[#080808]/85" />
       </div>
 
       {/* ━━━ HERO: Spline + Content ━━━ */}
