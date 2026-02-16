@@ -300,6 +300,7 @@ function ServiceShowcase() {
 
 function FullScreenBanner({
   image,
+  video,
   alt,
   label,
   heading,
@@ -307,7 +308,8 @@ function FullScreenBanner({
   description,
   align = 'right',
 }: {
-  image: string
+  image?: string
+  video?: string
   alt: string
   label: string
   heading: string
@@ -320,14 +322,26 @@ function FullScreenBanner({
   return (
     <section className="relative overflow-hidden">
       <div className="relative h-[50vh] min-h-[400px] md:h-[60vh]">
-        <Image
-          src={image}
-          alt={alt}
-          fill
-          className="object-cover"
-          sizes="100vw"
-          unoptimized
-        />
+        {video ? (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src={video} type="video/mp4" />
+          </video>
+        ) : image ? (
+          <Image
+            src={image}
+            alt={alt}
+            fill
+            className="object-cover"
+            sizes="100vw"
+            unoptimized
+          />
+        ) : null}
         <div className={`absolute inset-0 ${isLeft ? 'bg-gradient-to-r from-ink/95 via-ink/70 to-transparent' : 'bg-gradient-to-l from-ink/95 via-ink/70 to-transparent'}`} />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-ink/20" />
 
@@ -709,19 +723,20 @@ export default function LabsPage() {
       {/* ━━━ HERO: Spline + Content ━━━ */}
       <section className="relative min-h-screen w-full overflow-hidden bg-[#080808]">
         {/* Spline 3D background — positioned left/center */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#080808]">
           <iframe
             src="https://my.spline.design/nexbotrobotcharacterconcept-4WsTjTGsSlJH27BcJUDBbHnQ/"
             frameBorder="0"
             width="100%"
             height="100%"
             className="absolute inset-0 w-full h-full"
-            style={{ border: 'none' }}
+            style={{ border: 'none', mixBlendMode: 'multiply' }}
             allow="autoplay"
           />
         </div>
 
         {/* Overlays */}
+        <div className="absolute inset-0 bg-[#080808]/30 pointer-events-none" />
         <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-[#080808] via-[#080808]/60 to-transparent pointer-events-none z-[1]" />
 
         {/* Hero content — centre bottom */}
@@ -767,7 +782,7 @@ export default function LabsPage() {
 
       {/* ━━━ BANNER 1 — Hilltop ━━━ */}
       <FullScreenBanner
-        image="/images/labs/labs-banner-hilltop.png"
+        video="/videos/labs/labs-banner-hilltop.mp4"
         alt="Boy and robot filming on a hilltop at sunset"
         label="Built Different"
         heading="We don't just use AI —"
@@ -781,7 +796,7 @@ export default function LabsPage() {
 
       {/* ━━━ BANNER 2 — Workshop ━━━ */}
       <FullScreenBanner
-        image="/images/labs/labs-banner-workshop.png"
+        video="/videos/labs/labs-banner-workshop.mp4"
         alt="Boy tinkering with AI-powered film machines in a workshop"
         label="Our Workshop"
         heading="Where craft meets"
