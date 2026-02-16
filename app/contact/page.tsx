@@ -41,6 +41,7 @@ export default function ContactPage() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -52,12 +53,27 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitError('')
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
 
-    setIsSubmitting(false)
-    setIsSubmitted(true)
+      const data = await response.json()
+
+      if (response.ok) {
+        setIsSubmitted(true)
+      } else {
+        setSubmitError(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch {
+      setSubmitError('Network error. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -241,6 +257,13 @@ export default function ContactPage() {
                       placeholder="Share details about your project, goals, and timeline..."
                     />
                   </div>
+
+                  {/* Error Message */}
+                  {submitError && (
+                    <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                      {submitError}
+                    </div>
+                  )}
 
                   {/* Submit Button */}
                   <button
