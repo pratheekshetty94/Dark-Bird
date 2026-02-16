@@ -1,4 +1,4 @@
-import { Resend } from 'resend'
+import nodemailer from 'nodemailer'
 import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
@@ -15,19 +15,30 @@ export async function POST(request: Request) {
       )
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY)
+    // Create SMTP transporter using Google Workspace or GoDaddy
+    // For Google Workspace: smtp.gmail.com, port 587
+    // For GoDaddy: smtpout.secureserver.net, port 465
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for 587
+      auth: {
+        user: process.env.SMTP_USER, // e.g. management@darkbirdfilms.com
+        pass: process.env.SMTP_PASS, // App Password (not regular password)
+      },
+    })
 
-    // Send email to both management and pratheek
-    await resend.emails.send({
-      from: 'Dark Bird Website <noreply@darkbirdfilms.com>',
-      to: ['management@darkbirdfilms.com', 'pratheek@darkbirdfilms.com'],
+    // Send email to both addresses
+    await transporter.sendMail({
+      from: `"Dark Bird Website" <${process.env.SMTP_USER}>`,
+      to: 'management@darkbirdfilms.com, pratheek@darkbirdfilms.com',
       replyTo: email,
       subject: `New Lead: ${name} — ${service}`,
       html: `
         <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #1A1818; color: #FAF6EF; border-radius: 12px; overflow: hidden;">
           <div style="background: #E85A3F; padding: 24px 32px;">
             <h1 style="margin: 0; font-size: 20px; color: #FAF6EF; font-weight: 600;">
-              🎬 New Project Inquiry
+              New Project Inquiry
             </h1>
           </div>
 
