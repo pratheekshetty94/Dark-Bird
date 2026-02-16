@@ -2,6 +2,16 @@
 
 import React from 'react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+
+const SplineCamera = dynamic(() => import('@/components/SplineCamera'), {
+  ssr: false,
+  loading: () => (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-12 h-12 border-2 border-accent/30 border-t-accent rounded-full animate-spin" />
+    </div>
+  ),
+})
 
 export default function BrandPositioning() {
   return (
@@ -70,15 +80,7 @@ export default function BrandPositioning() {
           {/* Right Column - 3D Camera Spline */}
           <div className="hidden lg:col-span-5 lg:flex items-center justify-center">
             <div className="relative w-full max-w-md aspect-square">
-              <iframe
-                src="https://prod.spline.design/xdicw7G6UV0NqTOO/scene.splinecode"
-                frameBorder="0"
-                width="100%"
-                height="100%"
-                className="absolute inset-0 w-full h-full"
-                style={{ border: 'none', background: 'transparent' }}
-                allow="autoplay"
-              />
+              <SplineCamera />
             </div>
           </div>
         </div>
