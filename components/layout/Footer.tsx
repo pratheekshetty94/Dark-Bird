@@ -30,7 +30,7 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-ink border-t border-stone/10">
+    <footer className="relative z-10 bg-ink border-t border-stone/10">
       {/* Compact Footer */}
       <div className="container-content py-6 md:py-8">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
