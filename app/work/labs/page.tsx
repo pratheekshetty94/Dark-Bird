@@ -711,7 +711,7 @@ export default function LabsPage() {
         {/* Spline 3D background — positioned left/center */}
         <div className="absolute inset-0">
           <iframe
-            src="https://my.spline.design/futuristicgeometricengine-RUax9SYC45XvFHnJmoQYxf8i/"
+            src="https://my.spline.design/nexbotrobotcharacterconcept-4WsTjTGsSlJH27BcJUDBbHnQ/"
             frameBorder="0"
             width="100%"
             height="100%"
