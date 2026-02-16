@@ -730,13 +730,16 @@ export default function LabsPage() {
             width="100%"
             height="100%"
             className="absolute inset-0 w-full h-full"
-            style={{ border: 'none', mixBlendMode: 'multiply' }}
+            style={{ border: 'none' }}
             allow="autoplay"
           />
+          {/* Edge vignette overlays to mask Spline's light background */}
+          <div className="absolute inset-0 pointer-events-none" style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 40%, transparent 30%, #080808 100%)' }} />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#080808] via-transparent to-[#080808]/80" />
+          <div className="absolute inset-0 pointer-events-none bg-gradient-to-r from-[#080808]/70 via-transparent to-[#080808]/70" />
         </div>
 
         {/* Overlays */}
-        <div className="absolute inset-0 bg-[#080808]/30 pointer-events-none" />
         <div className="absolute bottom-0 left-0 right-0 h-[60%] bg-gradient-to-t from-[#080808] via-[#080808]/60 to-transparent pointer-events-none z-[1]" />
 
         {/* Hero content — centre bottom */}
