@@ -4,7 +4,7 @@ import Link from 'next/link'
 import SectionLabel from '@/components/ui/SectionLabel'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
-import SplineBanner from '@/components/SplineBanner'
+import LazySplineBanner from '@/components/LazySplineBanner'
 import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink, Megaphone } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -109,7 +109,7 @@ export default function DesignsPage() {
       <section className="relative min-h-screen overflow-hidden bg-ink">
         {/* Spline 3D Background */}
         <div className="absolute inset-0 z-0 pointer-events-none">
-          <SplineBanner
+          <LazySplineBanner
             scene="https://prod.spline.design/0AxnVdsvhUNmSUcJ/scene.splinecode"
             height="h-full"
             scale={3}
