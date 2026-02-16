@@ -800,6 +800,7 @@ export default function LabsPage() {
         heading="Stories told by humans,"
         headingAccent="scaled by machines."
         description="AI handles the heavy lifting so creators can focus on what matters — the story, the emotion, the craft that makes people feel something."
+        align="left"
       />
 
       {/* ━━━ CTA ━━━ */}
