@@ -9,23 +9,25 @@ export default function CustomCursor() {
   const [cursorState, setCursorState] = useState<'default' | 'hover' | 'text' | 'play' | 'drag' | 'view'>('default')
   const [cursorText, setCursorText] = useState('')
   const [isVisible, setIsVisible] = useState(false)
-  const [isTouchDevice, setIsTouchDevice] = useState(true) // Default to true to avoid flash
+  const [shouldHide, setShouldHide] = useState(true) // Default hidden to avoid flash
   const animationFrameRef = useRef<number | null>(null)
 
-  // Check for touch device on mount
+  // Check for touch device and Windows on mount
   useEffect(() => {
-    const checkTouch = () => {
+    const checkDevice = () => {
       const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
       const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches
-      setIsTouchDevice(hasTouch || hasCoarsePointer)
+      // Disable custom cursor on Windows — mix-blend-mode causes heavy compositing jank
+      const isWindows = navigator.userAgent.includes('Windows')
+      setShouldHide(hasTouch || hasCoarsePointer || isWindows)
     }
 
-    checkTouch()
+    checkDevice()
   }, [])
 
   useEffect(() => {
-    // Don't run on touch devices
-    if (isTouchDevice) return
+    // Don't run on touch devices or Windows
+    if (shouldHide) return
 
     const cursor = cursorRef.current
     const cursorDot = cursorDotRef.current
@@ -117,10 +119,10 @@ export default function CustomCursor() {
       document.removeEventListener('mouseleave', handleMouseLeave)
       document.removeEventListener('mouseenter', handleMouseEnter)
     }
-  }, [isTouchDevice])
+  }, [shouldHide])
 
-  // Don't render anything on touch devices
-  if (isTouchDevice) {
+  // Don't render anything on touch devices or Windows
+  if (shouldHide) {
     return null
   }
 
@@ -166,7 +168,7 @@ export default function CustomCursor() {
         <div className="w-1.5 h-1.5 rounded-full bg-white" />
       </div>
 
-      {/* Hide default cursor - only on non-touch devices */}
+      {/* Hide default cursor - only on non-touch, non-Windows devices */}
       <style jsx global>{`
         @media (hover: hover) and (pointer: fine) {
           * {

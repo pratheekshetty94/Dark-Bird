@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ScrollReveal from '@/components/animations/ScrollReveal'
-import { Mail, Phone, MapPin, Instagram, Youtube, Linkedin, Facebook, Send, MessageCircle, ArrowUpRight } from 'lucide-react'
+import { Mail, Phone, MapPin, Instagram, Youtube, Linkedin, Facebook, Send, MessageCircle, ArrowUpRight, Download, Calendar, Clock, ChevronLeft, ChevronRight, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const services = [
@@ -28,6 +28,374 @@ const socialLinks = [
   { href: 'https://linkedin.com/company/darkbirdfilms', icon: Linkedin, label: 'LinkedIn', handle: 'Dark Bird Films' },
   { href: 'https://www.facebook.com/Darkbirdfilms/', icon: Facebook, label: 'Facebook', handle: 'Dark Bird Films' },
 ]
+
+/* ─── Time Slots ─── */
+const TIME_SLOTS = [
+  '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
+  '12:00 PM', '12:30 PM', '02:00 PM', '02:30 PM',
+  '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM',
+  '05:00 PM', '05:30 PM',
+]
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+
+function parseTimeSlot(dateStr: string, timeStr: string): Date {
+  const [year, month, day] = dateStr.split('-').map(Number)
+  const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i)
+  if (!match) return new Date()
+  let hours = parseInt(match[1])
+  const minutes = parseInt(match[2])
+  const ampm = match[3].toUpperCase()
+  if (ampm === 'PM' && hours !== 12) hours += 12
+  if (ampm === 'AM' && hours === 12) hours = 0
+  return new Date(year, month - 1, day, hours, minutes)
+}
+
+function formatDateStr(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+/* ─── Booking Widget ─── */
+function BookingWidget() {
+  const today = new Date()
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth())
+  const [currentYear, setCurrentYear] = useState(today.getFullYear())
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [selectedTime, setSelectedTime] = useState<string | null>(null)
+  const [busySlots, setBusySlots] = useState<string[]>([])
+  const [loadingSlots, setLoadingSlots] = useState(false)
+  const [step, setStep] = useState<'date' | 'details' | 'confirmed'>('date')
+  const [isBooking, setIsBooking] = useState(false)
+  const [bookingError, setBookingError] = useState('')
+
+  const [bookingForm, setBookingForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    notes: '',
+  })
+
+  // Fetch busy slots when date changes
+  useEffect(() => {
+    if (!selectedDate) return
+    setLoadingSlots(true)
+    setBusySlots([])
+    setSelectedTime(null)
+
+    fetch(`/api/booking/availability?date=${selectedDate}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.busySlots) setBusySlots(data.busySlots)
+      })
+      .catch(() => {})
+      .finally(() => setLoadingSlots(false))
+  }, [selectedDate])
+
+  // Calendar generation
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay()
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate()
+  const todayStr = formatDateStr(today)
+
+  const canGoPrev = currentYear > today.getFullYear() || (currentYear === today.getFullYear() && currentMonth > today.getMonth())
+
+  const handlePrevMonth = () => {
+    if (!canGoPrev) return
+    if (currentMonth === 0) { setCurrentMonth(11); setCurrentYear(y => y - 1) }
+    else setCurrentMonth(m => m - 1)
+  }
+
+  const handleNextMonth = () => {
+    if (currentMonth === 11) { setCurrentMonth(0); setCurrentYear(y => y + 1) }
+    else setCurrentMonth(m => m + 1)
+  }
+
+  const handleDateClick = (day: number) => {
+    const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+    const d = new Date(currentYear, currentMonth, day)
+    // No past dates, no weekends
+    if (dateStr < todayStr) return
+    if (d.getDay() === 0 || d.getDay() === 6) return
+    setSelectedDate(dateStr)
+  }
+
+  const handleBooking = async () => {
+    if (!selectedDate || !selectedTime || !bookingForm.name || !bookingForm.email) return
+    setIsBooking(true)
+    setBookingError('')
+
+    try {
+      const response = await fetch('/api/booking/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: selectedDate,
+          time: selectedTime,
+          name: bookingForm.name,
+          email: bookingForm.email,
+          phone: bookingForm.phone,
+          notes: bookingForm.notes,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setStep('confirmed')
+      } else {
+        setBookingError(data.error || 'Failed to book. Please try again.')
+      }
+    } catch {
+      setBookingError('Network error. Please try again.')
+    } finally {
+      setIsBooking(false)
+    }
+  }
+
+  const availableSlots = TIME_SLOTS.filter(slot => !busySlots.includes(slot))
+
+  if (step === 'confirmed') {
+    return (
+      <div className="p-12 text-center">
+        <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Check className="w-10 h-10 text-accent" />
+        </div>
+        <h3 className="font-display text-2xl text-cream mb-3">Meeting Booked!</h3>
+        <p className="text-cream/50 max-w-md mx-auto mb-4">
+          Your discovery call has been scheduled. You'll receive a confirmation email with a Google Meet link.
+        </p>
+        <div className="inline-flex items-center gap-4 px-6 py-3 bg-white/[0.05] rounded-xl border border-white/[0.08]">
+          <Calendar className="w-5 h-5 text-accent" />
+          <span className="text-cream font-medium">{selectedDate}</span>
+          <Clock className="w-5 h-5 text-accent" />
+          <span className="text-cream font-medium">{selectedTime}</span>
+        </div>
+      </div>
+    )
+  }
+
+  if (step === 'details') {
+    return (
+      <div className="p-6 md:p-8">
+        {/* Back button */}
+        <button
+          onClick={() => setStep('date')}
+          className="flex items-center gap-2 text-sm text-cream/50 hover:text-accent transition-colors mb-6"
+        >
+          <ChevronLeft className="w-4 h-4" />
+          Back to calendar
+        </button>
+
+        {/* Selected slot summary */}
+        <div className="flex items-center gap-4 px-5 py-3 bg-accent/10 border border-accent/20 rounded-xl mb-8">
+          <Calendar className="w-5 h-5 text-accent" />
+          <span className="text-cream font-medium">{selectedDate}</span>
+          <Clock className="w-5 h-5 text-accent" />
+          <span className="text-cream font-medium">{selectedTime}</span>
+          <span className="text-cream/40 text-sm ml-auto">30 min</span>
+        </div>
+
+        <h3 className="font-display text-xl text-cream mb-6">Your Details</h3>
+
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-mono text-[10px] uppercase tracking-wider text-cream/40 mb-2">Name *</label>
+              <input
+                type="text"
+                required
+                value={bookingForm.name}
+                onChange={e => setBookingForm({ ...bookingForm, name: e.target.value })}
+                className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-lg text-cream placeholder:text-cream/25 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-sm"
+                placeholder="Your name"
+              />
+            </div>
+            <div>
+              <label className="block font-mono text-[10px] uppercase tracking-wider text-cream/40 mb-2">Email *</label>
+              <input
+                type="email"
+                required
+                value={bookingForm.email}
+                onChange={e => setBookingForm({ ...bookingForm, email: e.target.value })}
+                className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-lg text-cream placeholder:text-cream/25 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-sm"
+                placeholder="you@company.com"
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block font-mono text-[10px] uppercase tracking-wider text-cream/40 mb-2">Phone</label>
+            <input
+              type="tel"
+              value={bookingForm.phone}
+              onChange={e => setBookingForm({ ...bookingForm, phone: e.target.value })}
+              className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-lg text-cream placeholder:text-cream/25 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-sm"
+              placeholder="Your phone number"
+            />
+          </div>
+          <div>
+            <label className="block font-mono text-[10px] uppercase tracking-wider text-cream/40 mb-2">Notes</label>
+            <textarea
+              rows={3}
+              value={bookingForm.notes}
+              onChange={e => setBookingForm({ ...bookingForm, notes: e.target.value })}
+              className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-lg text-cream placeholder:text-cream/25 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-sm resize-none"
+              placeholder="Anything you'd like us to know before the call..."
+            />
+          </div>
+        </div>
+
+        {bookingError && (
+          <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm">
+            {bookingError}
+          </div>
+        )}
+
+        <button
+          onClick={handleBooking}
+          disabled={isBooking || !bookingForm.name || !bookingForm.email}
+          className={cn(
+            "mt-6 w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-medium text-sm transition-all duration-300",
+            isBooking || !bookingForm.name || !bookingForm.email
+              ? "bg-cream/10 text-cream/30 cursor-not-allowed"
+              : "bg-accent text-cream hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(232,90,63,0.3)]"
+          )}
+        >
+          {isBooking ? 'Booking...' : 'Confirm Booking'}
+          {!isBooking && <ArrowUpRight className="w-4 h-4" />}
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="p-6 md:p-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Calendar */}
+        <div>
+          {/* Month nav */}
+          <div className="flex items-center justify-between mb-6">
+            <button
+              onClick={handlePrevMonth}
+              disabled={!canGoPrev}
+              className={cn(
+                "w-9 h-9 rounded-full border flex items-center justify-center transition-all",
+                canGoPrev
+                  ? "border-cream/20 text-cream hover:border-accent hover:text-accent"
+                  : "border-white/[0.06] text-cream/15 cursor-not-allowed"
+              )}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <h3 className="font-display text-lg text-cream">
+              {MONTHS[currentMonth]} {currentYear}
+            </h3>
+            <button
+              onClick={handleNextMonth}
+              className="w-9 h-9 rounded-full border border-cream/20 text-cream hover:border-accent hover:text-accent flex items-center justify-center transition-all"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Day headers */}
+          <div className="grid grid-cols-7 gap-1 mb-2">
+            {DAYS.map(d => (
+              <div key={d} className="text-center text-[10px] font-mono uppercase tracking-wider text-cream/30 py-2">
+                {d}
+              </div>
+            ))}
+          </div>
+
+          {/* Calendar grid */}
+          <div className="grid grid-cols-7 gap-1">
+            {Array.from({ length: firstDay }).map((_, i) => (
+              <div key={`empty-${i}`} />
+            ))}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1
+              const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+              const d = new Date(currentYear, currentMonth, day)
+              const isPast = dateStr < todayStr
+              const isWeekend = d.getDay() === 0 || d.getDay() === 6
+              const isSelected = dateStr === selectedDate
+              const isToday = dateStr === todayStr
+              const isDisabled = isPast || isWeekend
+
+              return (
+                <button
+                  key={day}
+                  onClick={() => !isDisabled && handleDateClick(day)}
+                  disabled={isDisabled}
+                  className={cn(
+                    "aspect-square rounded-lg flex items-center justify-center text-sm transition-all duration-200 relative",
+                    isDisabled && "text-cream/10 cursor-not-allowed",
+                    !isDisabled && !isSelected && "text-cream/60 hover:bg-accent/10 hover:text-cream",
+                    isSelected && "bg-accent text-cream font-medium shadow-[0_0_20px_rgba(232,90,63,0.3)]",
+                    isToday && !isSelected && "ring-1 ring-accent/40"
+                  )}
+                >
+                  {day}
+                </button>
+              )
+            })}
+          </div>
+
+          <p className="mt-4 text-[11px] text-cream/25 font-mono">
+            IST (Indian Standard Time) • 30 min call
+          </p>
+        </div>
+
+        {/* Time slots */}
+        <div>
+          <h4 className="font-mono text-[11px] uppercase tracking-wider text-cream/40 mb-4">
+            {selectedDate ? `Available times for ${selectedDate}` : 'Select a date first'}
+          </h4>
+
+          {!selectedDate ? (
+            <div className="flex items-center justify-center h-48 border border-dashed border-white/[0.08] rounded-xl">
+              <p className="text-cream/20 text-sm">Pick a date to see available slots</p>
+            </div>
+          ) : loadingSlots ? (
+            <div className="flex items-center justify-center h-48">
+              <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+            </div>
+          ) : availableSlots.length === 0 ? (
+            <div className="flex items-center justify-center h-48 border border-dashed border-white/[0.08] rounded-xl">
+              <p className="text-cream/30 text-sm">No slots available for this date</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-2 max-h-[340px] overflow-y-auto pr-1 scrollbar-hide" data-lenis-prevent>
+              {availableSlots.map(slot => (
+                <button
+                  key={slot}
+                  onClick={() => setSelectedTime(slot)}
+                  className={cn(
+                    "px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 border",
+                    selectedTime === slot
+                      ? "bg-accent text-cream border-accent shadow-[0_0_20px_rgba(232,90,63,0.2)]"
+                      : "bg-white/[0.03] text-cream/60 border-white/[0.08] hover:border-accent/40 hover:text-cream"
+                  )}
+                >
+                  {slot}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {selectedDate && selectedTime && (
+            <button
+              onClick={() => setStep('details')}
+              className="mt-6 w-full flex items-center justify-center gap-3 px-8 py-4 bg-accent text-cream rounded-xl font-medium text-sm transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(232,90,63,0.3)]"
+            >
+              Continue
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -183,7 +551,7 @@ export default function ContactPage() {
                         value={formData.phone}
                         onChange={handleChange}
                         className="w-full px-4 py-4 bg-cream border border-stone/20 rounded-lg text-ink placeholder:text-warm-gray focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
-                        placeholder="+91 98765 43210"
+                        placeholder="Enter your phone number"
                       />
                     </div>
                     <div>
@@ -291,15 +659,42 @@ export default function ContactPage() {
 
                   {/* WhatsApp */}
                   <a
-                    href="https://wa.me/919876543210"
+                    href="https://wa.me/919187533221"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group flex items-center gap-4 p-5 bg-green-600 rounded-xl text-cream mb-6 hover:bg-green-700 transition-colors"
+                    className="group flex items-center gap-4 p-5 bg-green-600 rounded-xl text-cream mb-4 hover:bg-green-700 transition-colors"
                   >
                     <MessageCircle className="w-6 h-6" />
                     <div className="flex-1">
                       <p className="font-medium">WhatsApp</p>
                       <p className="text-sm text-cream/80">Quick response guaranteed</p>
+                    </div>
+                    <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </a>
+
+                  {/* Book a Call */}
+                  <a
+                    href="#book-call"
+                    className="group flex items-center gap-4 p-5 bg-accent rounded-xl text-cream mb-4 hover:bg-accent-hover transition-colors"
+                  >
+                    <Calendar className="w-6 h-6" />
+                    <div className="flex-1">
+                      <p className="font-medium">Book a Discovery Call</p>
+                      <p className="text-sm text-cream/80">Pick a time that works for you</p>
+                    </div>
+                    <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  </a>
+
+                  {/* Download Brochure */}
+                  <a
+                    href="/Dark-Bird-Brochure-2026.pdf"
+                    download
+                    className="group flex items-center gap-4 p-5 bg-charcoal border border-white/[0.08] rounded-xl text-cream mb-6 hover:bg-charcoal/80 transition-colors"
+                  >
+                    <Download className="w-6 h-6" />
+                    <div className="flex-1">
+                      <p className="font-medium">Download Brochure</p>
+                      <p className="text-sm text-cream/80">Dark Bird Films 2026</p>
                     </div>
                     <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                   </a>
@@ -320,7 +715,7 @@ export default function ContactPage() {
                     </a>
 
                     <a
-                      href="tel:+919876543210"
+                      href="tel:+919108955609"
                       className="flex items-center gap-4 p-4 bg-charcoal rounded-xl text-cream hover:bg-charcoal/80 transition-colors group"
                     >
                       <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -328,7 +723,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <p className="text-xs text-warm-gray uppercase tracking-wider font-mono">Phone</p>
-                        <p className="font-medium group-hover:text-accent transition-colors">+91 98765 43210</p>
+                        <p className="font-medium group-hover:text-accent transition-colors">+91 91089 55609</p>
                       </div>
                     </a>
 
@@ -371,6 +766,35 @@ export default function ContactPage() {
               </ScrollReveal>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Book a Discovery Call — Google Calendar */}
+      <section id="book-call" className="section-dark section-padding border-t border-white/[0.06]">
+        <div className="container-content">
+          <ScrollReveal>
+            <div className="text-center mb-10">
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <div className="w-8 h-[1px] bg-cream/15" />
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent">
+                  Schedule a Call
+                </span>
+                <div className="w-8 h-[1px] bg-cream/15" />
+              </div>
+              <h2 className="font-display text-section text-cream mb-4">
+                Book a <em className="text-accent">Discovery Call</em>
+              </h2>
+              <p className="text-silver max-w-lg mx-auto">
+                Pick a time that works for you. We'll discuss your project, goals, and how Dark Bird can help.
+              </p>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal delay={0.1}>
+            <div className="max-w-4xl mx-auto rounded-2xl overflow-hidden border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm">
+              <BookingWidget />
+            </div>
+          </ScrollReveal>
         </div>
       </section>
     </>

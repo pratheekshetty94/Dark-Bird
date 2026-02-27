@@ -7,8 +7,23 @@ import CTABand from '@/components/sections/CTABand'
 import { VideoItem } from '@/lib/videos'
 
 export const metadata: Metadata = {
-  title: 'Dark Bird Films | Film Production & Cinematography',
-  description: 'Award-winning film production including Kantara, 777 Charlie. We create feature films, ad films, commercials, and music videos with cinematic excellence.',
+  title: 'Film Production Portfolio | Kantara, 777 Charlie & Ad Films',
+  description: 'Watch our complete film portfolio: Kantara (100M+ views), 777 Charlie, ad films for Flipkart & top brands, and 15+ music videos. Feature films, commercials & music video production.',
+  keywords: [
+    'kantara trailer', 'kantara editing', '777 charlie trailer', '777 charlie cinematography',
+    'ad film production portfolio', 'flipkart ad film', 'music video production india',
+    'dark bird films portfolio', 'commercial production reel', 'feature film production india',
+    'best ad film production company', 'music video director india',
+  ],
+  openGraph: {
+    title: 'Films Portfolio | Dark Bird Films',
+    description: 'Feature films, ad films & music videos. Watch our complete portfolio including Kantara & 777 Charlie.',
+    url: 'https://darkbirdfilms.com/work/films',
+    type: 'website',
+  },
+  alternates: {
+    canonical: 'https://darkbirdfilms.com/work/films',
+  },
 }
 
 // Feature Films - Correctly mapped from darkbirdfilms.com
@@ -353,7 +368,7 @@ export default function FilmsPage() {
       </section>
 
       {/* Feature Films */}
-      <section className="section-light section-padding">
+      <section id="feature-films" className="section-light section-padding">
         <div className="container-content">
           <ScrollReveal>
             <SectionLabel>Feature Films</SectionLabel>
@@ -371,7 +386,7 @@ export default function FilmsPage() {
       </section>
 
       {/* Ad Films & Commercials */}
-      <section className="section-dark section-padding">
+      <section id="ad-films" className="section-dark section-padding">
         <div className="container-content">
           <ScrollReveal>
             <SectionLabel>Ad Films & Commercials</SectionLabel>
@@ -394,7 +409,7 @@ export default function FilmsPage() {
       </section>
 
       {/* Music Videos */}
-      <section className="section-light section-padding">
+      <section id="music-videos" className="section-light section-padding">
         <div className="container-content">
           <ScrollReveal>
             <SectionLabel>Music Videos</SectionLabel>

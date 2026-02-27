@@ -59,12 +59,12 @@ export default function BTSGallery({ images }: BTSGalleryProps) {
             className="group relative overflow-hidden rounded-2xl bg-charcoal cursor-pointer will-change-transform"
             onClick={() => openLightbox(index)}
           >
-            <div className="relative w-full aspect-[4/3]">
+            <div className="relative w-full aspect-[3/4]">
               <Image
                 src={img.src}
                 alt={img.caption}
                 fill
-                className="object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
                 sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
                 quality={60}
                 loading="lazy"

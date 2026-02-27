@@ -31,7 +31,7 @@ const filmography: FilmItem[] = [
   { id: '777-charlie', title: '777 Charlie', year: '2022', poster: '/images/posters/02 777 charlie.jpg', role: 'Editor', category: 'feature', award: 'National Award + State Award' },
   { id: 'gandhada-gudi', title: 'Gandhada Gudi', year: '2022', poster: '/images/posters/03 gandhadagudi.jpeg', role: 'DOP & Editor', category: 'documentary' },
   // 2021
-  { id: 'garudagamana', title: 'Garuda Gamana Vrishabha Vahana', year: '2021', poster: '/images/posters/06 garudagamana vrishabha vahana.png', role: 'Filmed & Edited Intro Song', category: 'feature', award: 'Filmfare + 2 SIIMA Awards' },
+  { id: 'garudagamana', title: 'Garuda Gamana Vrishabha Vahana', year: '2021', poster: '/images/posters/06 garudagamana vrishabha vahana.jpg', role: 'Filmed & Edited Intro Song', category: 'feature', award: 'Filmfare + 2 SIIMA Awards' },
   { id: 'hero', title: 'Hero', year: '2021', poster: '/images/posters/07 hero.jpeg', role: 'Editor', category: 'feature' },
   // 2020
   { id: 'who-is-baul', title: 'Who Is Baul', year: '2020', poster: '/images/posters/who-is-baul.jpg', role: 'DOP & Editor', category: 'documentary' },

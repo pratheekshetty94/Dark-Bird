@@ -34,7 +34,7 @@ const capabilities = [
     longDescription:
       "Imagine your audience starring in a movie trailer with their favourite actor. Or getting a custom lullaby generated for their kid. We're building the kind of hyper-personalised experiences that make people screenshot and share — not skip. This is a level of user personalisation never seen before.",
     pullQuote: 'Personalisation so good it feels like main character energy.',
-    image: '/images/labs/labs-genai-marketing.png',
+    image: '/images/labs/labs-genai-marketing.jpg',
   },
   {
     icon: Brain,
@@ -45,7 +45,7 @@ const capabilities = [
     longDescription:
       "Generic AI is mid. We build custom language models that live inside your tech stack and actually understand your business. Need smarter customer support? Automated content that sounds like your brand? Decisions backed by real data? We got you. Your data becomes your superpower.",
     pullQuote: 'From raw data to big moves — no middleman.',
-    image: '/images/labs/labs-custom-llm.png',
+    image: '/images/labs/labs-custom-llm.jpg',
   },
   {
     icon: Workflow,
@@ -56,7 +56,7 @@ const capabilities = [
     longDescription:
       "Let's be real — half your team's day is spent on tasks a robot could handle better. We identify the bottlenecks, build the automations, and give your people their time back. Less busywork, fewer errors, and your operations running like clockwork while you focus on the stuff that actually moves the needle.",
     pullQuote: 'Delete the busywork. Keep the brilliance.',
-    image: '/images/labs/labs-workflow-automation.png',
+    image: '/images/labs/labs-workflow-automation.jpg',
   },
   {
     icon: Eye,
@@ -67,7 +67,7 @@ const capabilities = [
     longDescription:
       "Computer vision that does real things — not just tech demos. We build solutions that recognize, analyse, and act on visual data. Quality control on production lines, security monitoring that never sleeps, video analysis at scale. If your business deals with images or footage, we can make that data work harder than it ever has.",
     pullQuote: 'Every pixel earns its keep.',
-    image: '/images/labs/labs-vision-applications.png',
+    image: '/images/labs/labs-vision-applications.jpg',
   },
 ]
 
@@ -77,7 +77,7 @@ const projects = [
     tag: 'BUILT IN 2025',
     description:
       'Autonomous virtual influencers and founder digital twins that speak, present, and create content across platforms. From personality design to daily posts — consistent brand voice at infinite scale.',
-    image: '/images/labs/labs-project-founder-avatar.png',
+    image: '/images/labs/labs-project-founder-avatar.jpg',
     color: '#E85A3F',
     category: 'Avatar',
   },
@@ -86,7 +86,7 @@ const projects = [
     tag: 'BUILT IN 2025',
     description:
       'Hollywood-grade visual effects without the Hollywood budget. AI-driven compositing, rotoscoping, and particle systems.',
-    image: '/images/labs/labs-project-vfx.png',
+    image: '/images/labs/labs-project-vfx.jpg',
     color: '#7B68EE',
     category: 'Production',
   },
@@ -95,7 +95,7 @@ const projects = [
     tag: 'BUILT IN 2025',
     description:
       'Kinetic typography, logo animations, and dynamic graphics generated at speed. From brief to render in hours, not weeks.',
-    image: '/images/labs/labs-project-motion-graphics.png',
+    image: '/images/labs/labs-project-motion-graphics.jpg',
     color: '#4ECDC4',
     category: 'Production',
   },
@@ -113,7 +113,7 @@ const projects = [
     tag: 'BUILT IN 2024',
     description:
       'Generative visual storytelling synced to rhythm and emotion. Every frame a painting, every beat a scene change.',
-    image: '/images/labs/labs-project-music-videos.png',
+    image: '/images/labs/labs-project-music-videos.jpg',
     color: '#45B7D1',
     category: 'Content',
   },
@@ -131,7 +131,7 @@ const projects = [
     tag: 'BUILT IN 2024',
     description:
       'Narrative-driven short films where AI handles the heavy lifting — world-building, character design, and post-production.',
-    image: '/images/labs/labs-project-short-films.png',
+    image: '/images/labs/labs-project-short-films.jpg',
     color: '#DDA0DD',
     category: 'Content',
   },
@@ -307,6 +307,8 @@ function FullScreenBanner({
   headingAccent,
   description,
   align = 'right',
+  subjectPosition = 'center',
+  tall = false,
 }: {
   image?: string
   video?: string
@@ -316,19 +318,29 @@ function FullScreenBanner({
   headingAccent: string
   description: string
   align?: 'left' | 'right'
+  subjectPosition?: 'left' | 'center' | 'right' | 'top'
+  tall?: boolean
 }) {
   const isLeft = align === 'left'
+  // On narrow screens, anchor to where the subject is so it doesn't get cropped
+  const posClass = subjectPosition === 'left'
+    ? 'object-left md:object-center'
+    : subjectPosition === 'right'
+      ? 'object-right md:object-center'
+      : subjectPosition === 'top'
+        ? 'object-[center_60%]'
+        : 'object-center'
 
   return (
     <section className="relative overflow-hidden">
-      <div className="relative h-[50vh] min-h-[400px] md:h-[60vh]">
+      <div className={`relative ${tall ? 'h-[65vh] min-h-[500px] md:h-[75vh]' : 'h-[50vh] min-h-[400px] md:h-[55vh]'}`}>
         {video ? (
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+            className={`absolute inset-0 w-full h-full object-cover ${posClass}`}
           >
             <source src={video} type="video/mp4" />
           </video>
@@ -337,7 +349,7 @@ function FullScreenBanner({
             src={image}
             alt={alt}
             fill
-            className="object-cover"
+            className={`object-cover ${posClass}`}
             sizes="100vw"
             unoptimized
           />
@@ -345,7 +357,7 @@ function FullScreenBanner({
         <div className={`absolute inset-0 ${isLeft ? 'bg-gradient-to-r from-ink/95 via-ink/70 to-transparent' : 'bg-gradient-to-l from-ink/95 via-ink/70 to-transparent'}`} />
         <div className="absolute inset-0 bg-gradient-to-t from-ink/60 via-transparent to-ink/20" />
 
-        <div className="absolute inset-0 flex items-center">
+        <div className="absolute inset-0 flex items-end pb-10 md:pb-14">
           <div className={`max-w-[1200px] mx-auto px-6 md:px-12 lg:px-20 w-full flex ${isLeft ? 'justify-start' : 'justify-end'}`}>
             <div className={`max-w-xl ${isLeft ? 'lg:text-left' : 'lg:text-right'}`}>
               <ScrollReveal>
@@ -355,7 +367,8 @@ function FullScreenBanner({
               </ScrollReveal>
               <ScrollReveal delay={0.1}>
                 <h2 className="font-display text-[clamp(1.75rem,5vw,3.5rem)] leading-[1.1] text-cream mb-4">
-                  {heading}{' '}
+                  {heading}
+                  <br />
                   <span className="text-accent italic">
                     {headingAccent}
                   </span>
@@ -640,7 +653,7 @@ function ProjectsCarousel() {
                   {project.title}
                 </h3>
 
-                <p className="text-cream/35 text-sm leading-[1.7] mb-5 line-clamp-3">
+                <p className="text-cream/35 text-sm leading-[1.7] mb-5">
                   {project.description}
                 </p>
 
@@ -721,7 +734,7 @@ export default function LabsPage() {
       </div>
 
       {/* ━━━ HERO: Spline + Content ━━━ */}
-      <section className="relative min-h-screen w-full overflow-hidden bg-[#080808]">
+      <section className="relative min-h-screen w-full overflow-hidden bg-[#080808]" style={{ touchAction: 'pan-y' }}>
         {/* Spline 3D background — positioned left/center */}
         <div className="absolute inset-0 bg-[#080808]">
           <iframe
@@ -730,7 +743,7 @@ export default function LabsPage() {
             width="100%"
             height="100%"
             className="absolute inset-0 w-full h-full"
-            style={{ border: 'none' }}
+            style={{ border: 'none', touchAction: 'pan-y' }}
             allow="autoplay"
           />
           {/* Edge vignette overlays to mask Spline's light background */}
@@ -788,10 +801,11 @@ export default function LabsPage() {
         video="/videos/labs/labs-banner-hilltop.mp4"
         alt="Boy and robot filming on a hilltop at sunset"
         label="Built Different"
-        heading="We don't just use AI —"
+        heading="We don't just use AI"
         headingAccent="we build with it."
         description="Every tool we ship started as a problem we faced on set or in the edit room. Real solutions, born from real production workflows."
         align="left"
+        subjectPosition="right"
       />
 
       {/* ━━━ PROCESS — How We Work ━━━ */}
@@ -805,6 +819,7 @@ export default function LabsPage() {
         heading="Where craft meets"
         headingAccent="computation."
         description="Part film studio, part engineering lab. We prototype fast, test obsessively, and only ship what actually works in the real world."
+        subjectPosition="right"
       />
 
       {/* ━━━ AI EXPERIMENTS — Projects Carousel ━━━ */}
@@ -812,13 +827,15 @@ export default function LabsPage() {
 
       {/* ━━━ BANNER 3 — Projector ━━━ */}
       <FullScreenBanner
-        image="/images/labs/labs-banner-projector.png"
+        image="/images/labs/labs-banner-projector.jpg"
         alt="Boy sitting on a giant projector beaming stories into the night sky"
         label="The Vision"
         heading="Stories told by humans,"
         headingAccent="scaled by machines."
         description="AI handles the heavy lifting so creators can focus on what matters — the story, the emotion, the craft that makes people feel something."
         align="left"
+        subjectPosition="top"
+        tall
       />
 
       {/* ━━━ CTA ━━━ */}

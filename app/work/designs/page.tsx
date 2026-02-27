@@ -8,8 +8,23 @@ import LazySplineBanner from '@/components/LazySplineBanner'
 import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink, Megaphone } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Dark Bird Designs | Brand Identity & Motion Graphics',
-  description: 'We make brands look expensive. Website design, brand identity, motion graphics, 3D modelling, and social media templates with cinematic quality.',
+  title: 'Brand Design Agency | Logo Design, Motion Graphics & Web Design India',
+  description: 'Dark Bird Designs: We make brands look expensive. Brand identity, logo design, motion graphics, 3D modelling, website design & social media templates. Bengaluru, India.',
+  keywords: [
+    'brand design agency india', 'logo design agency bengaluru', 'motion graphics india',
+    'brand identity design', 'website design production house', '3D modelling agency india',
+    'social media template design', 'dark bird designs', 'cinematic brand design',
+    'creative design agency bangalore',
+  ],
+  openGraph: {
+    title: 'Dark Bird Designs | Brand Identity & Creative Design',
+    description: 'We make brands look expensive. Brand identity, motion graphics, web design & 3D modelling.',
+    url: 'https://darkbirdfilms.com/work/designs',
+    type: 'website',
+  },
+  alternates: {
+    canonical: 'https://darkbirdfilms.com/work/designs',
+  },
 }
 
 const services = [
@@ -47,12 +62,12 @@ const services = [
 
 // Offline / Print Designs
 const offlineDesigns = [
-  { src: '/images/designs/offline/billboard-1.png', title: 'Billboard Design' },
-  { src: '/images/designs/offline/billboard-2.png', title: 'Billboard Design' },
-  { src: '/images/designs/offline/billboard-3.png', title: 'Billboard Design' },
-  { src: '/images/designs/offline/billboard-4.png', title: 'Billboard Design' },
-  { src: '/images/designs/offline/billboard-5.png', title: 'Billboard Design' },
-  { src: '/images/designs/offline/billboard-6.png', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-1.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-2.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-3.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-4.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-5.jpg', title: 'Billboard Design' },
+  { src: '/images/designs/offline/billboard-6.jpg', title: 'Billboard Design' },
   { src: '/images/designs/offline/billboard-7.jpg', title: 'Billboard Design' },
   { src: '/images/designs/offline/billboard-8.jpg', title: 'Billboard Design' },
   { src: '/images/designs/offline/billboard-9.jpg', title: 'Billboard Design' },
@@ -62,7 +77,7 @@ const offlineDesigns = [
   { src: '/images/designs/offline/billboard-13.jpg', title: 'Billboard Design' },
   { src: '/images/designs/offline/billboard-14.jpg', title: 'Billboard Design' },
   { src: '/images/designs/offline/billboard-15.jpg', title: 'Billboard Design' },
-  { src: '/images/designs/offline/board.png', title: 'Board Design' },
+  { src: '/images/designs/offline/board.jpg', title: 'Board Design' },
   { src: '/images/designs/offline/signboards.jpg', title: 'Signboard Design' },
   { src: '/images/designs/offline/arch.jpg', title: 'Arch Design' },
   { src: '/images/designs/offline/anjani-arch.jpg', title: 'Anjani Arch Design' },
@@ -72,15 +87,15 @@ const offlineDesigns = [
 
 // Digital Designs / Ad Posters
 const adPosters = [
-  { src: '/images/designs/ad-posters/ad-creative_1-1.png', title: 'Ad Creative' },
-  { src: '/images/designs/ad-posters/ad-creative_2.png', title: 'Ad Creative' },
-  { src: '/images/designs/ad-posters/ad-creative_6.png', title: 'Ad Creative' },
-  { src: '/images/designs/ad-posters/banana-chips.png', title: 'Banana Chips Ad' },
+  { src: '/images/designs/ad-posters/ad-creative_1-1.jpg', title: 'Ad Creative' },
+  { src: '/images/designs/ad-posters/ad-creative_2.jpg', title: 'Ad Creative' },
+  { src: '/images/designs/ad-posters/ad-creative_6.jpg', title: 'Ad Creative' },
+  { src: '/images/designs/ad-posters/banana-chips.jpg', title: 'Banana Chips Ad' },
   { src: '/images/designs/ad-posters/gk_takeoff.png', title: 'GK Takeoff Ad' },
-  { src: '/images/designs/ad-posters/loveisinthehair_gis.png', title: 'Love Is In The Hair - GIS' },
-  { src: '/images/designs/ad-posters/masala-peanut.png', title: 'Masala Peanut Ad' },
-  { src: '/images/designs/ad-posters/routemap_01.png', title: 'Route Map Design' },
-  { src: '/images/designs/ad-posters/styleword_gis.png', title: 'StyleWord - GIS' },
+  { src: '/images/designs/ad-posters/loveisinthehair_gis.jpg', title: 'Love Is In The Hair - GIS' },
+  { src: '/images/designs/ad-posters/masala-peanut.jpg', title: 'Masala Peanut Ad' },
+  { src: '/images/designs/ad-posters/routemap_01.jpg', title: 'Route Map Design' },
+  { src: '/images/designs/ad-posters/styleword_gis.jpg', title: 'StyleWord - GIS' },
   { src: '/images/designs/ad-posters/ponpon.png', title: 'PonPon Ad' },
 ]
 
@@ -96,7 +111,7 @@ const websiteProjects = [
   {
     client: 'Hotel Amaravathi',
     description: 'Sophisticated hospitality website with seamless booking integration',
-    thumbnail: '/images/designs/websites/screengrabs/amaravathi/amaravathi-1.png',
+    thumbnail: '/images/designs/websites/screengrabs/amaravathi/amaravathi-1.jpg',
     href: '/work/designs/websites/amaravathi',
     liveUrl: 'https://hotelamaravathi.in/',
   },

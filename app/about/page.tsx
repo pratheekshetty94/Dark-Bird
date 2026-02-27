@@ -9,8 +9,23 @@ import GalleryStrip from '@/components/about/GalleryStrip'
 import { Award, Film, Share2, Palette, Cpu, ArrowUpRight, Scissors, Camera, Clapperboard, Quote, Users, Zap } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About Us | Dark Bird Films',
-  description: 'Founded in 2016, Dark Bird Films is an award-winning production house behind Kantara, 777 Charlie, and 100+ brand campaigns. Meet our founder Pratheek Shetty.',
+  title: 'About Dark Bird Films & Founder Pratheek Shetty | Award-Winning Production House',
+  description: 'Founded in 2016 by Pratheek Shetty, Dark Bird Films is the award-winning production house behind Kantara, 777 Charlie & Gandhada Gudi. Meet our team in HSR Layout, Bengaluru.',
+  keywords: [
+    'about dark bird films', 'pratheek shetty filmmaker', 'pratheek shetty editor',
+    'dark bird films founder', 'kantara editor pratheek shetty', '777 charlie editor',
+    'film production house bengaluru story', 'award winning production house india',
+    'bengaluru filmmaker', 'kannada film editor',
+  ],
+  openGraph: {
+    title: 'About Dark Bird Films & Pratheek Shetty',
+    description: 'The story behind the studio that edited Kantara, 777 Charlie & 100+ brand campaigns.',
+    url: 'https://darkbirdfilms.com/about',
+    type: 'profile',
+  },
+  alternates: {
+    canonical: 'https://darkbirdfilms.com/about',
+  },
 }
 
 /* BTS — The real work. Cameras, lighting, on-set production. This is what sells. */
@@ -155,7 +170,7 @@ export default function AboutPage() {
                   Started editing at 19. Founded Dark Bird at 22. Edited{' '}
                   <strong className="text-cream">Kantara</strong> and{' '}
                   <strong className="text-cream">777 Charlie</strong> before 30.
-                  Shot <strong className="text-cream">Puneeth Rajkumar&apos;s</strong> final documentary.
+                  Shot <strong className="text-cream">Puneeth Rajkumar&apos;s</strong> documentary.
                   Directed Grammy-winning music videos.
                 </p>
                 <p className="text-base text-warm-gray leading-relaxed mb-10">
@@ -166,25 +181,6 @@ export default function AboutPage() {
                 </p>
               </ScrollReveal>
 
-              {/* Impact numbers — horizontal, punchy */}
-              <ScrollReveal delay={0.25}>
-                <div className="grid grid-cols-3 gap-4 md:gap-6 p-6 rounded-2xl bg-charcoal/50 border border-stone/10">
-                  {[
-                    { value: '15+', label: 'Films' },
-                    { value: '45+', label: 'Awards' },
-                    { value: '100+', label: 'Brands' },
-                  ].map((stat) => (
-                    <div key={stat.label} className="text-center">
-                      <span className="font-display text-2xl md:text-3xl text-accent block">
-                        {stat.value}
-                      </span>
-                      <p className="font-mono text-[8px] md:text-[9px] text-warm-gray uppercase tracking-wider mt-1">
-                        {stat.label}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </ScrollReveal>
             </div>
           </div>
         </div>
@@ -387,7 +383,7 @@ export default function AboutPage() {
           <div className="absolute inset-0 grid grid-cols-1 md:grid-cols-2">
             <div className="relative overflow-hidden">
               <Image
-                src="/images/about/award-best-editor-kantara.png"
+                src="/images/about/award-best-editor-kantara.jpg"
                 alt="Pratheek Shetty receiving Best Editor award for Kantara"
                 fill
                 className="object-cover object-top"
@@ -407,7 +403,7 @@ export default function AboutPage() {
           {/* Mobile: show only award image as full background */}
           <div className="absolute inset-0 md:hidden">
             <Image
-              src="/images/about/award-best-editor-kantara.png"
+              src="/images/about/award-best-editor-kantara.jpg"
               alt="Pratheek Shetty receiving Best Editor award for Kantara"
               fill
               className="object-cover object-top"

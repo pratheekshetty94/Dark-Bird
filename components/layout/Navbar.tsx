@@ -33,11 +33,13 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const [isWindows, setIsWindows] = useState(false)
   const pathname = usePathname()
 
-  // Mount check
+  // Mount check + Windows detection
   useEffect(() => {
     setIsMounted(true)
+    setIsWindows(navigator.userAgent.includes('Windows'))
   }, [])
 
   // Handle scroll - only on desktop
@@ -85,7 +87,7 @@ export default function Navbar() {
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
           isScrolled
-            ? hasLightBackground ? 'py-4 bg-ink' : 'py-4 backdrop-blur-xl bg-ink/90'
+            ? hasLightBackground ? 'py-4 bg-ink' : isWindows ? 'py-4 bg-ink' : 'py-4 backdrop-blur-xl bg-ink/90'
             : hasLightBackground ? 'py-6 bg-ink' : 'py-6 bg-transparent'
         )}
       >

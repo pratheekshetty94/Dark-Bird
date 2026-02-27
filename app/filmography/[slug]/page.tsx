@@ -131,7 +131,7 @@ const filmsData: Record<string, FilmData> = {
     id: 'garudagamana',
     title: 'Garudagamana Vrishabha Vahana',
     year: '2021',
-    poster: '/images/posters/06 garudagamana vrishabha vahana.png',
+    poster: '/images/posters/06 garudagamana vrishabha vahana.jpg',
     role: 'Filmed & Edited "Demon In Me" Intro Song',
     category: 'feature',
     award: 'Filmfare Best Director, SIIMA Best Film & Best Playback Singer',

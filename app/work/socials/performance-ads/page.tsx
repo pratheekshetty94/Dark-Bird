@@ -12,19 +12,19 @@ const performanceAds = [
   {
     client: 'GK Builders & Developers',
     title: 'Anjani Lake Woods - Lead Gen Ad',
-    src: '/images/socials/performance-ads/ad-creative-1.png',
+    src: '/images/socials/performance-ads/ad-creative-1.jpg',
     type: 'image',
   },
   {
     client: 'GK Builders & Developers',
     title: 'Property Features Ad',
-    src: '/images/socials/performance-ads/ad-creative-2.png',
+    src: '/images/socials/performance-ads/ad-creative-2.jpg',
     type: 'image',
   },
   {
     client: 'GK Builders & Developers',
     title: 'Investment Opportunity Ad',
-    src: '/images/socials/performance-ads/ad-creative-6.png',
+    src: '/images/socials/performance-ads/ad-creative-6.jpg',
     type: 'image',
   },
   {
@@ -36,13 +36,13 @@ const performanceAds = [
   {
     client: 'GK Builders & Developers',
     title: 'Social Post 1',
-    src: '/images/socials/gk-ads/post-1.png',
+    src: '/images/socials/gk-ads/post-1.jpg',
     type: 'image',
   },
   {
     client: 'GK Builders & Developers',
     title: 'Social Post 2',
-    src: '/images/socials/gk-ads/post-2.png',
+    src: '/images/socials/gk-ads/post-2.jpg',
     type: 'image',
   },
 ]

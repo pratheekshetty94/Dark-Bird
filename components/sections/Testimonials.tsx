@@ -21,7 +21,7 @@ const testimonials = [
     author: 'Deepa Pai',
     title: 'VP of Branding',
     company: 'Hangyo Ice Cream Pvt. Ltd',
-    image: '/images/testimonials/Deepa hangyo.png',
+    image: '/images/testimonials/Deepa hangyo.jpg',
     imagePosition: 'object-top',
   },
   {
@@ -32,6 +32,15 @@ const testimonials = [
     company: 'The Raghu Dixit Project',
     image: '/images/testimonials/raghu dixit.jpg',
     imagePosition: 'object-top',
+  },
+  {
+    id: '4',
+    quote: "I've had the pleasure of working with Pratheek Shetty for the past decade, and I've been consistently impressed by his exceptional talent and dedication. As an editor, cinematographer, colourist, and director, Pratheek has brought his A-game to every project we've collaborated on. His work as a Director on my Grammy Award-winning album Divine Tides is a testament to his skill and artistry. During the pandemic, Pratheek's expertise helped bring my online concerts to life, reaching millions of viewers worldwide. He's a true professional, always staying ahead of the curve with the latest technologies and techniques. His perfectionism is inspiring, and his multi-disciplinary approach makes him an invaluable asset to any film-making team or as a Director.",
+    author: 'Ricky Kej',
+    title: '3-Time Grammy Award Winner, Padma Shri Awardee',
+    company: 'Music Industry',
+    image: '/images/testimonials/3-time_Grammy®_Award-winner,_Ricky_Kej.jpg',
+    imagePosition: 'object-center',
   },
 ]
 

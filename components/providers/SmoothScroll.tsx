@@ -10,28 +10,31 @@ interface SmoothScrollProps {
 export default function SmoothScroll({ children }: SmoothScrollProps) {
   const lenisRef = useRef<Lenis | null>(null)
   const rafIdRef = useRef<number | null>(null)
-  const [isMobile, setIsMobile] = useState(false)
+  const [shouldDisable, setShouldDisable] = useState(false)
 
   useEffect(() => {
-    // Check if mobile/touch device
-    const checkMobile = () => {
+    const checkDevice = () => {
       const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
       const isSmallScreen = window.innerWidth < 768
       const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches
-      setIsMobile(hasTouch || isSmallScreen || hasCoarsePointer)
+
+      // Detect Windows — Lenis causes jank on Windows browsers
+      const isWindows = navigator.userAgent.includes('Windows')
+
+      setShouldDisable(hasTouch || isSmallScreen || hasCoarsePointer || isWindows)
     }
 
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
+    checkDevice()
+    window.addEventListener('resize', checkDevice)
 
     return () => {
-      window.removeEventListener('resize', checkMobile)
+      window.removeEventListener('resize', checkDevice)
     }
   }, [])
 
   useEffect(() => {
-    // Don't use Lenis on mobile - use native scrolling
-    if (isMobile) {
+    // Disable Lenis on mobile and Windows — use native scrolling
+    if (shouldDisable) {
       return
     }
 
@@ -72,7 +75,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       lenisRef.current?.destroy()
       lenisRef.current = null
     }
-  }, [isMobile])
+  }, [shouldDisable])
 
   return <>{children}</>
 }

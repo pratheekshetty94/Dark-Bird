@@ -9,13 +9,13 @@ import CTABand from '@/components/sections/CTABand'
 
 const websiteScreens = [
   {
-    src: '/images/designs/websites/screengrabs/amaravathi/amaravathi-1.png',
+    src: '/images/designs/websites/screengrabs/amaravathi/amaravathi-1.jpg',
     alt: 'Hotel Amaravathi Homepage',
     title: 'Homepage',
     description: 'Elegant homepage showcasing the hotel amenities and booking options',
   },
   {
-    src: '/images/designs/websites/screengrabs/amaravathi/amaravathi-2.png',
+    src: '/images/designs/websites/screengrabs/amaravathi/amaravathi-2.jpg',
     alt: 'Hotel Amaravathi Interior Page',
     title: 'Interior Page',
     description: 'Detailed page showcasing hotel rooms and amenities',

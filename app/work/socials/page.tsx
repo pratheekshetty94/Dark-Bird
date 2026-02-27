@@ -8,8 +8,23 @@ import CTABand from '@/components/sections/CTABand'
 import { Instagram, ExternalLink, Building2, Video, Target, Users, BarChart3, Settings, Check } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Our Social Media Work | Dark Bird Socials',
-  description: 'Brand campaigns, performance ads, and influencer marketing. We turn audiences into communities and brands into movements.',
+  title: 'Social Media Marketing Agency | Brand Campaigns & Influencer Marketing',
+  description: 'Dark Bird Socials: India\'s top social media marketing agency. Brand campaigns, performance ads, influencer marketing & content strategy that converts followers into customers.',
+  keywords: [
+    'social media marketing agency india', 'best social media agency bengaluru',
+    'brand campaign agency', 'influencer marketing india', 'performance marketing agency',
+    'social media content creation', 'instagram marketing agency', 'social media strategy india',
+    'dark bird socials', 'digital marketing production house',
+  ],
+  openGraph: {
+    title: 'Dark Bird Socials | Social Media Marketing Agency India',
+    description: 'Brand campaigns, influencer marketing & performance ads that convert. See our social media portfolio.',
+    url: 'https://darkbirdfilms.com/work/socials',
+    type: 'website',
+  },
+  alternates: {
+    canonical: 'https://darkbirdfilms.com/work/socials',
+  },
 }
 
 const projects = [
@@ -19,7 +34,7 @@ const projects = [
     client: 'All Clients',
     category: 'Brand Campaigns',
     description: 'Walkthrough films, social media reels, posts & branding',
-    image: '/images/socials/thumbnails/brand-campaigns.png',
+    image: '/images/socials/thumbnails/brand-campaigns.jpg',
     href: '/work/socials/brand-campaigns',
   },
   // Performance Ads - links to category page showing all clients
@@ -28,7 +43,7 @@ const projects = [
     client: 'All Clients',
     category: 'Performance Ads',
     description: 'ROI-focused Meta & Google ad campaigns',
-    image: '/images/socials/thumbnails/performance-ads.png',
+    image: '/images/socials/thumbnails/performance-ads.jpg',
     href: '/work/socials/performance-ads',
   },
   // Influencer Marketing - links to category page showing all clients
@@ -37,7 +52,7 @@ const projects = [
     client: 'All Clients',
     category: 'Influencer Marketing',
     description: '43 influencer collaborations',
-    image: '/images/socials/thumbnails/influencer-marketing.png',
+    image: '/images/socials/thumbnails/influencer-marketing.jpg',
     href: '/work/socials/influencer-marketing',
   },
 ]

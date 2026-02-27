@@ -15,13 +15,13 @@ const websiteScreens = [
     description: 'Clean, modern homepage showcasing premium villa projects',
   },
   {
-    src: '/images/designs/websites/screengrabs/gk-website/hill-view.png',
+    src: '/images/designs/websites/screengrabs/gk-website/hill-view.jpg',
     alt: 'GK Hill View Project Page',
     title: 'Hill View Project',
     description: 'Detailed project page with amenities and specifications',
   },
   {
-    src: '/images/designs/websites/screengrabs/gk-website/anjani-lakewoods.png',
+    src: '/images/designs/websites/screengrabs/gk-website/anjani-lakewoods.jpg',
     alt: 'Anjani Lake Woods Project Page',
     title: 'Anjani Lake Woods Project',
     description: 'Premium villa plots project showcase',

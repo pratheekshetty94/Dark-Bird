@@ -98,6 +98,7 @@ export default function Departments() {
                     sizes="200px"
                     className="object-contain opacity-85"
                     loading="lazy"
+                    quality={60}
                   />
                 </div>
               </div>

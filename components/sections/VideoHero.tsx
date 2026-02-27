@@ -206,7 +206,7 @@ export default function VideoHero() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
         />
         {/* Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-ink/30 to-ink/40" />

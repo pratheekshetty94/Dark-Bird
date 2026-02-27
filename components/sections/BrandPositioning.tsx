@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
@@ -14,6 +14,19 @@ const SplineCamera = dynamic(() => import('@/components/SplineCamera'), {
 })
 
 export default function BrandPositioning() {
+  const [showSpline, setShowSpline] = useState(false)
+
+  useEffect(() => {
+    // Only load Spline 3D on non-Windows, non-touch desktops
+    // Spline WebGL is very GPU-heavy and causes scroll jank on Windows
+    const isWindows = navigator.userAgent.includes('Windows')
+    const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+    const isSmallScreen = window.innerWidth < 1024
+    if (!isWindows && !hasTouch && !isSmallScreen) {
+      setShowSpline(true)
+    }
+  }, [])
+
   return (
     <section className="relative min-h-[60vh] md:min-h-[80vh] flex items-center overflow-hidden">
       {/* Background */}
@@ -23,6 +36,7 @@ export default function BrandPositioning() {
           loop
           muted
           playsInline
+          preload="none"
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source src="/videos/hero-bg.mp4" type="video/mp4" />
@@ -32,7 +46,7 @@ export default function BrandPositioning() {
       <div className="container-content relative z-10 py-16 md:py-32">
         <div className="grid lg:grid-cols-12 gap-8 lg:gap-16 items-center">
           {/* Content */}
-          <div className="lg:col-span-7">
+          <div className={showSpline ? 'lg:col-span-7' : 'lg:col-span-10'}>
             <span className="font-mono text-[10px] md:text-xs uppercase tracking-wider text-accent bg-ink/60 px-3 py-1 rounded-full inline-block">
               ( Who We Are )
             </span>
@@ -77,12 +91,14 @@ export default function BrandPositioning() {
             </div>
           </div>
 
-          {/* Right Column - 3D Camera Spline */}
-          <div className="hidden lg:col-span-5 lg:flex items-center justify-center">
-            <div className="relative w-full max-w-md aspect-square">
-              <SplineCamera />
+          {/* Right Column - 3D Camera Spline (hidden on Windows for performance) */}
+          {showSpline && (
+            <div className="hidden lg:col-span-5 lg:flex items-center justify-center">
+              <div className="relative w-full max-w-md aspect-square">
+                <SplineCamera />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </section>

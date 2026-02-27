@@ -94,7 +94,7 @@ const films: FilmItem[] = [
     id: 'garudagamana',
     title: 'Garuda Gamana Vrishabha Vahana',
     year: '2021',
-    poster: '/images/posters/06 garudagamana vrishabha vahana.png',
+    poster: '/images/posters/06 garudagamana vrishabha vahana.jpg',
     role: 'Filmed & Edited Intro Song',
     category: 'feature',
     award: 'Filmfare + 2 SIIMA Awards',

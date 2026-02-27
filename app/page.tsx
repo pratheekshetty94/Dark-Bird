@@ -1,9 +1,9 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import HomeVideoHero from '@/components/sections/HomeVideoHero'
 
 // Components - loaded dynamically
-const HomeVideoHero = dynamic(() => import('@/components/sections/HomeVideoHero'), { ssr: false })
 const MetricsBar = dynamic(() => import('@/components/sections/MetricsBar'), { ssr: false })
 const ClientMarquee = dynamic(() => import('@/components/sections/ClientMarquee'), { ssr: false })
 const BrandPositioning = dynamic(() => import('@/components/sections/BrandPositioning'), { ssr: false })

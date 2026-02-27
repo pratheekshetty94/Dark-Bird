@@ -6,8 +6,23 @@ import { ArrowUpRight, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
-  title: 'Our Services | Dark Bird Films',
-  description: 'Explore our services: Films, Socials, Designs, and Labs. We create cinematic content, digital marketing campaigns, brand designs, and AI-powered creative work.',
+  title: 'Our Services | Film Production, Marketing, Design & AI Content',
+  description: 'Explore Dark Bird Films\' services: Film production, social media marketing, brand design & AI-powered content. Ad films, music videos, influencer marketing, motion graphics & VFX.',
+  keywords: [
+    'film production services india', 'video production services bengaluru',
+    'marketing agency services', 'brand design services india',
+    'AI content creation services', 'production house services',
+    'dark bird films services', 'creative agency india services',
+  ],
+  openGraph: {
+    title: 'Our Services | Dark Bird Films',
+    description: 'Films, Socials, Designs & Labs — everything your brand needs under one roof.',
+    url: 'https://darkbirdfilms.com/work',
+    type: 'website',
+  },
+  alternates: {
+    canonical: 'https://darkbirdfilms.com/work',
+  },
 }
 
 const divisions = [

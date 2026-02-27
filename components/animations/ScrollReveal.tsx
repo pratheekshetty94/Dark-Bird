@@ -16,6 +16,18 @@ interface ScrollRevealProps {
   once?: boolean
 }
 
+/**
+ * Detect if we should use the lightweight CSS-only path
+ * (mobile, touch devices, or Windows — where GSAP ScrollTrigger causes jank)
+ */
+function shouldUseLightPath(): boolean {
+  if (typeof window === 'undefined') return true
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  const isSmallScreen = window.innerWidth < 768
+  const isWindows = navigator.userAgent.includes('Windows')
+  return hasTouch || isSmallScreen || isWindows
+}
+
 export default function ScrollReveal({
   children,
   className,
@@ -30,24 +42,47 @@ export default function ScrollReveal({
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [isMounted, setIsMounted] = useState(false)
-  const [isMobile, setIsMobile] = useState(true)
+  const [isLightPath, setIsLightPath] = useState(true)
+  const [isRevealed, setIsRevealed] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
+    const lightPath = shouldUseLightPath()
+    setIsLightPath(lightPath)
 
-    const checkMobile = () => {
-      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-      const isSmallScreen = window.innerWidth < 768
-      return hasTouch || isSmallScreen
+    // Mobile: just show content immediately, no animations
+    if (lightPath && (('ontouchstart' in window || navigator.maxTouchPoints > 0) || window.innerWidth < 768)) {
+      setIsRevealed(true)
+      return
     }
 
-    const mobile = checkMobile()
-    setIsMobile(mobile)
+    // Windows: use lightweight IntersectionObserver + CSS transitions (no GSAP)
+    if (lightPath) {
+      const el = ref.current
+      if (!el) return
 
-    // Mobile: just show content, no animations
-    if (mobile) return
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            // Delay the reveal using setTimeout to match the delay prop
+            if (delay > 0) {
+              setTimeout(() => setIsRevealed(true), delay * 1000)
+            } else {
+              setIsRevealed(true)
+            }
+            if (once) observer.disconnect()
+          } else if (!once) {
+            setIsRevealed(false)
+          }
+        },
+        { threshold: 0.15 }
+      )
 
-    // Desktop: load GSAP
+      observer.observe(el)
+      return () => observer.disconnect()
+    }
+
+    // macOS/Linux desktop: use GSAP for premium animations
     let cleanup: (() => void) | undefined
 
     const loadGsap = async () => {
@@ -108,12 +143,29 @@ export default function ScrollReveal({
     }
   }, [delay, duration, y, x, scale, opacity, threshold, once])
 
-  // Always render content visible on mobile
+  // Determine inline styles
+  const getStyle = (): React.CSSProperties | undefined => {
+    if (!isMounted || (isLightPath && isRevealed)) {
+      return { opacity: 1, transform: 'none' }
+    }
+    if (isLightPath && !isRevealed) {
+      // CSS transition: start hidden, transition to visible
+      return {
+        opacity: 0,
+        transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`,
+        transition: `opacity ${duration}s cubic-bezier(0.25, 1, 0.5, 1), transform ${duration}s cubic-bezier(0.25, 1, 0.5, 1)`,
+        willChange: 'opacity, transform',
+      }
+    }
+    // GSAP path — style is managed by GSAP
+    return undefined
+  }
+
   return (
     <div
       ref={ref}
       className={cn(className)}
-      style={isMobile || !isMounted ? { opacity: 1, transform: 'none' } : undefined}
+      style={getStyle()}
     >
       {children}
     </div>
@@ -134,24 +186,40 @@ export function StaggerReveal({
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const [isMounted, setIsMounted] = useState(false)
-  const [isMobile, setIsMobile] = useState(true)
+  const [isLightPath, setIsLightPath] = useState(true)
+  const [isRevealed, setIsRevealed] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
+    const lightPath = shouldUseLightPath()
+    setIsLightPath(lightPath)
 
-    const checkMobile = () => {
-      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-      const isSmallScreen = window.innerWidth < 768
-      return hasTouch || isSmallScreen
+    // Mobile: show immediately
+    if (lightPath && (('ontouchstart' in window || navigator.maxTouchPoints > 0) || window.innerWidth < 768)) {
+      setIsRevealed(true)
+      return
     }
 
-    const mobile = checkMobile()
-    setIsMobile(mobile)
+    // Windows: lightweight IntersectionObserver
+    if (lightPath) {
+      const el = ref.current
+      if (!el) return
 
-    // Mobile: no animations
-    if (mobile) return
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setIsRevealed(true)
+            observer.disconnect()
+          }
+        },
+        { threshold: 0.15 }
+      )
 
-    // Desktop: load GSAP
+      observer.observe(el)
+      return () => observer.disconnect()
+    }
+
+    // macOS/Linux: GSAP
     let cleanup: (() => void) | undefined
 
     const loadGsap = async () => {
@@ -201,15 +269,22 @@ export function StaggerReveal({
     }
   }, [stagger, threshold])
 
-  // Ensure children are visible on mobile
+  // On Windows/mobile, apply CSS transition to children via a class or inline styles
   useEffect(() => {
-    if (isMobile && ref.current) {
-      Array.from(ref.current.children).forEach((child) => {
-        (child as HTMLElement).style.opacity = '1'
-        ;(child as HTMLElement).style.transform = 'none'
-      })
-    }
-  }, [isMobile, children])
+    if (!isLightPath || !ref.current) return
+    const children = Array.from(ref.current.children) as HTMLElement[]
+    children.forEach((child, i) => {
+      if (isRevealed) {
+        child.style.opacity = '1'
+        child.style.transform = 'none'
+        child.style.transition = `opacity 0.4s cubic-bezier(0.25,1,0.5,1) ${i * stagger}s, transform 0.4s cubic-bezier(0.25,1,0.5,1) ${i * stagger}s`
+      } else {
+        child.style.opacity = '0'
+        child.style.transform = 'translateY(20px)'
+        child.style.transition = `opacity 0.4s cubic-bezier(0.25,1,0.5,1) ${i * stagger}s, transform 0.4s cubic-bezier(0.25,1,0.5,1) ${i * stagger}s`
+      }
+    })
+  }, [isLightPath, isRevealed, stagger, children])
 
   return (
     <div ref={ref} className={cn(className)}>

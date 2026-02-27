@@ -1,13 +1,6 @@
 'use client'
 
-import React, { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-
-// Register ScrollTrigger plugin
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger)
-}
+import React, { useEffect, useRef, useState } from 'react'
 
 const metrics = [
   { value: 375, suffix: 'M+', label: 'Video Views', description: 'across platforms' },
@@ -16,85 +9,142 @@ const metrics = [
   { value: 2016, suffix: '', label: 'Founded', description: 'in Bengaluru', isYear: true },
 ]
 
+function isWindowsDevice(): boolean {
+  if (typeof window === 'undefined') return false
+  return navigator.userAgent.includes('Windows')
+}
+
 export default function MetricsBar() {
   const sectionRef = useRef<HTMLElement>(null)
   const numberRefs = useRef<(HTMLSpanElement | null)[]>([])
+  const [hasAnimated, setHasAnimated] = useState(false)
 
   useEffect(() => {
     if (!sectionRef.current) return
 
-    const ctx = gsap.context(() => {
-      // Animate each number when section comes into view
-      numberRefs.current.forEach((el, index) => {
-        if (!el) return
+    const isWindows = isWindowsDevice()
 
-        const metric = metrics[index]
-        const endValue = metric.value
+    // Windows path: use IntersectionObserver + requestAnimationFrame counter
+    if (isWindows) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true)
+            // Animate counters with RAF
+            numberRefs.current.forEach((el, index) => {
+              if (!el) return
+              const metric = metrics[index]
+              const startValue = metric.isYear ? 2000 : 0
+              const endValue = metric.value
+              const duration = metric.isYear ? 1500 : 2000
+              const startTime = performance.now()
 
-        // For year (2016), we don't want to count from 0
-        const startValue = metric.isYear ? 2000 : 0
-
-        gsap.fromTo(
-          el,
-          { innerText: startValue },
-          {
-            innerText: endValue,
-            duration: metric.isYear ? 1.5 : 2,
-            ease: 'power2.out',
-            snap: { innerText: 1 },
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top 80%',
-              toggleActions: 'play none none none',
-            },
-            onUpdate: function () {
-              if (el) {
-                const currentValue = Math.round(Number(el.innerText))
-                el.innerText = String(currentValue)
+              const animate = (currentTime: number) => {
+                const elapsed = currentTime - startTime
+                const progress = Math.min(elapsed / duration, 1)
+                // Ease-out cubic
+                const eased = 1 - Math.pow(1 - progress, 3)
+                const currentValue = Math.round(startValue + (endValue - startValue) * eased)
+                if (el) el.innerText = String(currentValue)
+                if (progress < 1) requestAnimationFrame(animate)
               }
-            },
+              requestAnimationFrame(animate)
+            })
+            observer.disconnect()
           }
-        )
-      })
-
-      // Animate the accent lines
-      gsap.fromTo(
-        '.metric-line',
-        { scaleX: 0, transformOrigin: 'left center' },
-        {
-          scaleX: 1,
-          duration: 0.8,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
+        },
+        { threshold: 0.2 }
       )
+      observer.observe(sectionRef.current)
+      return () => observer.disconnect()
+    }
 
-      // Fade in the labels
-      gsap.fromTo(
-        '.metric-label',
-        { opacity: 0, y: 10 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 80%',
-            toggleActions: 'play none none none',
-          },
-        }
-      )
-    }, sectionRef)
+    // macOS/Linux: use GSAP
+    let ctx: { revert: () => void } | undefined
 
-    return () => ctx.revert()
-  }, [])
+    const loadGsap = async () => {
+      try {
+        const { gsap } = await import('gsap')
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+        gsap.registerPlugin(ScrollTrigger)
+
+        if (!sectionRef.current) return
+
+        ctx = gsap.context(() => {
+          numberRefs.current.forEach((el, index) => {
+            if (!el) return
+            const metric = metrics[index]
+            const startValue = metric.isYear ? 2000 : 0
+
+            gsap.fromTo(
+              el,
+              { innerText: startValue },
+              {
+                innerText: metric.value,
+                duration: metric.isYear ? 1.5 : 2,
+                ease: 'power2.out',
+                snap: { innerText: 1 },
+                scrollTrigger: {
+                  trigger: sectionRef.current,
+                  start: 'top 80%',
+                  toggleActions: 'play none none none',
+                },
+                onUpdate: function () {
+                  if (el) {
+                    el.innerText = String(Math.round(Number(el.innerText)))
+                  }
+                },
+              }
+            )
+          })
+
+          gsap.fromTo(
+            '.metric-line',
+            { scaleX: 0, transformOrigin: 'left center' },
+            {
+              scaleX: 1,
+              duration: 0.8,
+              stagger: 0.1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 80%',
+                toggleActions: 'play none none none',
+              },
+            }
+          )
+
+          gsap.fromTo(
+            '.metric-label',
+            { opacity: 0, y: 10 },
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.6,
+              stagger: 0.1,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top 80%',
+                toggleActions: 'play none none none',
+              },
+            }
+          )
+        }, sectionRef)
+      } catch (e) {
+        // Fallback: just show content
+        numberRefs.current.forEach((el, index) => {
+          if (el) el.innerText = String(metrics[index].value)
+        })
+      }
+    }
+
+    loadGsap()
+
+    return () => {
+      if (ctx) ctx.revert()
+    }
+  }, [hasAnimated])
 
   return (
     <section ref={sectionRef} className="section-light py-16 md:py-28 relative overflow-hidden">
