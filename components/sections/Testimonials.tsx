@@ -40,7 +40,7 @@ const testimonials = [
     title: '3-Time Grammy Award Winner, Padma Shri Awardee',
     company: 'Music Industry',
     image: '/images/testimonials/3-time_Grammy®_Award-winner,_Ricky_Kej.jpg',
-    imagePosition: 'object-top',
+    imagePosition: 'object-[center_20%]',
   },
 ]
 
