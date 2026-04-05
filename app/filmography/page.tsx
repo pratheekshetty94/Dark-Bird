@@ -711,7 +711,7 @@ export default function FilmographyPage() {
             <SectionLabel>Feature Films & Trailers</SectionLabel>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <Link href="/work/films" className="group flex items-center gap-4 mt-4 mb-12">
+            <Link href="/filmography" className="group flex items-center gap-4 mt-4 mb-12">
               <h2 className="text-section font-bold text-charcoal group-hover:text-accent transition-colors">
                 Our Work Lives on Screens Across India
               </h2>
@@ -732,7 +732,7 @@ export default function FilmographyPage() {
             <SectionLabel>Ad Films & Commercials</SectionLabel>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <Link href="/work/films" className="group flex items-center gap-4 mt-4 mb-4">
+            <Link href="/services/ad-film-production-bangalore" className="group flex items-center gap-4 mt-4 mb-4">
               <h2 className="text-section font-bold text-white group-hover:text-accent transition-colors">
                 Brand Campaigns
               </h2>
@@ -758,7 +758,7 @@ export default function FilmographyPage() {
             <SectionLabel>Music Videos</SectionLabel>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <Link href="/work/films" className="group flex items-center gap-4 mt-4 mb-12">
+            <Link href="/filmography" className="group flex items-center gap-4 mt-4 mb-12">
               <h2 className="text-section font-bold text-charcoal group-hover:text-accent transition-colors">
                 The Sounds We&apos;ve Turned Into Visuals
               </h2>

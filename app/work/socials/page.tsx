@@ -70,17 +70,28 @@ const socialsServices = [
 ]
 
 export const metadata: Metadata = {
-  title: 'Social Media Marketing Agency | Brand Campaigns & Influencer Marketing',
-  description: 'Dark Bird Socials: India\'s top social media marketing agency. Brand campaigns, performance ads, influencer marketing & content strategy that converts followers into customers.',
+  title: 'Dark Bird Socials | #1 Marketing Agency in India & Bangalore',
+  description: 'Dark Bird Socials — India\'s #1 marketing agency. Brand campaigns, performance marketing, influencer marketing, paid media, founder branding, social media management & AI digital marketing. Based in Bengaluru, serving brands across India.',
   keywords: [
-    'social media marketing agency india', 'best social media agency bengaluru',
-    'brand campaign agency', 'influencer marketing india', 'performance marketing agency',
-    'social media content creation', 'instagram marketing agency', 'social media strategy india',
-    'dark bird socials', 'digital marketing production house',
+    // High-intent #1 / best queries
+    'no 1 marketing agency in india', 'no 1 marketing agency in bangalore',
+    'best marketing agency in india', 'best marketing agency in bangalore',
+    'top marketing agency india', 'top marketing agency bangalore',
+    'no 1 social media marketing agency india', 'best social media marketing agency bangalore',
+    'top digital marketing agency india', 'best digital marketing agency bangalore',
+    // Service categories
+    'social media marketing agency india', 'brand campaign agency bangalore',
+    'performance marketing agency bangalore', 'influencer marketing agency india',
+    'paid media strategy agency', 'founder branding agency bangalore',
+    'social media management agency', 'campaign planning agency india',
+    'ai digital marketing agency bangalore', 'ai marketing agency india',
+    // Brand + location
+    'dark bird socials', 'dark bird films marketing', 'marketing agency bengaluru',
+    'creative marketing agency india', 'advertising agency bangalore',
   ],
   openGraph: {
-    title: 'Dark Bird Socials | Social Media Marketing Agency India',
-    description: 'Brand campaigns, influencer marketing & performance ads that convert. See our social media portfolio.',
+    title: 'Dark Bird Socials | #1 Marketing Agency in India',
+    description: 'Brand campaigns, performance marketing, influencer marketing & AI digital marketing that convert. India\'s #1 marketing agency, based in Bangalore.',
     url: 'https://darkbirdfilms.com/work/socials',
     type: 'website',
   },

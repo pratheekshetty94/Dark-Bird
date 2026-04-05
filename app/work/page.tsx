@@ -4,6 +4,7 @@ import ScrollReveal from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { resolveServiceItemHref, type DivisionServiceItem } from '@/lib/divisions'
 
 export const metadata: Metadata = {
   title: 'Our Services | Film Production, Marketing, Design & AI Content',
@@ -25,23 +26,33 @@ export const metadata: Metadata = {
   },
 }
 
-const divisions = [
+type DivisionCard = {
+  number: string
+  name: string
+  tagline: string
+  description: string
+  services: DivisionServiceItem[]
+  href: string
+  video: string
+}
+
+const divisions: DivisionCard[] = [
   {
     number: '01',
     name: 'Dark Bird Films',
     tagline: 'This is where it all begins with cinema.',
     description: 'We approach every project like a film: with emotion, detail, and a strong sense of purpose. From the first idea to the final cut, we make sure your story doesn\'t just look good — it leaves an impact.',
     services: [
-      'Feature Film Production & Support',
-      'Ad Films & Commercials',
-      'Music Videos',
-      'Property Walkthrough Films',
-      'Brand & Campaign Films',
-      'Documentaries',
-      'Product & Launch Videos',
-      'Founder Stories',
+      { label: 'Feature Film Production & Support', slug: 'feature-film-production-support-bangalore' },
+      { label: 'Ad Films & Commercials', slug: 'ad-film-production-bangalore' },
+      { label: 'Music Videos', slug: 'music-video-production-bangalore' },
+      { label: 'Property Walkthrough Films', slug: 'property-walkthrough-film-bangalore' },
+      { label: 'Brand & Campaign Films', slug: 'brand-film-production-bangalore' },
+      { label: 'Documentaries', slug: 'documentary-production-bangalore' },
+      { label: 'Product & Launch Videos', slug: 'product-video-production-bangalore' },
+      { label: 'Founder Stories', slug: 'founder-story-video-bangalore' },
     ],
-    href: '/work/films',
+    href: '/filmography',
     video: '/videos/films-loop.mp4',
   },
   {
@@ -50,13 +61,15 @@ const divisions = [
     tagline: 'Because today, your audience lives online.',
     description: 'We help brands show up, stand out, and stay relevant across every digital platform. Whether it\'s building a voice, growing a presence, or running performance campaigns, we make sure your brand feels human and performs smart.',
     services: [
-      'AI Digital Marketing',
-      'Influencer Marketing',
-      'Paid Media Strategy',
-      'Founder Branding & Social Presence',
-      'Social Media Management & Community Growth',
-      'Campaign Planning & Execution',
-      'Real Estate Digital Marketing',
+      { label: 'Brand Campaigns', slug: 'brand-campaign-agency-bangalore' },
+      { label: 'Performance Marketing', slug: 'performance-marketing-agency-bangalore' },
+      { label: 'Social Media Marketing', slug: 'social-media-marketing-agency-bangalore' },
+      { label: 'Influencer Marketing', slug: 'influencer-marketing-agency-bangalore' },
+      { label: 'Paid Media Strategy', slug: 'paid-media-strategy-bangalore' },
+      { label: 'Founder Branding & Social Presence', slug: 'founder-branding-agency-bangalore' },
+      { label: 'Social Media Management & Community Growth', slug: 'social-media-management-bangalore' },
+      { label: 'Campaign Planning & Execution', slug: 'campaign-planning-bangalore' },
+      { label: 'AI Digital Marketing', slug: 'ai-digital-marketing-bangalore' },
     ],
     href: '/work/socials',
     video: '/videos/socials-loop.mp4',
@@ -67,12 +80,12 @@ const divisions = [
     tagline: 'We design experiences that are clean, cinematic, and meaningful.',
     description: 'So your brand feels complete and consistent everywhere it appears. Design should look incredible and perform even better.',
     services: [
-      'Website & Landing Page Design',
-      'Brand Identity & Visual Kits',
-      'Social Media Templates & Illustrations',
-      '3D Modelling',
-      'WhatsApp Stickers & Digital Swag',
-      'Motion Design & Short-Form Animations',
+      { label: 'Website & Landing Page Design', slug: 'website-design-agency-bangalore' },
+      { label: 'Brand Identity & Visual Kits', slug: 'brand-identity-design-bangalore' },
+      { label: 'Social Media Templates & Illustrations', slug: 'social-media-design-bangalore' },
+      { label: '3D Modelling', slug: '3d-modelling-bangalore' },
+      { label: 'WhatsApp Stickers & Digital Swag', slug: 'whatsapp-sticker-design-bangalore' },
+      { label: 'Motion Design & Short-Form Animations', slug: 'motion-design-bangalore' },
     ],
     href: '/work/designs',
     video: '/videos/designs-loop.mp4',
@@ -83,12 +96,12 @@ const divisions = [
     tagline: 'Our sandbox for the future of film.',
     description: 'We explore AI as a creative partner — crafting films, commercials, and visuals that feel impossible, immersive, and unmistakably cinematic.',
     services: [
-      'AI Short Films',
-      'AI Commercials & Concept Films',
-      'AI Launch Trailers',
-      'AI Music Videos',
-      'AI-Generated Visual Experiments',
-      'Marketing Automation & AI Agents',
+      { label: 'AI Short Films', slug: 'ai-short-film-bangalore' },
+      { label: 'AI Commercials & Concept Films', slug: 'ai-commercial-production-bangalore' },
+      { label: 'AI Launch Trailers', slug: 'ai-launch-trailer-bangalore' },
+      { label: 'AI Music Videos', slug: 'ai-music-video-bangalore' },
+      { label: 'AI-Generated Visual Experiments', slug: 'ai-visual-experiment-bangalore' },
+      { label: 'Marketing Automation & AI Agents', slug: 'ai-marketing-automation-bangalore' },
     ],
     href: '/work/labs',
     video: '/videos/labs-loop.mp4',
@@ -198,18 +211,26 @@ export default function WorkPage() {
                       We Create:
                     </h3>
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {division.services.map((service) => (
-                        <li
-                          key={service}
-                          className={cn(
-                            "flex items-start gap-3 text-sm",
-                            index % 2 === 0 ? 'text-silver' : 'text-stone'
-                          )}
-                        >
-                          <span className="text-accent mt-1">•</span>
-                          <span>{service}</span>
-                        </li>
-                      ))}
+                      {division.services.map((service) => {
+                        const href = resolveServiceItemHref(service, division.href)
+                        return (
+                          <li key={service.label}>
+                            <Link
+                              href={href}
+                              className={cn(
+                                "group/item flex items-start gap-3 text-sm rounded-md px-2 py-1.5 -mx-2 transition-colors",
+                                index % 2 === 0
+                                  ? 'text-silver hover:bg-white/[0.04] hover:text-cream'
+                                  : 'text-stone hover:bg-ink/[0.04] hover:text-ink'
+                              )}
+                            >
+                              <span className="text-accent mt-1">•</span>
+                              <span className="flex-1">{service.label}</span>
+                              <ArrowUpRight className="w-3.5 h-3.5 mt-1 opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all text-accent" />
+                            </Link>
+                          </li>
+                        )
+                      })}
                     </ul>
                   </div>
                 </ScrollReveal>

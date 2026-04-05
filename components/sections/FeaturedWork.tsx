@@ -34,7 +34,7 @@ const featuredProjects = [
     tags: ['Production', 'Direction'],
     highlight: 'Full-scale brand campaign',
     poster: '/images/posters/flipkart.jpg',
-    href: '/work/films',
+    href: '/filmography',
   },
   {
     id: 'danks-anthem',
@@ -64,7 +64,7 @@ export default function FeaturedWork() {
           </div>
 
           <Link
-            href="/work/films"
+            href="/filmography"
             className="mt-4 md:mt-0 inline-flex items-center gap-2 text-xs md:text-sm font-medium text-cream hover:text-accent transition-colors"
           >
             View All Work

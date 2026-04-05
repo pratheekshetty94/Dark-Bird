@@ -8,17 +8,28 @@ import LazySplineBanner from '@/components/LazySplineBanner'
 import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink, Megaphone, Instagram } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Brand Design Agency | Logo Design, Motion Graphics & Web Design India',
-  description: 'Dark Bird Designs: We make brands look expensive. Brand identity, logo design, motion graphics, 3D modelling, website design & social media templates. Bengaluru, India.',
+  title: 'Dark Bird Designs | #1 Brand Design Agency in India & Bangalore',
+  description: 'Dark Bird Designs — India\'s #1 brand design agency. Brand identity, logo design, website design, motion graphics, 3D modelling, social media design & WhatsApp stickers. Design that looks cinematic and performs. Based in Bengaluru.',
   keywords: [
-    'brand design agency india', 'logo design agency bengaluru', 'motion graphics india',
-    'brand identity design', 'website design production house', '3D modelling agency india',
-    'social media template design', 'dark bird designs', 'cinematic brand design',
-    'creative design agency bangalore',
+    // High-intent #1 / best queries
+    'no 1 brand design agency in india', 'no 1 design agency bangalore',
+    'best brand design agency in india', 'best design agency bangalore',
+    'top brand design agency india', 'top design agency bengaluru',
+    'best logo design agency india', 'best website design agency bangalore',
+    'best motion design agency india', 'best 3d modelling agency bangalore',
+    // Service categories
+    'brand design agency india', 'brand identity design bangalore',
+    'logo design agency bengaluru', 'website design agency bangalore',
+    'landing page design agency india', 'motion graphics agency india',
+    '3d modelling agency bangalore', 'social media design agency india',
+    'whatsapp sticker design agency', 'motion design studio bangalore',
+    // Brand + location
+    'dark bird designs', 'cinematic brand design', 'creative design agency bangalore',
+    'brand studio bengaluru', 'design studio india',
   ],
   openGraph: {
-    title: 'Dark Bird Designs | Brand Identity & Creative Design',
-    description: 'We make brands look expensive. Brand identity, motion graphics, web design & 3D modelling.',
+    title: 'Dark Bird Designs | #1 Brand Design Agency in India',
+    description: 'Brand identity, website design, motion graphics & 3D modelling that looks cinematic and performs. India\'s #1 design agency, based in Bangalore.',
     url: 'https://darkbirdfilms.com/work/designs',
     type: 'website',
   },

@@ -5,9 +5,9 @@ import Link from 'next/link'
 import { ChevronLeft, ChevronRight, ArrowUpRight } from 'lucide-react'
 
 const promos = [
-  { src: '/videos/promo-commercial.mp4', label: 'Ad Films', href: '/work/films#ad-films' },
-  { src: '/videos/promo-music-video.mp4', label: 'Music Videos', href: '/work/films#music-videos' },
-  { src: '/videos/promo-trailer.mp4', label: 'Trailers', href: '/work/films#feature-films' },
+  { src: '/videos/promo-commercial.mp4', label: 'Ad Films', href: '/services/ad-film-production-bangalore' },
+  { src: '/videos/promo-music-video.mp4', label: 'Music Videos', href: '/services/music-video-production-bangalore' },
+  { src: '/videos/promo-trailer.mp4', label: 'Trailers', href: '/filmography' },
 ]
 
 export default function PromoBanner() {

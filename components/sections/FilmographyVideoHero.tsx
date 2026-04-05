@@ -52,7 +52,7 @@ const heroSlides: HeroSlide[] = [
     title: 'Flipkart',
     subtitle: 'Brand Campaign',
     videoSrc: '/videos/flipkart-banner.mp4',
-    href: '/work/films',
+    href: '/filmography',
     year: '2023',
   },
   {
@@ -60,7 +60,7 @@ const heroSlides: HeroSlide[] = [
     title: 'YO Fruits',
     subtitle: 'Brand Campaign',
     videoSrc: '/videos/yo-fruits-banner.mp4',
-    href: '/work/films',
+    href: '/filmography',
     year: '2024',
   },
 ]

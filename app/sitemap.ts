@@ -5,7 +5,7 @@ import { getServiceSlugs } from '@/lib/services'
 const BASE_URL = 'https://darkbirdfilms.com'
 
 // Use a stable date that updates only when content actually changes
-const LAST_UPDATED = '2026-03-14'
+const LAST_UPDATED = '2026-04-05'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // Core pages — highest priority
@@ -31,8 +31,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${BASE_URL}/filmography`,
       lastModified: LAST_UPDATED,
-      changeFrequency: 'monthly',
-      priority: 0.8,
+      changeFrequency: 'weekly',
+      priority: 0.95,
     },
   ]
 
@@ -40,12 +40,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const servicePages: MetadataRoute.Sitemap = [
     {
       url: `${BASE_URL}/work`,
-      lastModified: LAST_UPDATED,
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${BASE_URL}/work/films`,
       lastModified: LAST_UPDATED,
       changeFrequency: 'weekly',
       priority: 0.9,

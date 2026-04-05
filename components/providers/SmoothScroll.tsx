@@ -47,6 +47,10 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       touchMultiplier: 2,
     })
 
+    // Expose instance so nested scroll containers (e.g. BTSGallery) can hand
+    // control back to Lenis when they hit their top/bottom boundary.
+    ;(window as unknown as { __lenis?: Lenis }).__lenis = lenisRef.current
+
     // Sync Lenis scroll position with GSAP ScrollTrigger
     let ScrollTriggerModule: typeof import('gsap/ScrollTrigger').ScrollTrigger | null = null
 
@@ -74,6 +78,7 @@ export default function SmoothScroll({ children }: SmoothScrollProps) {
       }
       lenisRef.current?.destroy()
       lenisRef.current = null
+      delete (window as unknown as { __lenis?: Lenis }).__lenis
     }
   }, [shouldDisable])
 

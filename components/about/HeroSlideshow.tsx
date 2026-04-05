@@ -1,73 +1,69 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Image from 'next/image'
+import { useState, useEffect, useRef } from 'react'
 import ScrollReveal from '@/components/animations/ScrollReveal'
 
-const heroImages = [
+const heroVideos = [
   {
-    src: '/images/about/banner-blue-smoke-bts.jpeg',
-    alt: 'Behind the scenes — cinematic blue smoke on set',
+    src: '/videos/promo-music-video.mp4',
+    alt: 'Dark Bird Films promo music video',
   },
   {
-    src: '/images/about/banner-purple-silhouette.jpeg',
-    alt: 'Cinematographer silhouette — purple & pink cinematic lighting',
+    src: '/videos/promo-trailer.mp4',
+    alt: 'Dark Bird Films promo trailer',
   },
   {
-    src: '/images/about/banner-misty-forest-crew.jpg',
-    alt: 'Crew on set — misty forest production',
-  },
-  {
-    src: '/images/about/banner-rainforest-camera.jpg',
-    alt: 'Cinematography in the rainforest',
-  },
-  {
-    src: '/images/about/banner-dark-studio-crew.jpeg',
-    alt: 'Dark studio — crew behind the camera',
-  },
-  {
-    src: '/images/about/banner-rainforest-direction.jpg',
-    alt: 'Directing in the Western Ghats rainforest',
+    src: '/videos/promo-commercial.mp4',
+    alt: 'Dark Bird Films promo commercial',
   },
 ]
 
 export default function HeroSlideshow() {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
 
+  // Play only the current video; pause + rewind the others so each plays
+  // from the start when it becomes active. Advancement is driven by the
+  // `onEnded` handler below, so each video plays through to completion.
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % heroImages.length)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [])
+    videoRefs.current.forEach((video, i) => {
+      if (!video) return
+      if (i === currentIndex) {
+        video.currentTime = 0
+        video.play().catch(() => {})
+      } else {
+        video.pause()
+      }
+    })
+  }, [currentIndex])
+
+  const handleVideoEnded = (i: number) => {
+    if (i !== currentIndex) return
+    setCurrentIndex((prev) => (prev + 1) % heroVideos.length)
+  }
 
   return (
-    <section className="relative h-[100vh] min-h-[600px] overflow-hidden">
-      {/* Slideshow images — stacked absolutely, dissolve transition */}
-      {heroImages.map((img, i) => (
-        <Image
-          key={img.src}
-          src={img.src}
-          alt={img.alt}
-          fill
-          className={`object-cover object-center transition-opacity duration-[1500ms] ease-in-out ${
+    <section className="relative h-[100vh] min-h-[600px] overflow-hidden bg-ink">
+      {/* Video layers — stacked absolutely, dissolve transition */}
+      {heroVideos.map((vid, i) => (
+        <video
+          key={vid.src}
+          ref={(el) => {
+            videoRefs.current[i] = el
+          }}
+          src={vid.src}
+          muted
+          playsInline
+          preload={i === 0 ? 'auto' : 'metadata'}
+          onEnded={() => handleVideoEnded(i)}
+          aria-label={vid.alt}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[1500ms] ease-in-out ${
             i === currentIndex ? 'opacity-100' : 'opacity-0'
           }`}
-          priority={i === 0}
-          unoptimized
-          sizes="100vw"
         />
       ))}
 
-      {/* Subtle Ken Burns effect on current image */}
-      <style jsx>{`
-        @keyframes kenburns {
-          0% { transform: scale(1); }
-          100% { transform: scale(1.06); }
-        }
-      `}</style>
-
-      {/* Multi-layer gradient overlays — above all images */}
+      {/* Multi-layer gradient overlays — above all videos */}
       <div className="absolute inset-0 bg-gradient-to-b from-ink/50 via-ink/20 to-ink z-[1]" />
       <div className="absolute inset-0 bg-gradient-to-r from-ink/60 via-transparent to-transparent z-[1]" />
 
@@ -119,7 +115,7 @@ export default function HeroSlideshow() {
 
       {/* Progress dots — bottom right */}
       <div className="absolute bottom-8 right-8 z-[3] flex items-center gap-2">
-        {heroImages.map((_, i) => (
+        {heroVideos.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrentIndex(i)}

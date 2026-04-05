@@ -12,7 +12,7 @@ const departments = [
     title: 'Films',
     subtitle: 'Dark Bird Films',
     description: 'Production with a filmmaker\'s eye and a marketer\'s brain.',
-    href: '/work/films',
+    href: '/filmography',
     logoSrc: '/images/departments/Dark_Bird_Films_Logo_White_T.png',
     services: ['Feature Films', 'Commercials'],
   },

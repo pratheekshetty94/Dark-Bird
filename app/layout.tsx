@@ -48,40 +48,72 @@ export const metadata: Metadata = {
 
   // ─── Core SEO ───
   title: {
-    default: 'Dark Bird Films | #1 Film Production & Marketing Agency in India',
+    default: 'Dark Bird Films | #1 AI Film Studio & Marketing Agency in India',
     template: '%s | Dark Bird Films',
   },
   description:
-    'Award-winning film production house behind Kantara, 777 Charlie & 100+ brand campaigns. We offer ad films, music videos, social media marketing, brand design & AI-powered content. Bengaluru, India.',
+    'Dark Bird Films — India\'s #1 AI film studio and marketing agency. Behind Kantara, 777 Charlie and 100+ brand campaigns. Ad films, music videos, social media marketing, performance ads, brand design and AI-powered content. Bengaluru, India.',
   keywords: [
-    // Brand keywords
-    'Dark Bird Films', 'Dark Bird Socials', 'Dark Bird Designs', 'Dark Bird Labs',
-    'Pratheek Shetty', 'Pratheek Shetty filmmaker', 'Pratheek Shetty editor',
-    // Film production
-    'film production company india', 'film production house bengaluru',
+    // ── High-intent "No. 1 / best" queries ──
+    'no 1 marketing agency india', 'no 1 marketing agency bangalore',
+    'no 1 ai film studio india', 'no 1 ai film studio bangalore',
+    'best marketing agency in india', 'best marketing agency in bangalore',
+    'best ai film studio india', 'best ai film studio bangalore',
+    'top marketing agency india', 'top marketing agency bangalore',
+    'top ai film studio india', 'top ai film studio bangalore',
+    '#1 film production house india', '#1 creative agency bangalore',
     'best film production company india', 'top production house bangalore',
+    'best ad film makers india', 'best brand campaign agency india',
+
+    // ── Brand keywords ──
+    'Dark Bird Films', 'Dark Bird Socials', 'Dark Bird Designs', 'Dark Bird Labs',
+    'darkbirdfilms', 'darkbirdfilms.com',
+    'Pratheek Shetty', 'Pratheek Shetty filmmaker', 'Pratheek Shetty editor',
+
+    // ── Film production ──
+    'film production company india', 'film production house bengaluru',
     'ad film production company', 'commercial production house india',
-    'music video production india', 'feature film production',
-    // Notable works
+    'music video production india', 'feature film production bangalore',
+    'feature film dop bangalore', 'film editing di colour grading bangalore',
+
+    // ── Notable works (navigational + authority) ──
     'Kantara film', 'Kantara editor', 'Kantara post production',
-    '777 Charlie', '777 Charlie cinematography',
-    'Gandhada Gudi', 'Rishab Shetty films',
-    // Marketing keywords
-    'best marketing agency india', 'social media marketing agency bengaluru',
-    'brand campaign agency india', 'digital marketing production house',
-    'influencer marketing agency', 'performance marketing agency india',
-    // Design keywords
-    'brand identity design india', 'motion graphics agency',
-    'brand design agency bengaluru', 'logo design production house',
-    // AI & Tech
-    'AI content creation india', 'generative AI marketing',
-    'AI video production', 'VFX production india',
-    // Location-based
+    '777 Charlie', '777 Charlie cinematography', 'Gandhada Gudi', 'Rishab Shetty films',
+    'Ricky Kej Divine Tides', 'Grammy album music video',
+
+    // ── Marketing & Socials ──
+    'brand campaign agency bangalore', 'brand campaign agency india',
+    'social media marketing agency bengaluru', 'social media marketing agency india',
+    'instagram marketing agency bangalore', 'reels agency bangalore',
+    'influencer marketing agency india', 'influencer marketing agency bangalore',
+    'performance marketing agency india', 'performance marketing agency bangalore',
+    'meta ads agency bangalore', 'google ads agency bangalore',
+    'paid media strategy bangalore', 'founder branding agency bangalore',
+    'campaign planning agency bangalore', 'ai digital marketing bangalore',
+
+    // ── Design ──
+    'brand identity design india', 'brand identity design bangalore',
+    'website design agency bangalore', 'landing page design agency bangalore',
+    'motion graphics agency india', '3d modelling agency bangalore',
+    'logo design production house', 'social media design bangalore',
+
+    // ── AI, Labs & Tech ──
+    'ai film studio india', 'ai film studio bangalore',
+    'ai video production india', 'ai video production bangalore',
+    'ai short film bangalore', 'ai commercial production bangalore',
+    'ai launch trailer bangalore', 'ai music video bangalore',
+    'ai marketing automation bangalore', 'generative ai marketing india',
+    'vfx production india', 'cgi studio bangalore',
+
+    // ── Location-based ──
     'production house HSR Layout', 'creative agency bangalore',
     'video production company karnataka', 'film production south india',
-    // Service-based
-    'corporate video production', 'real estate marketing videos',
-    'product video production india', 'brand film production',
+    'marketing agency near me bangalore', 'ad agency near me bangalore',
+
+    // ── Service-based long-tail ──
+    'corporate video production bangalore', 'product video production bangalore',
+    'real estate marketing videos bangalore', 'brand film production bangalore',
+    'documentary production bangalore', 'property walkthrough film bangalore',
     'social media content creation', 'video editing services india',
   ],
   authors: [
@@ -103,9 +135,9 @@ export const metadata: Metadata = {
 
   // ─── Open Graph (Facebook, LinkedIn, WhatsApp) ───
   openGraph: {
-    title: 'Dark Bird Films | Award-Winning Film Production & Marketing Agency',
+    title: 'Dark Bird Films | #1 AI Film Studio & Marketing Agency in India',
     description:
-      'Behind Kantara & 777 Charlie. We create ad films, music videos, brand campaigns, and AI-powered content. 100+ brands trust us. Bengaluru, India.',
+      'India\'s #1 AI film studio and marketing agency. Behind Kantara & 777 Charlie. Ad films, music videos, brand campaigns, performance ads and AI-powered content. 100+ brands trust us. Bengaluru, India.',
     url: BASE_URL,
     siteName: 'Dark Bird Films',
     locale: 'en_IN',
@@ -124,8 +156,8 @@ export const metadata: Metadata = {
   // ─── Twitter / X ───
   twitter: {
     card: 'summary_large_image',
-    title: 'Dark Bird Films | Film Production & Marketing Agency India',
-    description: 'Behind Kantara & 777 Charlie. Ad films, music videos, marketing & AI content.',
+    title: 'Dark Bird Films | #1 AI Film Studio & Marketing Agency India',
+    description: 'Behind Kantara & 777 Charlie. India\'s #1 AI film studio — ad films, music videos, marketing and AI content.',
     images: ['/og-image.jpg'],
     creator: '@darkbirdfilms',
     site: '@darkbirdfilms',
