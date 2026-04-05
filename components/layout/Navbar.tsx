@@ -27,6 +27,7 @@ const navLinks = [
   { href: '/work/socials', label: 'Socials' },
   { href: '/work/designs', label: 'Designs' },
   { href: '/work/labs', label: 'Labs' },
+  { href: '/industries', label: 'Industries' },
   { href: '/contact', label: 'Contact' },
 ]
 

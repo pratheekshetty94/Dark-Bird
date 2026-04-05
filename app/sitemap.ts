@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next'
+import { getIndustrySlugs } from '@/lib/industries'
 
 const BASE_URL = 'https://darkbirdfilms.com'
 
@@ -144,5 +145,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ]
 
-  return [...corePages, ...servicePages, ...subServicePages, ...filmPages, ...utilityPages]
+  // Industry landing pages — high-intent Bangalore verticals for SEO
+  const industriesHub: MetadataRoute.Sitemap = [
+    {
+      url: `${BASE_URL}/industries`,
+      lastModified: LAST_UPDATED,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+  ]
+
+  const industryPages: MetadataRoute.Sitemap = getIndustrySlugs().map((slug) => ({
+    url: `${BASE_URL}/industries/${slug}`,
+    lastModified: LAST_UPDATED,
+    changeFrequency: 'monthly' as const,
+    priority: 0.85,
+  }))
+
+  return [
+    ...corePages,
+    ...servicePages,
+    ...subServicePages,
+    ...industriesHub,
+    ...industryPages,
+    ...filmPages,
+    ...utilityPages,
+  ]
 }
