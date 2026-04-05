@@ -16,6 +16,39 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: 'Bingbot',
         allow: '/',
       },
+      // Allow AI crawlers for GEO (Generative Engine Optimization)
+      {
+        userAgent: 'GPTBot',
+        allow: '/',
+      },
+      {
+        userAgent: 'ChatGPT-User',
+        allow: '/',
+      },
+      {
+        userAgent: 'Google-Extended',
+        allow: '/',
+      },
+      {
+        userAgent: 'PerplexityBot',
+        allow: '/',
+      },
+      {
+        userAgent: 'ClaudeBot',
+        allow: '/',
+      },
+      {
+        userAgent: 'anthropic-ai',
+        allow: '/',
+      },
+      {
+        userAgent: 'Bytespider',
+        allow: '/',
+      },
+      {
+        userAgent: 'CCBot',
+        allow: '/',
+      },
     ],
     sitemap: 'https://darkbirdfilms.com/sitemap.xml',
     host: 'https://darkbirdfilms.com',

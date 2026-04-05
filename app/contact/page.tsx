@@ -25,7 +25,7 @@ const budgetRanges = [
 const socialLinks = [
   { href: 'https://instagram.com/darkbirdsocials', icon: Instagram, label: 'Instagram', handle: '@darkbirdsocials' },
   { href: 'https://youtube.com/@darkbirdfilms', icon: Youtube, label: 'YouTube', handle: '@darkbirdfilms' },
-  { href: 'https://linkedin.com/company/darkbirdfilms', icon: Linkedin, label: 'LinkedIn', handle: 'Dark Bird Films' },
+  { href: 'https://in.linkedin.com/in/dark-bird-b33321396', icon: Linkedin, label: 'LinkedIn', handle: 'Dark Bird Films' },
   { href: 'https://www.facebook.com/Darkbirdfilms/', icon: Facebook, label: 'Facebook', handle: 'Dark Bird Films' },
 ]
 
@@ -58,9 +58,9 @@ function formatDateStr(d: Date): string {
 
 /* ─── Booking Widget ─── */
 function BookingWidget() {
-  const today = new Date()
-  const [currentMonth, setCurrentMonth] = useState(today.getMonth())
-  const [currentYear, setCurrentYear] = useState(today.getFullYear())
+  const [today, setToday] = useState(() => new Date())
+  const [currentMonth, setCurrentMonth] = useState(() => new Date().getMonth())
+  const [currentYear, setCurrentYear] = useState(() => new Date().getFullYear())
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [busySlots, setBusySlots] = useState<string[]>([])
@@ -68,6 +68,14 @@ function BookingWidget() {
   const [step, setStep] = useState<'date' | 'details' | 'confirmed'>('date')
   const [isBooking, setIsBooking] = useState(false)
   const [bookingError, setBookingError] = useState('')
+
+  // Ensure "today" is always the client's actual date
+  useEffect(() => {
+    const now = new Date()
+    setToday(now)
+    setCurrentMonth(now.getMonth())
+    setCurrentYear(now.getFullYear())
+  }, [])
 
   const [bookingForm, setBookingForm] = useState({
     name: '',
@@ -120,7 +128,7 @@ function BookingWidget() {
   }
 
   const handleBooking = async () => {
-    if (!selectedDate || !selectedTime || !bookingForm.name || !bookingForm.email) return
+    if (!selectedDate || !selectedTime || !bookingForm.name || !bookingForm.email || !bookingForm.phone) return
     setIsBooking(true)
     setBookingError('')
 
@@ -223,9 +231,10 @@ function BookingWidget() {
             </div>
           </div>
           <div>
-            <label className="block font-mono text-[10px] uppercase tracking-wider text-cream/40 mb-2">Phone</label>
+            <label className="block font-mono text-[10px] uppercase tracking-wider text-cream/40 mb-2">Phone <span className="text-accent">*</span></label>
             <input
               type="tel"
+              required
               value={bookingForm.phone}
               onChange={e => setBookingForm({ ...bookingForm, phone: e.target.value })}
               className="w-full px-4 py-3 bg-white/[0.05] border border-white/[0.1] rounded-lg text-cream placeholder:text-cream/25 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all text-sm"
@@ -252,10 +261,10 @@ function BookingWidget() {
 
         <button
           onClick={handleBooking}
-          disabled={isBooking || !bookingForm.name || !bookingForm.email}
+          disabled={isBooking || !bookingForm.name || !bookingForm.email || !bookingForm.phone}
           className={cn(
             "mt-6 w-full flex items-center justify-center gap-3 px-8 py-4 rounded-xl font-medium text-sm transition-all duration-300",
-            isBooking || !bookingForm.name || !bookingForm.email
+            isBooking || !bookingForm.name || !bookingForm.email || !bookingForm.phone
               ? "bg-cream/10 text-cream/30 cursor-not-allowed"
               : "bg-accent text-cream hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(232,90,63,0.3)]"
           )}

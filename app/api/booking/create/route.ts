@@ -28,7 +28,13 @@ function formatEndTime(startISO: string): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { date, time, name, email, phone, notes } = body
+    const { date, time, name, email, phone: rawPhone, notes } = body
+
+    // Cal.com requires E.164 format — ensure phone has country code
+    let phone = rawPhone ? rawPhone.replace(/[\s\-()]/g, '') : ''
+    if (phone && !phone.startsWith('+')) {
+      phone = `+91${phone}` // Default to India country code
+    }
 
     if (!date || !time || !name || !email) {
       return NextResponse.json(
@@ -55,7 +61,7 @@ export async function POST(request: NextRequest) {
         responses: {
           name: name,
           email: email,
-          phone: phone || undefined,
+          attendeePhoneNumber: phone || '',
           notes: notes || undefined,
         },
         timeZone: 'Asia/Kolkata',
@@ -69,9 +75,21 @@ export async function POST(request: NextRequest) {
     const calData = await calResponse.json()
 
     if (!calResponse.ok) {
-      console.error('Cal.com booking error:', calData)
+      console.error('Cal.com booking error:', JSON.stringify(calData, null, 2))
+
+      // Map Cal.com error codes to user-friendly messages
+      const rawMsg = calData.message || ''
+      let userMessage = 'Failed to create booking. Please try again or contact us directly.'
+      if (rawMsg.includes('no_available_users_found')) {
+        userMessage = 'This time slot is no longer available. Please pick a different time.'
+      } else if (rawMsg.includes('invalid_number') || rawMsg.includes('attendeePhoneNumber')) {
+        userMessage = 'Please enter a valid phone number with country code (e.g. +91...).'
+      } else if (rawMsg.includes('error_required_field')) {
+        userMessage = 'Please fill in all required fields.'
+      }
+
       return NextResponse.json(
-        { error: calData.message || 'Failed to create booking. This slot might no longer be available.' },
+        { error: userMessage },
         { status: 400 }
       )
     }

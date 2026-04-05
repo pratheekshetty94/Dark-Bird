@@ -10,7 +10,7 @@ const BrandPositioning = dynamic(() => import('@/components/sections/BrandPositi
 const ArticleSlider = dynamic(() => import('@/components/sections/ArticleSlider'), { ssr: false })
 const Testimonials = dynamic(() => import('@/components/sections/Testimonials'), { ssr: false })
 const PromoBanner = dynamic(() => import('@/components/sections/PromoBanner'), { ssr: false })
-const Departments = dynamic(() => import('@/components/sections/Departments'), { ssr: false })
+const ServicesShowcase = dynamic(() => import('@/components/sections/ServicesShowcase'), { ssr: false })
 const DarkBirdWay = dynamic(() => import('@/components/sections/DarkBirdWay'), { ssr: false })
 const CTABand = dynamic(() => import('@/components/sections/CTABand'), { ssr: false })
 
@@ -24,7 +24,7 @@ export default function Home() {
       <ArticleSlider />
       <Testimonials />
       <PromoBanner />
-      <Departments />
+      <ServicesShowcase />
       <DarkBirdWay />
       <CTABand />
     </>

@@ -181,7 +181,7 @@ export const metadata: Metadata = {
     'google-site-verification': 'google9e213728556305a7',
     'fb:app_id': '',
     'article:publisher': 'https://www.facebook.com/Darkbirdfilms/',
-    'linkedin:owner': 'https://linkedin.com/company/darkbirdfilms',
+    'linkedin:owner': 'https://in.linkedin.com/in/dark-bird-b33321396',
     'msapplication-TileColor': '#080808',
     'msapplication-TileImage': '/icons/icon-256x256.png',
     'msapplication-config': '/browserconfig.xml',
@@ -205,6 +205,9 @@ export default function RootLayout({
 
         {/* Google Business Profile */}
         <link rel="me" href="https://share.google/Sj8wgl4Y6g4W5njMX" />
+
+        {/* LLMs.txt — Generative Engine Optimization (GEO) */}
+        <link rel="alternate" type="text/plain" href="/llms.txt" title="LLM-readable site information" />
 
         {/* Geo tags for local SEO */}
         <meta name="geo.region" content="IN-KA" />

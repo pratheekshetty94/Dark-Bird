@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import ScrollReveal from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
-import { ArrowUpRight, Play } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
@@ -42,6 +42,7 @@ const divisions = [
       'Founder Stories',
     ],
     href: '/work/films',
+    video: '/videos/films-loop.mp4',
   },
   {
     number: '02',
@@ -58,6 +59,7 @@ const divisions = [
       'Real Estate Digital Marketing',
     ],
     href: '/work/socials',
+    video: '/videos/socials-loop.mp4',
   },
   {
     number: '03',
@@ -73,6 +75,7 @@ const divisions = [
       'Motion Design & Short-Form Animations',
     ],
     href: '/work/designs',
+    video: '/videos/designs-loop.mp4',
   },
   {
     number: '04',
@@ -88,6 +91,7 @@ const divisions = [
       'Marketing Automation & AI Agents',
     ],
     href: '/work/labs',
+    video: '/videos/labs-loop.mp4',
   },
 ]
 
@@ -227,20 +231,16 @@ export default function WorkPage() {
                 index % 2 === 1 ? 'lg:order-1' : ''
               )}>
                 <ScrollReveal delay={0.2} x={index % 2 === 0 ? 30 : -30} y={0}>
-                  <div className="aspect-video bg-charcoal rounded-2xl overflow-hidden relative group cursor-pointer">
-                    {/* Placeholder for video reel */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-center">
-                        <div className="w-20 h-20 rounded-full bg-accent/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-accent/30 group-hover:scale-110 transition-all duration-300">
-                          <Play className="w-8 h-8 text-accent ml-1" />
-                        </div>
-                        <p className="text-warm-gray font-mono text-label uppercase tracking-wider">
-                          Showreel
-                        </p>
-                      </div>
-                    </div>
-                    {/* Decorative gradient */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent pointer-events-none" />
+                  <div className="aspect-video bg-charcoal rounded-2xl overflow-hidden relative group">
+                    <video
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="absolute inset-0 w-full h-full object-cover"
+                    >
+                      <source src={division.video} type="video/mp4" />
+                    </video>
                     {/* Border on hover */}
                     <div className="absolute inset-0 border-2 border-accent/0 group-hover:border-accent/30 rounded-2xl transition-colors" />
                   </div>

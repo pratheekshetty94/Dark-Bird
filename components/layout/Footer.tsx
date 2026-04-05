@@ -22,7 +22,7 @@ const services = [
 const socialLinks = [
   { href: 'https://instagram.com/darkbirdsocials', icon: Instagram, label: 'Instagram' },
   { href: 'https://youtube.com/@darkbirdfilms', icon: Youtube, label: 'YouTube' },
-  { href: 'https://linkedin.com/company/darkbirdfilms', icon: Linkedin, label: 'LinkedIn' },
+  { href: 'https://in.linkedin.com/in/dark-bird-b33321396', icon: Linkedin, label: 'LinkedIn' },
   { href: 'https://www.facebook.com/Darkbirdfilms/', icon: Facebook, label: 'Facebook' },
 ]
 

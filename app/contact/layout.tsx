@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Dark Bird Films - Film Production & Marketing Agency Bengaluru',
+  title: 'Contact Us | Film Production & Marketing Agency Bengaluru',
   description: 'Get in touch with Dark Bird Films for film production, ad films, social media marketing, brand design, and AI-powered content. HSR Layout, Bengaluru. Call or WhatsApp us today.',
   keywords: [
     'contact dark bird films', 'film production enquiry', 'video production quote',

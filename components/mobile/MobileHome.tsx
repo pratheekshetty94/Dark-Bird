@@ -8,7 +8,7 @@ import ClientMarquee from '@/components/sections/ClientMarquee'
 import BrandPositioning from '@/components/sections/BrandPositioning'
 import ArticleSlider from '@/components/sections/ArticleSlider'
 import Testimonials from '@/components/sections/Testimonials'
-import Departments from '@/components/sections/Departments'
+import ServicesShowcase from '@/components/sections/ServicesShowcase'
 import DarkBirdWay from '@/components/sections/DarkBirdWay'
 import CTABand from '@/components/sections/CTABand'
 
@@ -34,8 +34,8 @@ export default function MobileHome() {
       {/* Section 6: Testimonials */}
       <Testimonials />
 
-      {/* Section 7: Departments */}
-      <Departments />
+      {/* Section 7: Services Showcase */}
+      <ServicesShowcase />
 
       {/* Section 8: The Dark Bird Way */}
       <DarkBirdWay />

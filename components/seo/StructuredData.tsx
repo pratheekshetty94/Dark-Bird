@@ -45,9 +45,16 @@ const organizationSchema = {
   sameAs: [
     'https://instagram.com/darkbirdsocials',
     'https://youtube.com/@darkbirdfilms',
-    'https://linkedin.com/company/darkbirdfilms',
+    'https://in.linkedin.com/in/dark-bird-b33321396',
     'https://www.facebook.com/Darkbirdfilms/',
+    'https://vimeo.com/darkbirdfilms',
+    'https://www.imdb.com/name/nm10035706/',
     'https://share.google/Sj8wgl4Y6g4W5njMX',
+  ],
+  award: [
+    'National Award — Best Film (SHPSK, 2018)',
+    'Kantara (2022) — Highest-grossing Kannada film of all time',
+    'Grammy Award-winning album Divine Tides — Ricky Kej',
   ],
   numberOfEmployees: {
     '@type': 'QuantitativeValue',
@@ -198,34 +205,80 @@ const founderSchema = {
     'Visual Storytelling', 'Brand Strategy', 'Content Marketing',
     'Ad Film Production', 'Music Video Direction',
   ],
-  alumniOf: {
-    '@type': 'Organization',
-    name: 'Bengaluru Film Industry',
-  },
   nationality: {
     '@type': 'Country',
     name: 'India',
   },
   sameAs: [
+    'https://www.imdb.com/name/nm10035706/',
+    'https://www.rottentomatoes.com/celebrity/pratheek_shetty',
     'https://instagram.com/darkbirdsocials',
-    'https://linkedin.com/company/darkbirdfilms',
+    'https://linkedin.com/in/pratheek-shetty-67b932275/',
+    'https://in.linkedin.com/in/dark-bird-b33321396',
     'https://youtube.com/@darkbirdfilms',
+    'https://www.facebook.com/Pratheekdarkbirdfilm/',
+  ],
+  alumniOf: {
+    '@type': 'CollegeOrUniversity',
+    name: 'Manipal University',
+    sameAs: 'https://manipal.edu/',
+  },
+  birthPlace: {
+    '@type': 'Place',
+    name: 'Udupi, Karnataka, India',
+  },
+  award: [
+    'National Award — Best Film (SHPSK, 2018) — Editor',
+    'Kantara (2022) — Highest-grossing Kannada film — Editor',
+    'Grammy Award-winning album Divine Tides by Ricky Kej — Director',
   ],
   hasCredential: [
     {
       '@type': 'EducationalOccupationalCredential',
       credentialCategory: 'Professional Experience',
-      name: 'Editor - Kantara (2022)',
+      name: 'Editor - Kantara (2022) — Pan-India blockbuster, 100M+ trailer views',
     },
     {
       '@type': 'EducationalOccupationalCredential',
       credentialCategory: 'Professional Experience',
-      name: 'Cinematographer & Editor - 777 Charlie (2022)',
+      name: 'Editor - 777 Charlie (2022) — Pan-India release across 5 languages',
     },
     {
       '@type': 'EducationalOccupationalCredential',
       credentialCategory: 'Professional Experience',
-      name: 'Cinematographer - Gandhada Gudi (2022)',
+      name: 'Cinematographer - Gandhada Gudi (2022) — Puneeth Rajkumar\'s last film',
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Professional Experience',
+      name: 'Editor - SHPSK (2018) — National Award-winning film',
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Professional Experience',
+      name: 'Director - Divine Tides music videos for 3-time Grammy Award winner Ricky Kej',
+    },
+    {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Professional Experience',
+      name: 'Editor - Kotee (2024) — Directed by Ramesh Aravind',
+    },
+  ],
+  hasOccupation: [
+    {
+      '@type': 'Occupation',
+      name: 'Film Editor',
+      occupationalCategory: '27-4032',
+    },
+    {
+      '@type': 'Occupation',
+      name: 'Cinematographer',
+      occupationalCategory: '27-4031',
+    },
+    {
+      '@type': 'Occupation',
+      name: 'Film Director',
+      occupationalCategory: '27-2012',
     },
   ],
 }
