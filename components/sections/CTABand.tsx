@@ -4,6 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { trackCtaClick } from '@/lib/analytics'
 
 interface CTABandProps {
   headline?: string
@@ -88,6 +89,7 @@ export default function CTABand({
 
           <Link
             href={buttonHref}
+            onClick={() => trackCtaClick('cta_band', buttonText)}
             className={cn(
               'group inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-lg font-medium transition-all duration-300',
               isAccent && 'bg-cream text-ink',

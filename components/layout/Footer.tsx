@@ -4,6 +4,8 @@ import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Instagram, Youtube, Linkedin, Facebook, ArrowUpRight } from 'lucide-react'
+import { WHATSAPP_URL, CONTACT_EMAIL_URL } from '@/lib/contact'
+import { trackCtaClick, trackWhatsAppClick, trackEmailClick } from '@/lib/analytics'
 
 const quickLinks = [
   { href: '/', label: 'Home' },
@@ -98,7 +100,8 @@ export default function Footer() {
               <ul className="flex flex-col gap-1">
                 <li>
                   <a
-                    href="mailto:management@darkbirdfilms.com"
+                    href={CONTACT_EMAIL_URL}
+                    onClick={() => trackEmailClick('footer')}
                     className="text-silver hover:text-accent transition-colors text-xs"
                   >
                     Email Us
@@ -106,9 +109,10 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="https://wa.me/919187533221"
+                    href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick('footer')}
                     className="text-silver hover:text-accent transition-colors text-xs"
                   >
                     WhatsApp
@@ -117,6 +121,7 @@ export default function Footer() {
                 <li>
                   <Link
                     href="/contact"
+                    onClick={() => trackCtaClick('footer', 'start_project')}
                     className="inline-flex items-center gap-1 text-accent hover:text-accent-hover transition-colors text-xs"
                   >
                     Start Project

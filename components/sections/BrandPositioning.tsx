@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
+import { trackCtaClick } from '@/lib/analytics'
 
 const SplineCamera = dynamic(() => import('@/components/SplineCamera'), {
   ssr: false,
@@ -82,7 +83,11 @@ export default function BrandPositioning() {
             </p>
 
             <div className="flex flex-wrap items-center gap-3 md:gap-4">
-              <Link href="/contact" className="px-5 py-2.5 md:px-6 md:py-3 bg-accent text-cream text-sm font-medium rounded-lg">
+              <Link
+                href="/contact"
+                onClick={() => trackCtaClick('brand_positioning', 'schedule_a_call')}
+                className="px-5 py-2.5 md:px-6 md:py-3 bg-accent text-cream text-sm font-medium rounded-lg"
+              >
                 Schedule a Call
               </Link>
               <Link href="/work" className="px-5 py-2.5 md:px-6 md:py-3 border border-cream/50 text-cream text-sm font-medium rounded-lg">

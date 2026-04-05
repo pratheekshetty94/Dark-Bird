@@ -1,6 +1,10 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
+import Link from 'next/link'
+import { Calendar, MessageCircle, ArrowUpRight } from 'lucide-react'
+import { WHATSAPP_URL } from '@/lib/contact'
+import { trackCtaClick, trackWhatsAppClick } from '@/lib/analytics'
 
 export default function HomeVideoHero() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -10,7 +14,6 @@ export default function HomeVideoHero() {
     if (!video) return
 
     const handleEnded = () => {
-      // Pause on last frame for 5 seconds, then restart
       setTimeout(() => {
         video.currentTime = 0
         video.play().catch(() => {})
@@ -42,10 +45,34 @@ export default function HomeVideoHero() {
           autoPlay
           preload="auto"
         />
-        {/* Top gradient for navbar visibility */}
         <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-ink/80 to-transparent" />
-        {/* Bottom gradient */}
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-ink/50 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
+      </div>
+
+      {/* CTAs */}
+      <div className="absolute inset-x-0 bottom-28 md:bottom-32 z-20 flex justify-center px-4">
+        <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4">
+          <Link
+            href="/contact#book-call"
+            onClick={() => trackCtaClick('home_hero', 'book_discovery_call')}
+            className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full bg-accent px-6 py-3.5 text-sm font-medium text-cream shadow-[0_10px_30px_rgba(232,90,63,0.35)] transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_12px_40px_rgba(232,90,63,0.55)] md:px-7 md:py-4 md:text-base"
+          >
+            <Calendar className="h-4 w-4 md:h-5 md:w-5" />
+            Book a Discovery Call
+            <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 md:h-5 md:w-5" />
+          </Link>
+
+          <a
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => trackWhatsAppClick('home_hero')}
+            className="group inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full border border-cream/30 bg-ink/40 px-6 py-3.5 text-sm font-medium text-cream backdrop-blur-sm transition-all duration-300 hover:border-cream/60 hover:bg-ink/60 md:px-7 md:py-4 md:text-base"
+          >
+            <MessageCircle className="h-4 w-4 md:h-5 md:w-5" />
+            WhatsApp Us
+          </a>
+        </div>
       </div>
 
       {/* Scroll Indicator */}

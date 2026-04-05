@@ -7,6 +7,7 @@ import Footer from '@/components/layout/Footer'
 import SmoothScroll from '@/components/providers/SmoothScroll'
 import CustomCursor from '@/components/ui/CustomCursor'
 import NoiseOverlay from '@/components/ui/NoiseOverlay'
+import FloatingWhatsApp from '@/components/ui/FloatingWhatsApp'
 import StructuredData from '@/components/seo/StructuredData'
 
 // Primary sans-serif for body text and UI
@@ -270,6 +271,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </SmoothScroll>
+        <FloatingWhatsApp />
       </body>
     </html>
   )

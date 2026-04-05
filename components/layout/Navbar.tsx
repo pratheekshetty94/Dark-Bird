@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Menu, X, ArrowUpRight } from 'lucide-react'
+import { trackCtaClick } from '@/lib/analytics'
 
 // Department logos mapping
 const departmentLogos: Record<string, { logo: string; alt: string }> = {
@@ -127,6 +128,7 @@ export default function Navbar() {
             <div className="hidden lg:block">
               <Link
                 href="/contact"
+                onClick={() => trackCtaClick('navbar_desktop', 'lets_talk')}
                 className="group flex items-center gap-2 px-5 py-2.5 bg-accent text-cream text-sm font-medium rounded-lg hover:bg-accent-hover transition-all duration-200"
               >
                 Let&apos;s Talk
@@ -169,6 +171,7 @@ export default function Navbar() {
             <div className="pt-6 border-t border-stone/20">
               <Link
                 href="/contact"
+                onClick={() => trackCtaClick('navbar_mobile', 'lets_talk')}
                 className="flex items-center justify-center gap-2 w-full py-4 bg-accent text-cream text-lg font-medium rounded-xl"
               >
                 Let&apos;s Talk

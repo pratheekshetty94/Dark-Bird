@@ -5,6 +5,17 @@ import Link from 'next/link'
 import ScrollReveal from '@/components/animations/ScrollReveal'
 import { Mail, Phone, MapPin, Instagram, Youtube, Linkedin, Facebook, Send, MessageCircle, ArrowUpRight, Download, Calendar, Clock, ChevronLeft, ChevronRight, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { WHATSAPP_URL, PHONE_TEL_URL, PHONE_NUMBER_DISPLAY, CONTACT_EMAIL, CONTACT_EMAIL_URL } from '@/lib/contact'
+import {
+  trackCtaClick,
+  trackWhatsAppClick,
+  trackPhoneClick,
+  trackEmailClick,
+  trackFormStart,
+  trackFormSubmit,
+  trackBookingConfirmed,
+  trackBrochureDownload,
+} from '@/lib/analytics'
 
 const services = [
   'Films',
@@ -149,6 +160,7 @@ function BookingWidget() {
       const data = await response.json()
 
       if (response.ok) {
+        trackBookingConfirmed({ date: selectedDate, time: selectedTime })
         setStep('confirmed')
       } else {
         setBookingError(data.error || 'Failed to book. Please try again.')
@@ -419,8 +431,13 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState('')
+  const [hasStarted, setHasStarted] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    if (!hasStarted) {
+      trackFormStart('contact_project')
+      setHasStarted(true)
+    }
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -442,6 +459,7 @@ export default function ContactPage() {
       const data = await response.json()
 
       if (response.ok) {
+        trackFormSubmit('contact_project')
         setIsSubmitted(true)
       } else {
         setSubmitError(data.error || 'Something went wrong. Please try again.')
@@ -481,6 +499,40 @@ export default function ContactPage() {
                 We'd love to hear about your project and explore how we can bring your vision to life.
               </p>
             </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* Quick Contact Bar — mobile first, above-the-fold access */}
+      <section className="section-light py-6 lg:hidden border-b border-stone/10">
+        <div className="container-content">
+          <div className="grid grid-cols-3 gap-3">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick('contact_quick_bar')}
+              className="flex flex-col items-center justify-center gap-1 p-3 bg-green-600 rounded-xl text-cream text-center"
+            >
+              <MessageCircle className="w-5 h-5" />
+              <span className="text-[11px] font-medium">WhatsApp</span>
+            </a>
+            <a
+              href="#book-call"
+              onClick={() => trackCtaClick('contact_quick_bar', 'book_call')}
+              className="flex flex-col items-center justify-center gap-1 p-3 bg-accent rounded-xl text-cream text-center"
+            >
+              <Calendar className="w-5 h-5" />
+              <span className="text-[11px] font-medium">Book Call</span>
+            </a>
+            <a
+              href={PHONE_TEL_URL}
+              onClick={() => trackPhoneClick('contact_quick_bar')}
+              className="flex flex-col items-center justify-center gap-1 p-3 bg-charcoal rounded-xl text-cream text-center"
+            >
+              <Phone className="w-5 h-5" />
+              <span className="text-[11px] font-medium">Call</span>
+            </a>
           </div>
         </div>
       </section>
@@ -668,9 +720,10 @@ export default function ContactPage() {
 
                   {/* WhatsApp */}
                   <a
-                    href="https://wa.me/919187533221"
+                    href={WHATSAPP_URL}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackWhatsAppClick('contact_panel')}
                     className="group flex items-center gap-4 p-5 bg-green-600 rounded-xl text-cream mb-4 hover:bg-green-700 transition-colors"
                   >
                     <MessageCircle className="w-6 h-6" />
@@ -684,6 +737,7 @@ export default function ContactPage() {
                   {/* Book a Call */}
                   <a
                     href="#book-call"
+                    onClick={() => trackCtaClick('contact_panel', 'book_discovery_call')}
                     className="group flex items-center gap-4 p-5 bg-accent rounded-xl text-cream mb-4 hover:bg-accent-hover transition-colors"
                   >
                     <Calendar className="w-6 h-6" />
@@ -698,6 +752,7 @@ export default function ContactPage() {
                   <a
                     href="/Dark-Bird-Brochure-2026.pdf"
                     download
+                    onClick={() => trackBrochureDownload()}
                     className="group flex items-center gap-4 p-5 bg-charcoal border border-white/[0.08] rounded-xl text-cream mb-6 hover:bg-charcoal/80 transition-colors"
                   >
                     <Download className="w-6 h-6" />
@@ -711,7 +766,8 @@ export default function ContactPage() {
                   {/* Contact Details */}
                   <div className="space-y-4 mb-8">
                     <a
-                      href="mailto:management@darkbirdfilms.com"
+                      href={CONTACT_EMAIL_URL}
+                      onClick={() => trackEmailClick('contact_panel')}
                       className="flex items-center gap-4 p-4 bg-charcoal rounded-xl text-cream hover:bg-charcoal/80 transition-colors group"
                     >
                       <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -719,12 +775,13 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <p className="text-xs text-warm-gray uppercase tracking-wider font-mono">Email</p>
-                        <p className="font-medium group-hover:text-accent transition-colors">management@darkbirdfilms.com</p>
+                        <p className="font-medium group-hover:text-accent transition-colors">{CONTACT_EMAIL}</p>
                       </div>
                     </a>
 
                     <a
-                      href="tel:+919108955609"
+                      href={PHONE_TEL_URL}
+                      onClick={() => trackPhoneClick('contact_panel')}
                       className="flex items-center gap-4 p-4 bg-charcoal rounded-xl text-cream hover:bg-charcoal/80 transition-colors group"
                     >
                       <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -732,7 +789,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <p className="text-xs text-warm-gray uppercase tracking-wider font-mono">Phone</p>
-                        <p className="font-medium group-hover:text-accent transition-colors">+91 91089 55609</p>
+                        <p className="font-medium group-hover:text-accent transition-colors">{PHONE_NUMBER_DISPLAY}</p>
                       </div>
                     </a>
 
