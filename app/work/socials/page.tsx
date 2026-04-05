@@ -8,7 +8,66 @@ import CTABand from '@/components/sections/CTABand'
 import BrandCampaignsSection from '@/components/sections/socials/BrandCampaignsSection'
 import PerformanceAdsSection from '@/components/sections/socials/PerformanceAdsSection'
 import InfluencerMarketingSection from '@/components/sections/socials/InfluencerMarketingSection'
-import { Instagram, Check, ArrowUpRight } from 'lucide-react'
+import { Instagram, Check, ArrowUpRight, Megaphone, TrendingUp, Users2, Target, UserCheck, MessageSquare, CalendarRange, Sparkles, Rocket } from 'lucide-react'
+
+// All services we offer under Dark Bird Socials — each links to its dedicated
+// /services/[slug] landing page.
+const socialsServices = [
+  {
+    icon: Megaphone,
+    title: 'Brand Campaigns',
+    description: 'Idea-led campaigns with hero films, social cutdowns and the media plan that carries them.',
+    slug: 'brand-campaign-agency-bangalore',
+  },
+  {
+    icon: TrendingUp,
+    title: 'Performance Marketing',
+    description: 'Meta, Google and YouTube ads run by the same team that makes the creative.',
+    slug: 'performance-marketing-agency-bangalore',
+  },
+  {
+    icon: Users2,
+    title: 'Social Media Marketing',
+    description: 'Content strategy, reels and carousels that actually sound like the brand.',
+    slug: 'social-media-marketing-agency-bangalore',
+  },
+  {
+    icon: UserCheck,
+    title: 'Influencer Marketing',
+    description: 'Creator-led campaigns across tier-1 and micro creators, briefed, shot and measured.',
+    slug: 'influencer-marketing-agency-bangalore',
+  },
+  {
+    icon: Target,
+    title: 'Paid Media Strategy',
+    description: 'Full-funnel media planning, buying and creative ops for brands serious about spend.',
+    slug: 'paid-media-strategy-bangalore',
+  },
+  {
+    icon: Rocket,
+    title: 'Founder Branding',
+    description: 'Founder-led storytelling, social presence and thought leadership at scale.',
+    slug: 'founder-branding-agency-bangalore',
+  },
+  {
+    icon: MessageSquare,
+    title: 'Social Media Management',
+    description: 'Community growth, inbox, DMs and always-on content handled end-to-end.',
+    slug: 'social-media-management-bangalore',
+  },
+  {
+    icon: CalendarRange,
+    title: 'Campaign Planning & Execution',
+    description: 'From the first brief to the last asset — campaign calendars built for momentum.',
+    slug: 'campaign-planning-bangalore',
+  },
+  {
+    icon: Sparkles,
+    title: 'AI Digital Marketing',
+    description: 'AI-assisted content pipelines, automation and real-time ad optimisation.',
+    slug: 'ai-digital-marketing-bangalore',
+  },
+]
 
 export const metadata: Metadata = {
   title: 'Social Media Marketing Agency | Brand Campaigns & Influencer Marketing',
@@ -157,6 +216,52 @@ export default function SocialsPage() {
               </Link>
             </div>
           </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Services We Offer */}
+      <section className="section-dark section-padding border-t border-white/[0.06]">
+        <div className="container-content">
+          <ScrollReveal>
+            <SectionLabel>Our Services</SectionLabel>
+          </ScrollReveal>
+          <ScrollReveal delay={0.1}>
+            <h2 className="text-section font-bold text-white mt-4 mb-4">
+              Everything Socials, under one roof
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <p className="text-warm-gray max-w-2xl mb-12">
+              From the big idea to the last DM — brand campaigns, content, creators and
+              media buying run by the same team. Tap any service to see the full offering.
+            </p>
+          </ScrollReveal>
+
+          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {socialsServices.map((service) => {
+              const Icon = service.icon
+              return (
+                <Link
+                  key={service.slug}
+                  href={`/services/${service.slug}`}
+                  className="group p-6 bg-charcoal/60 border border-white/[0.06] rounded-2xl hover:border-primary-red/50 hover:bg-charcoal/80 transition-all"
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary-red/10 flex items-center justify-center group-hover:bg-primary-red/20 transition-colors">
+                      <Icon className="w-6 h-6 text-primary-red" />
+                    </div>
+                    <ArrowUpRight className="w-5 h-5 text-warm-gray group-hover:text-primary-red group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
+                  </div>
+                  <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-primary-red transition-colors">
+                    {service.title}
+                  </h3>
+                  <p className="text-warm-gray text-sm leading-relaxed">
+                    {service.description}
+                  </p>
+                </Link>
+              )
+            })}
+          </StaggerReveal>
         </div>
       </section>
 

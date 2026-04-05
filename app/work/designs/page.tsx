@@ -5,7 +5,7 @@ import SectionLabel from '@/components/ui/SectionLabel'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
 import LazySplineBanner from '@/components/LazySplineBanner'
-import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink, Megaphone } from 'lucide-react'
+import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink, Megaphone, Instagram } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Brand Design Agency | Logo Design, Motion Graphics & Web Design India',
@@ -32,31 +32,37 @@ const services = [
     icon: Layout,
     title: 'Website & Landing Page Design',
     description: 'Conversion-focused web experiences that look premium and perform.',
+    slug: 'website-design-agency-bangalore',
   },
   {
     icon: Palette,
     title: 'Brand Identity & Visual Kits',
     description: 'Complete brand systems from logo to guidelines.',
+    slug: 'brand-identity-design-bangalore',
   },
   {
     icon: Sparkles,
-    title: 'Social Media Templates',
-    description: 'Scroll-stopping templates for consistent brand presence.',
+    title: 'Social Media Templates & Illustrations',
+    description: 'Scroll-stopping templates and illustrations for a consistent brand presence.',
+    slug: 'social-media-design-bangalore',
   },
   {
     icon: Box,
     title: '3D Modelling',
     description: 'Product visualization and architectural renders.',
+    slug: '3d-modelling-bangalore',
   },
   {
     icon: MessageSquare,
     title: 'WhatsApp Stickers & Digital Swag',
-    description: 'Fun, shareable assets that extend your brand.',
+    description: 'Fun, shareable assets that extend your brand into everyday conversations.',
+    slug: 'whatsapp-sticker-design-bangalore',
   },
   {
     icon: Video,
-    title: 'Motion Design',
-    description: 'Animated graphics and short-form visual content.',
+    title: 'Motion Design & Short-Form Animations',
+    description: 'Animated graphics, kinetic type and short-form visual content.',
+    slug: 'motion-design-bangalore',
   },
 ]
 
@@ -83,6 +89,51 @@ const offlineDesigns = [
   { src: '/images/designs/offline/anjani-arch.jpg', title: 'Anjani Arch Design' },
   { src: '/images/designs/offline/tent.jpg', title: 'Tent Design' },
   { src: '/images/designs/offline/anjani-tent.jpg', title: 'Anjani Tent Design' },
+]
+
+// Social Media Posts — designed statics & carousels from brand campaigns
+const socialPosts = [
+  { src: '/images/socials/brand-campaigns/static-posts/anjani-scroll-1.webp', title: 'Anjani — Scroll Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/anjani-scroll-2.webp', title: 'Anjani — Scroll Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/best-of-both.webp', title: 'Best of Both Worlds' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover.webp', title: 'Discover' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover-1.webp', title: 'Discover Series' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover-2.webp', title: 'Discover Series' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover-3.webp', title: 'Discover Series' },
+  { src: '/images/socials/brand-campaigns/static-posts/discover-4.webp', title: 'Discover Series' },
+  { src: '/images/socials/brand-campaigns/static-posts/button-post-1.webp', title: 'Button Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/button-post-2.webp', title: 'Button Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/rules-break-1.webp', title: 'Rules to Break' },
+  { src: '/images/socials/brand-campaigns/static-posts/rules-break-2.webp', title: 'Rules to Break' },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-1.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-2.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-3.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-4.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/childrens-day-5.webp', title: "Children's Day" },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-1.webp', title: 'New Year Campaign' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-2.webp', title: 'New Year Campaign' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-3.webp', title: 'New Year Campaign' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-4.webp', title: 'New Year Campaign' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-5.webp', title: 'New Year Campaign' },
+  { src: '/images/socials/brand-campaigns/static-posts/new-year-6.webp', title: 'New Year Campaign' },
+  { src: '/images/socials/brand-campaigns/static-posts/happy-diwali.jpg', title: 'Happy Diwali' },
+  { src: '/images/socials/brand-campaigns/static-posts/happy-diwali-lake-view.jpg', title: 'Diwali — Lake View' },
+  { src: '/images/socials/brand-campaigns/static-posts/deepavali-2.jpg', title: 'Deepavali' },
+  { src: '/images/socials/brand-campaigns/static-posts/deepavali-next-year.jpg', title: 'Deepavali — Next Year' },
+  { src: '/images/socials/brand-campaigns/static-posts/ayudha-pooja.png', title: 'Ayudha Pooja' },
+  { src: '/images/socials/brand-campaigns/static-posts/dressed-for-celebration.jpg', title: 'Dressed for Celebration' },
+  { src: '/images/socials/brand-campaigns/static-posts/light-up-acres.jpg', title: 'Light Up the Acres' },
+  { src: '/images/socials/brand-campaigns/static-posts/lake-mirrors.jpg', title: 'Lake Mirrors' },
+  { src: '/images/socials/brand-campaigns/static-posts/evening-gk.jpg', title: 'Evening at GK' },
+  { src: '/images/socials/brand-campaigns/static-posts/park-benches.jpg', title: 'Park Benches' },
+  { src: '/images/socials/brand-campaigns/static-posts/puzzle-gk.jpg', title: 'GK Puzzle' },
+  { src: '/images/socials/brand-campaigns/static-posts/gk-penguin.jpg', title: 'GK Penguin' },
+  { src: '/images/socials/brand-campaigns/static-posts/rcb-women.jpg', title: 'RCB Women' },
+  { src: '/images/socials/brand-campaigns/static-posts/congrats-india.jpg', title: 'Congrats India' },
+  { src: '/images/socials/brand-campaigns/static-posts/announcement.jpg', title: 'Announcement' },
+  { src: '/images/socials/brand-campaigns/static-posts/post-03-a.jpg', title: 'Brand Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/post-03-b.jpg', title: 'Brand Post' },
+  { src: '/images/socials/brand-campaigns/static-posts/ms-pp.png', title: 'MS Post' },
 ]
 
 // Digital Designs / Ad Posters
@@ -202,29 +253,39 @@ export default function DesignsPage() {
             <SectionLabel>Our Services</SectionLabel>
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-white mt-4 mb-12">
+            <h2 className="text-section font-bold text-white mt-4 mb-4">
               Design That Delivers
             </h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <p className="text-warm-gray max-w-2xl mb-12">
+              Brand identity, websites, motion and everything in between — built with
+              the same obsessive craft as the films. Tap any service to see the full offering.
+            </p>
           </ScrollReveal>
 
           <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {services.map((service) => {
               const Icon = service.icon
               return (
-                <div
-                  key={service.title}
-                  className="p-6 bg-charcoal rounded-xl hover:bg-charcoal/80 transition-colors group"
+                <Link
+                  key={service.slug}
+                  href={`/services/${service.slug}`}
+                  className="group p-6 bg-charcoal rounded-xl hover:bg-charcoal/80 border border-white/[0.06] hover:border-primary-red/50 transition-all"
                 >
-                  <div className="w-12 h-12 rounded-lg bg-primary-red/10 flex items-center justify-center mb-4 group-hover:bg-primary-red/20 transition-colors">
-                    <Icon className="w-6 h-6 text-primary-red" />
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="w-12 h-12 rounded-lg bg-primary-red/10 flex items-center justify-center group-hover:bg-primary-red/20 transition-colors">
+                      <Icon className="w-6 h-6 text-primary-red" />
+                    </div>
+                    <ExternalLink className="w-5 h-5 text-warm-gray group-hover:text-primary-red transition-colors" />
                   </div>
-                  <h3 className="text-white font-semibold text-lg mb-2">
+                  <h3 className="text-white font-semibold text-lg mb-2 group-hover:text-primary-red transition-colors">
                     {service.title}
                   </h3>
                   <p className="text-warm-gray text-sm">
                     {service.description}
                   </p>
-                </div>
+                </Link>
               )
             })}
           </StaggerReveal>
@@ -314,6 +375,43 @@ export default function DesignsPage() {
                   className="object-cover"
                   loading="lazy"
                   sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                />
+              </div>
+            ))}
+          </StaggerReveal>
+        </div>
+      </section>
+
+      {/* Social Media Posts */}
+      <section className="section-light section-padding">
+        <div className="container-content">
+          <ScrollReveal>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center">
+                <Instagram className="w-6 h-6 text-white" />
+              </div>
+              <h2 className="text-2xl font-bold text-charcoal">
+                Social Media Posts
+              </h2>
+            </div>
+            <p className="text-warm-gray mb-10">
+              Designed statics and carousels built for feed-stopping recall across brand campaigns.
+            </p>
+          </ScrollReveal>
+
+          <StaggerReveal className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {socialPosts.map((post) => (
+              <div
+                key={post.src}
+                className="relative aspect-square rounded-xl overflow-hidden bg-gray-100 shadow-lg hover:shadow-xl transition-shadow"
+              >
+                <Image
+                  src={post.src}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  loading="lazy"
+                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                 />
               </div>
             ))}

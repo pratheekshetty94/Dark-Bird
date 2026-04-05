@@ -328,7 +328,7 @@ function FullScreenBanner({
     : subjectPosition === 'right'
       ? 'object-right md:object-center'
       : subjectPosition === 'top'
-        ? 'object-[center_60%]'
+        ? 'object-top'
         : 'object-center'
 
   return (

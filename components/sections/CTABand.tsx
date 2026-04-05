@@ -2,9 +2,10 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { ArrowUpRight } from 'lucide-react'
+import { ArrowUpRight, Calendar, Phone, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { trackCtaClick } from '@/lib/analytics'
+import { trackCtaClick, trackPhoneClick, trackWhatsAppClick } from '@/lib/analytics'
+import { WHATSAPP_URL, PHONE_TEL_URL } from '@/lib/contact'
 
 interface CTABandProps {
   headline?: string
@@ -18,8 +19,8 @@ interface CTABandProps {
 export default function CTABand({
   headline = "Let's Create Something Powerful",
   description = "Whether it's a film, a campaign, a walkthrough, or a brand story — we'd love to create something meaningful with you.",
-  buttonText = 'Get in Touch',
-  buttonHref = '/contact',
+  buttonText = 'Book a Discovery Call',
+  buttonHref = '/contact#book-call',
   variant = 'accent',
   className,
 }: CTABandProps) {
@@ -87,19 +88,47 @@ export default function CTABand({
             {description}
           </p>
 
-          <Link
-            href={buttonHref}
-            onClick={() => trackCtaClick('cta_band', buttonText)}
-            className={cn(
-              'group inline-flex items-center gap-3 px-6 md:px-8 py-3 md:py-4 rounded-lg font-medium transition-all duration-300',
-              isAccent && 'bg-cream text-ink',
-              variant === 'dark' && 'bg-accent text-cream',
-              isLight && 'bg-ink text-cream'
-            )}
-          >
-            {buttonText}
-            <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
-          </Link>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 md:gap-4">
+            <Link
+              href={buttonHref}
+              onClick={() => trackCtaClick('cta_band', buttonText)}
+              className={cn(
+                'group inline-flex items-center justify-center gap-2 px-5 md:px-6 py-3 md:py-4 rounded-lg font-medium transition-all duration-300',
+                isAccent && 'bg-cream text-ink hover:bg-cream/90',
+                variant === 'dark' && 'bg-accent text-cream hover:bg-accent-hover',
+                isLight && 'bg-ink text-cream hover:bg-ink/90'
+              )}
+            >
+              <Calendar className="w-4 h-4 md:w-5 md:h-5" />
+              Book a Discovery Call
+              <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
+            </Link>
+
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackWhatsAppClick('cta_band')}
+              className="group inline-flex items-center justify-center gap-2 px-5 md:px-6 py-3 md:py-4 rounded-lg font-medium bg-green-600 text-cream hover:bg-green-700 transition-all duration-300"
+            >
+              <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
+              WhatsApp Us
+            </a>
+
+            <a
+              href={PHONE_TEL_URL}
+              onClick={() => trackPhoneClick('cta_band')}
+              className={cn(
+                'group inline-flex items-center justify-center gap-2 px-5 md:px-6 py-3 md:py-4 rounded-lg font-medium border-2 transition-all duration-300',
+                isAccent && 'border-cream text-cream hover:bg-cream hover:text-ink',
+                variant === 'dark' && 'border-accent text-accent hover:bg-accent hover:text-cream',
+                isLight && 'border-ink text-ink hover:bg-ink hover:text-cream'
+              )}
+            >
+              <Phone className="w-4 h-4 md:w-5 md:h-5" />
+              Call Us
+            </a>
+          </div>
 
           {/* Email */}
           <div className="hidden md:flex items-center justify-center gap-4 mt-16">

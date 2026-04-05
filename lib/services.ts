@@ -368,6 +368,48 @@ export const services: Service[] = [
     },
   },
   {
+    slug: 'brand-campaign-agency-bangalore',
+    name: 'Brand Campaigns',
+    shortName: 'Brand Campaigns',
+    category: 'Socials',
+    heroKicker: 'Brand Campaigns · Bangalore',
+    heroHeadline: 'Campaigns that move a brand, not just the feed',
+    heroAccent: 'move',
+    heroSubhead:
+      'Idea-led brand campaigns — from concept and script to hero film, social cutdowns, statics and the media that carries them.',
+    gaps: [
+      { title: 'Posts without a campaign', body: 'Monthly content that never adds up to a moment worth remembering.' },
+      { title: 'Hero films with no afterlife', body: 'One launch film, zero social assets, and the idea dies in a week.' },
+      { title: 'Beautiful creative, no distribution', body: 'Campaigns that look great in the deck and go nowhere on media.' },
+    ],
+    deliverables: [
+      { title: 'Campaign Ideation & Strategy', body: 'The big idea, narrative arc and platform plan before a single frame is shot.' },
+      { title: 'Hero Films & Manifestos', body: 'The anchor film that carries the campaign — scripted, shot and directed in-house.' },
+      { title: 'Social Cutdowns & Reels', body: '15s, 30s and vertical cuts built for Reels, Shorts and YouTube from the same shoot.' },
+      { title: 'Statics, Carousels & OOH', body: 'Matching static creatives, carousels and out-of-home pieces that extend the story.' },
+      { title: 'Launch Plan & Rollout Calendar', body: 'Week-by-week rollout across owned, earned and paid channels.' },
+      { title: 'Paid Media Activation', body: 'Meta, YouTube and Google spend run by the same team that built the creative.' },
+    ],
+    whyUs: [
+      'Nine years of brand and ad film craft applied to every campaign',
+      'One team for idea, film, social cuts, statics and media — no handoffs',
+      'Campaigns built to live beyond the launch day — not one-and-done hero drops',
+      'Creative and performance marketing under one roof',
+    ],
+    outcomeMetric: 'Campaigns that get talked about, shared, and remembered',
+    faqs: [
+      { q: 'What does a brand campaign engagement usually cost?', a: 'Brand campaigns typically start around ₹8–15L for a compact campaign with a hero film + social toolkit, and scale from there for multi-film, multi-platform rollouts.' },
+      { q: 'Do you handle the media buy too?', a: 'Yes. Brand campaigns and performance marketing are offered together — same team, shared weekly scorecards.' },
+      { q: 'Who owns the idea?', a: 'You do. We lead ideation with your team and hand over the brief, scripts and decks as deliverables.' },
+      { q: 'How long does a campaign take to ship?', a: 'From brief to launch, tight campaigns ship in 4–6 weeks. Larger multi-film rollouts take 8–12 weeks.' },
+    ],
+    meta: {
+      title: 'Brand Campaign Agency in Bangalore | Dark Bird Socials',
+      description: 'Idea-led brand campaigns — hero films, social cutdowns, statics and media rollout from a 9-year film studio in Bangalore.',
+      keywords: ['brand campaign agency bangalore', 'campaign agency bangalore', 'brand film campaign bangalore', 'launch campaign agency bangalore', 'integrated campaign agency bangalore'],
+    },
+  },
+  {
     slug: 'performance-marketing-agency-bangalore',
     name: 'Performance Marketing',
     shortName: 'Performance Marketing',

@@ -416,6 +416,170 @@ export const serviceWork: Record<string, ServiceWorkItem[]> = {
     },
   ],
 
+  'ai-short-film-bangalore': [
+    {
+      title: 'AI Short Films',
+      description: 'Short-form cinematic storytelling crafted with generative tools',
+      image: '/images/labs/labs-project-short-films.jpg',
+      href: '/work/labs',
+      tag: 'AI Short',
+    },
+  ],
+
+  'ai-visual-experiment-bangalore': [
+    {
+      title: 'AI Visual Experiments',
+      description: 'Sandbox experiments pushing the boundary of generative visuals',
+      image: '/images/labs/ai-visual-experiments.jpeg',
+      href: '/work/labs',
+      tag: 'AI Visual',
+    },
+  ],
+
+  'ai-video-production-bangalore': [
+    {
+      title: 'AI Avatar & Digital Twins',
+      description: 'Autonomous virtual influencers and founder digital twins',
+      image: '/images/labs/labs-project-founder-avatar.jpg',
+      href: '/work/labs',
+      tag: 'AI Avatar',
+    },
+    {
+      title: 'AI Launch Trailers',
+      description: 'Cinematic product trailers crafted with AI',
+      image: '/images/labs/ai-launch-trailers.jpeg',
+      href: '/work/labs',
+      tag: 'AI Trailer',
+    },
+    {
+      title: 'AI Commercials',
+      description: 'Premium ads at startup speed — hyper-personalised at scale',
+      image: '/images/labs/ai-commercials.jpeg',
+      href: '/work/labs',
+      tag: 'AI Ad',
+    },
+    {
+      title: 'AI Motion Graphics',
+      description: 'Kinetic typography & dynamic graphics in hours, not weeks',
+      image: '/images/labs/labs-project-motion-graphics.jpg',
+      href: '/work/labs',
+      tag: 'AI Motion',
+    },
+    {
+      title: 'AI Music Videos',
+      description: 'Generative visual storytelling synced to rhythm',
+      image: '/images/labs/labs-project-music-videos.jpg',
+      href: '/work/labs',
+      tag: 'AI Music',
+    },
+  ],
+
+  // Socials — narrow services each get one curated card from SOCIALS_WORK
+  'brand-campaign-agency-bangalore': [
+    {
+      title: 'Brand Campaigns',
+      description: 'Walkthrough films, hero campaigns & brand storytelling reels',
+      image: '/images/socials/thumbnails/brand-campaigns.jpg',
+      href: '/work/socials#brand-campaigns',
+      tag: 'Campaigns',
+    },
+  ],
+
+  'performance-marketing-agency-bangalore': [
+    {
+      title: 'Performance Ads',
+      description: 'ROI-focused Meta & Google campaigns across clients',
+      image: '/images/socials/thumbnails/performance-ads.jpg',
+      href: '/work/socials#performance-ads',
+      tag: 'Paid Media',
+    },
+  ],
+
+  'paid-media-strategy-bangalore': [
+    {
+      title: 'Performance Ads',
+      description: 'ROI-focused Meta & Google campaigns across clients',
+      image: '/images/socials/thumbnails/performance-ads.jpg',
+      href: '/work/socials#performance-ads',
+      tag: 'Paid Media',
+    },
+  ],
+
+  'influencer-marketing-agency-bangalore': [
+    {
+      title: 'Influencer Marketing',
+      description: 'Creator-led content across verticals',
+      image: '/images/socials/thumbnails/influencer-marketing.jpg',
+      href: '/work/socials#influencer-marketing',
+      tag: 'Influencer',
+    },
+  ],
+
+  'campaign-planning-bangalore': [
+    {
+      title: 'Brand Campaigns',
+      description: 'Walkthrough films, hero campaigns & brand storytelling reels',
+      image: '/images/socials/thumbnails/brand-campaigns.jpg',
+      href: '/work/socials#brand-campaigns',
+      tag: 'Campaigns',
+    },
+  ],
+
+  'founder-branding-agency-bangalore': [
+    {
+      title: 'Influencer Marketing',
+      description: 'Founder-led content that builds authority',
+      image: '/images/socials/thumbnails/influencer-marketing.jpg',
+      href: '/work/socials#influencer-marketing',
+      tag: 'Founder',
+    },
+    {
+      title: 'Brand Identity & Logos',
+      description: 'Identities built to last — logos designed with precision',
+      image: '/images/designs/logos/bake-a-luru.jpg',
+      href: '/work/socials#branding',
+      tag: 'Branding',
+    },
+  ],
+
+  // Designs — narrow services with specific hero items
+  'brand-identity-design-bangalore': [
+    {
+      title: 'Brand Identity & Logos',
+      description: 'Identities built to last — logos designed with precision',
+      image: '/images/designs/logos/bake-a-luru.jpg',
+      href: '/work/socials#branding',
+      tag: 'Branding',
+    },
+  ],
+
+  'social-media-design-bangalore': [
+    {
+      title: 'Social Media Posts',
+      description: 'Static creatives built for engagement and recall',
+      image: '/images/socials/brand-campaigns/static-posts/best-of-both.webp',
+      href: '/work/socials#posts',
+      tag: 'Posts',
+    },
+    {
+      title: 'Social Media Reels',
+      description: 'Scroll-stopping vertical content for IG, Shorts & beyond',
+      image: '/images/socials/brand-campaigns/static-posts/anjani-scroll-1.webp',
+      href: '/work/socials#reels',
+      tag: 'Reels',
+    },
+  ],
+
+  'motion-design-bangalore': [
+    {
+      title: 'AI Motion Graphics',
+      description: 'Kinetic typography & dynamic graphics at studio polish',
+      image: '/images/labs/labs-project-motion-graphics.jpg',
+      href: '/work/labs',
+      tag: 'Motion',
+    },
+  ],
+
   // AI Marketing Automation — not shipped case studies, but a capability
   // matrix. Each card describes an automation we plug into growth stacks
   // and links to /contact#book-call so prospects can scope their own build.
@@ -497,47 +661,53 @@ export const serviceWork: Record<string, ServiceWorkItem[]> = {
 // full Dark Bird stack behind a single service).
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Narrow services rely exclusively on their curated hero list above so they
+// only surface work that genuinely represents the service. Broad services
+// that cover a whole department (e.g. Social Media Marketing) still append a
+// single matching pool. Missing entries default to [] and hide the section.
 const serviceDepartments: Record<string, WorkDepartment[]> = {
-  // Films
-  'feature-film-dop-bangalore': ['films'],
-  'feature-film-production-support-bangalore': ['films'],
-  'film-editing-di-colour-grading-bangalore': ['films', 'labs'],
-  'vfx-services-bangalore': ['films', 'labs'],
-  'ad-film-production-bangalore': ['films', 'socials'],
-  'brand-film-production-bangalore': ['films', 'socials', 'designs'],
-  'corporate-video-production-bangalore': ['films', 'socials'],
-  'product-video-production-bangalore': ['films', 'socials'],
-  'music-video-production-bangalore': ['films', 'labs'],
-  'documentary-production-bangalore': ['films'],
-  'property-walkthrough-film-bangalore': ['films', 'socials', 'designs'],
-  'founder-story-video-bangalore': ['films', 'socials'],
+  // Films — every film service is a specific sub-craft, hero items only
+  'feature-film-dop-bangalore': [],
+  'feature-film-production-support-bangalore': [],
+  'film-editing-di-colour-grading-bangalore': [],
+  'vfx-services-bangalore': [],
+  'ad-film-production-bangalore': [],
+  'brand-film-production-bangalore': [],
+  'corporate-video-production-bangalore': [],
+  'product-video-production-bangalore': [],
+  'music-video-production-bangalore': [],
+  'documentary-production-bangalore': [],
+  'property-walkthrough-film-bangalore': [],
+  'founder-story-video-bangalore': [],
 
-  // Socials
-  'performance-marketing-agency-bangalore': ['socials', 'designs', 'labs'],
-  'social-media-marketing-agency-bangalore': ['socials', 'designs', 'labs'],
-  'influencer-marketing-agency-bangalore': ['socials', 'designs', 'labs'],
-  'social-media-management-bangalore': ['socials', 'designs', 'labs'],
-  'paid-media-strategy-bangalore': ['socials', 'designs', 'labs'],
-  'campaign-planning-bangalore': ['socials', 'designs', 'films'],
-  'founder-branding-agency-bangalore': ['socials', 'designs', 'labs'],
-  'ai-digital-marketing-bangalore': ['socials', 'labs', 'designs'],
+  // Socials — only Social Media Marketing and Management are broad enough
+  // to show the full socials pool. Every other service narrows to its hero.
+  'social-media-marketing-agency-bangalore': ['socials'],
+  'social-media-management-bangalore': ['socials'],
+  'brand-campaign-agency-bangalore': [],
+  'performance-marketing-agency-bangalore': [],
+  'influencer-marketing-agency-bangalore': [],
+  'paid-media-strategy-bangalore': [],
+  'campaign-planning-bangalore': [],
+  'founder-branding-agency-bangalore': [],
+  'ai-digital-marketing-bangalore': ['socials'],
 
-  // Designs
-  'website-design-agency-bangalore': ['designs', 'socials'],
-  'brand-identity-design-bangalore': ['designs', 'socials'],
-  'social-media-design-bangalore': ['designs', 'socials'],
-  '3d-modelling-bangalore': ['designs', 'labs'],
-  'motion-design-bangalore': ['designs', 'labs'],
-  'whatsapp-sticker-design-bangalore': ['designs', 'socials'],
+  // Designs — each service is a specific craft, hero items only
+  'website-design-agency-bangalore': [],
+  'brand-identity-design-bangalore': [],
+  'social-media-design-bangalore': [],
+  '3d-modelling-bangalore': [],
+  'motion-design-bangalore': [],
+  'whatsapp-sticker-design-bangalore': [],
 
-  // Labs — only pull from the labs pool so AI services don't surface
-  // live-action feature films that aren't relevant to the offering.
-  'ai-video-production-bangalore': ['labs'],
-  'ai-short-film-bangalore': ['labs'],
+  // Labs — AI Video Production is the only broad labs service; every other
+  // sub-service is a specific format with its own curated hero entry.
+  'ai-video-production-bangalore': [],
+  'ai-short-film-bangalore': [],
   'ai-commercial-production-bangalore': [],
   'ai-launch-trailer-bangalore': [],
   'ai-music-video-bangalore': [],
-  'ai-visual-experiment-bangalore': ['labs'],
+  'ai-visual-experiment-bangalore': [],
   'ai-marketing-automation-bangalore': [],
 }
 

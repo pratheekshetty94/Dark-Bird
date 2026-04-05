@@ -782,14 +782,14 @@ export default function ContactPage() {
                     <a
                       href={PHONE_TEL_URL}
                       onClick={() => trackPhoneClick('contact_panel')}
-                      className="flex items-center gap-4 p-4 bg-charcoal rounded-xl text-cream hover:bg-charcoal/80 transition-colors group"
+                      className="flex items-center gap-4 p-4 bg-accent/10 border border-accent/40 rounded-xl text-cream hover:bg-accent/20 hover:border-accent transition-colors group"
                     >
-                      <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-                        <Phone className="w-5 h-5 text-accent" />
+                      <div className="w-10 h-10 rounded-lg bg-accent flex items-center justify-center">
+                        <Phone className="w-5 h-5 text-cream" />
                       </div>
                       <div>
-                        <p className="text-xs text-warm-gray uppercase tracking-wider font-mono">Phone</p>
-                        <p className="font-medium group-hover:text-accent transition-colors">{PHONE_NUMBER_DISPLAY}</p>
+                        <p className="text-xs text-accent uppercase tracking-wider font-mono">Phone</p>
+                        <p className="font-medium text-cream group-hover:text-accent transition-colors">{PHONE_NUMBER_DISPLAY}</p>
                       </div>
                     </a>
 

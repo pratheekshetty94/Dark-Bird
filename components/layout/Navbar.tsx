@@ -12,6 +12,7 @@ import { industries } from '@/lib/industries'
 
 // Department logos mapping
 const departmentLogos: Record<string, { logo: string; alt: string }> = {
+  '/filmography': { logo: '/images/logo-films.png', alt: 'Dark Bird Films' },
   '/work/films': { logo: '/images/logo-films.png', alt: 'Dark Bird Films' },
   '/work/socials': { logo: '/images/logo-socials.png', alt: 'Dark Bird Socials' },
   '/work/designs': { logo: '/images/logo-designs.png', alt: 'Dark Bird Designs' },

@@ -72,7 +72,7 @@ export const divisions: Division[] = [
     href: '/work/socials',
     video: '/videos/socials-loop.mp4',
     services: [
-      { label: 'Brand Campaigns', workHref: '/work/socials#brand-campaigns' },
+      { label: 'Brand Campaigns', slug: 'brand-campaign-agency-bangalore' },
       { label: 'Performance Marketing', slug: 'performance-marketing-agency-bangalore' },
       { label: 'Social Media Marketing', slug: 'social-media-marketing-agency-bangalore' },
       { label: 'Influencer Marketing', slug: 'influencer-marketing-agency-bangalore' },
