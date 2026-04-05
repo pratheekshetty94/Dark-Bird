@@ -49,6 +49,11 @@ export function trackFormStart(formName: string) {
 
 export function trackFormSubmit(formName: string) {
   gtagEvent('form_submit', { form_name: formName })
+  // Also fire a specific event name for the contact form so it matches the
+  // `contact_form_submit` key event configured in GA4.
+  if (formName === 'contact_project') {
+    gtagEvent('contact_form_submit')
+  }
   fbqTrack('Lead', { form: formName })
 }
 
