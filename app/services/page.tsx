@@ -4,7 +4,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import ScrollReveal from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
-import { type ServiceCategory } from '@/lib/services'
+import { divisions } from '@/lib/divisions'
 
 export const metadata: Metadata = {
   title: 'Services | Dark Bird Films Bangalore',
@@ -18,110 +18,6 @@ export const metadata: Metadata = {
     url: 'https://darkbirdfilms.com/services',
   },
 }
-
-type ServiceItem = {
-  label: string
-  slug?: string // If present, links to /services/[slug]. Otherwise renders as plain bullet.
-}
-
-type Division = {
-  number: string
-  category: ServiceCategory
-  name: string
-  tagline: string
-  description: string
-  href: string
-  video: string
-  services: ServiceItem[]
-}
-
-// Division service lists are the source of truth for /services.
-// `slug` cross-references lib/services.ts for items with a dedicated detail page.
-// Items without `slug` are shown as plain bullets (same as /work page).
-const divisions: Division[] = [
-  {
-    number: '01',
-    category: 'Films',
-    name: 'Dark Bird Films',
-    tagline: 'This is where it all begins — with cinema.',
-    description:
-      'Feature films, ad films, brand films, music videos and the crafts that make them — DOP, editing, DI and VFX. Nine years of feature-grade storytelling applied to every project.',
-    href: '/work/films',
-    video: '/videos/films-loop.mp4',
-    services: [
-      { label: 'Feature Film Production & Support' },
-      { label: 'Feature Film Cinematography (DOP)', slug: 'feature-film-dop-bangalore' },
-      { label: 'Film Editing, DI & Colour Grading', slug: 'film-editing-di-colour-grading-bangalore' },
-      { label: 'VFX & Visual Effects', slug: 'vfx-services-bangalore' },
-      { label: 'Ad Films & Commercials', slug: 'ad-film-production-bangalore' },
-      { label: 'Brand & Campaign Films', slug: 'brand-film-production-bangalore' },
-      { label: 'Corporate Videos', slug: 'corporate-video-production-bangalore' },
-      { label: 'Product & Launch Videos', slug: 'product-video-production-bangalore' },
-      { label: 'Music Videos', slug: 'music-video-production-bangalore' },
-      { label: 'Property Walkthrough Films' },
-      { label: 'Documentaries' },
-      { label: 'Founder Stories' },
-    ],
-  },
-  {
-    number: '02',
-    category: 'Socials',
-    name: 'Dark Bird Socials',
-    tagline: 'Because today, your audience lives online.',
-    description:
-      'We help brands show up, stand out and stay relevant across every digital platform. Building a voice, growing a presence and running performance campaigns that feel human and perform smart.',
-    href: '/work/socials',
-    video: '/videos/socials-loop.mp4',
-    services: [
-      { label: 'Performance Marketing', slug: 'performance-marketing-agency-bangalore' },
-      { label: 'Social Media Marketing', slug: 'social-media-marketing-agency-bangalore' },
-      { label: 'Influencer Marketing' },
-      { label: 'Paid Media Strategy' },
-      { label: 'Founder Branding & Social Presence' },
-      { label: 'Social Media Management & Community Growth' },
-      { label: 'Campaign Planning & Execution' },
-      { label: 'AI Digital Marketing' },
-      { label: 'Real Estate Digital Marketing' },
-    ],
-  },
-  {
-    number: '03',
-    category: 'Designs',
-    name: 'Dark Bird Designs',
-    tagline: 'We design experiences that are clean, cinematic and meaningful.',
-    description:
-      'Brand identity, websites and editorial design that match the production value of the films. Design that looks incredible and performs even better.',
-    href: '/work/designs',
-    video: '/videos/designs-loop.mp4',
-    services: [
-      { label: 'Website & Landing Page Design', slug: 'website-design-agency-bangalore' },
-      { label: 'Brand Identity & Visual Kits', slug: 'brand-identity-design-bangalore' },
-      { label: 'Social Media Templates & Illustrations' },
-      { label: '3D Modelling' },
-      { label: 'Motion Design & Short-Form Animations' },
-      { label: 'WhatsApp Stickers & Digital Swag' },
-    ],
-  },
-  {
-    number: '04',
-    category: 'Labs',
-    name: 'Dark Bird Labs',
-    tagline: 'Our sandbox for the future of film.',
-    description:
-      'We explore AI as a creative partner — crafting films, commercials and visuals that feel impossible, immersive and unmistakably cinematic. Directed, not prompted.',
-    href: '/work/labs',
-    video: '/videos/labs-loop.mp4',
-    services: [
-      { label: 'AI Video Production', slug: 'ai-video-production-bangalore' },
-      { label: 'AI Short Films' },
-      { label: 'AI Commercials & Concept Films' },
-      { label: 'AI Launch Trailers' },
-      { label: 'AI Music Videos' },
-      { label: 'AI-Generated Visual Experiments' },
-      { label: 'Marketing Automation & AI Agents' },
-    ],
-  },
-]
 
 export default function ServicesHubPage() {
   return (
@@ -231,28 +127,18 @@ export default function ServicesHubPage() {
                               ? 'text-silver hover:bg-cream/5 hover:text-cream'
                               : 'text-stone hover:bg-ink/5 hover:text-ink'
                           )
-                          const content = (
-                            <>
-                              <span className="flex items-start gap-3">
-                                <span className="text-accent mt-0.5">•</span>
-                                <span className={service.slug ? 'group-hover:text-accent transition-colors' : ''}>
-                                  {service.label}
-                                </span>
-                              </span>
-                              {service.slug && (
-                                <ArrowUpRight className="w-4 h-4 flex-shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-accent" />
-                              )}
-                            </>
-                          )
+                          const href = service.slug ? `/services/${service.slug}` : division.href
                           return (
                             <li key={service.label}>
-                              {service.slug ? (
-                                <Link href={`/services/${service.slug}`} className={rowClass}>
-                                  {content}
-                                </Link>
-                              ) : (
-                                <div className={cn(rowClass, 'cursor-default')}>{content}</div>
-                              )}
+                              <Link href={href} className={rowClass}>
+                                <span className="flex items-start gap-3">
+                                  <span className="text-accent mt-0.5">•</span>
+                                  <span className="group-hover:text-accent transition-colors">
+                                    {service.label}
+                                  </span>
+                                </span>
+                                <ArrowUpRight className="w-4 h-4 flex-shrink-0 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-accent" />
+                              </Link>
                             </li>
                           )
                         })}

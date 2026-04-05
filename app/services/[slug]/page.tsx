@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowUpRight, Check } from 'lucide-react'
 import { services, getServiceBySlug, getServiceSlugs } from '@/lib/services'
+import { getServiceWork, getServiceWorkHeading } from '@/lib/serviceWork'
 import CTABand from '@/components/sections/CTABand'
 
 type Params = { slug: string }
@@ -56,6 +58,9 @@ export default function ServicePage({ params }: { params: Params }) {
       acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
   }
+
+  const work = getServiceWork(service.slug)
+  const workHeading = getServiceWorkHeading(service.slug)
 
   // 3 related services from the same category, falling back to any 3 others
   const sameCategory = services.filter((s) => s.slug !== service.slug && s.category === service.category)
@@ -201,6 +206,87 @@ export default function ServicePage({ params }: { params: Params }) {
           </div>
         </div>
       </section>
+
+      {/* Selected Work */}
+      {work.length > 0 && (
+        <section className="py-16 md:py-24 border-b border-stone/10">
+          <div className="container-content">
+            <div className="flex items-end justify-between mb-10 md:mb-12 gap-6">
+              <div>
+                <span className="font-mono text-[10px] md:text-xs uppercase tracking-wider text-accent">
+                  {workHeading?.kicker ?? '( Selected work )'}
+                </span>
+                <h2 className="font-display text-3xl md:text-5xl text-cream mt-4 md:mt-6">
+                  {workHeading?.title ?? `${service.shortName} we've shipped.`}
+                </h2>
+              </div>
+              {!workHeading?.hideSeeAll && (
+                <Link
+                  href={`/work/${service.category.toLowerCase()}`}
+                  className="hidden md:inline-flex items-center gap-2 text-accent hover:text-accent-hover text-sm font-medium whitespace-nowrap"
+                >
+                  See all {service.category.toLowerCase()} work
+                  <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              )}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+              {work.map((item) => {
+                const cardClass =
+                  'group block rounded-2xl overflow-hidden border border-stone/15 bg-charcoal/30 hover:border-accent/60 transition-all'
+                const inner = (
+                  <>
+                    <div className="relative aspect-video bg-charcoal overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        unoptimized={item.image.startsWith('http')}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-ink/70 via-transparent to-transparent" />
+                      {item.tag && (
+                        <span className="absolute top-3 left-3 font-mono text-[10px] uppercase tracking-wider text-cream bg-ink/60 backdrop-blur px-2 py-1 rounded">
+                          {item.tag}
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-5">
+                      {item.client && (
+                        <p className="font-mono text-[10px] uppercase tracking-wider text-warm-gray mb-1">
+                          {item.client}
+                        </p>
+                      )}
+                      <h3 className="font-display text-lg md:text-xl text-cream group-hover:text-accent transition-colors">
+                        {item.title}
+                      </h3>
+                      {item.description && (
+                        <p className="text-silver text-sm mt-2">{item.description}</p>
+                      )}
+                    </div>
+                  </>
+                )
+                return item.external ? (
+                  <a
+                    key={`${item.title}-${item.href}`}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cardClass}
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <Link key={`${item.title}-${item.href}`} href={item.href} className={cardClass}>
+                    {inner}
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* FAQ */}
       <section className="py-16 md:py-24 border-b border-stone/10">

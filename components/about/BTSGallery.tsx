@@ -52,7 +52,7 @@ export default function BTSGallery({ images }: BTSGalleryProps) {
   return (
     <>
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 will-change-transform">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5 will-change-transform">
         {images.map((img, index) => (
           <div
             key={img.src}
@@ -65,7 +65,7 @@ export default function BTSGallery({ images }: BTSGalleryProps) {
                 alt={img.caption}
                 fill
                 className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]"
-                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 400px"
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 50vw, 400px"
                 quality={60}
                 loading="lazy"
               />

@@ -5,7 +5,10 @@ import SectionLabel from '@/components/ui/SectionLabel'
 import Button from '@/components/ui/Button'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
 import CTABand from '@/components/sections/CTABand'
-import { Instagram, ExternalLink, Building2, Video, Target, Users, BarChart3, Settings, Check } from 'lucide-react'
+import BrandCampaignsSection from '@/components/sections/socials/BrandCampaignsSection'
+import PerformanceAdsSection from '@/components/sections/socials/PerformanceAdsSection'
+import InfluencerMarketingSection from '@/components/sections/socials/InfluencerMarketingSection'
+import { Instagram, Check, ArrowUpRight } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Social Media Marketing Agency | Brand Campaigns & Influencer Marketing',
@@ -27,94 +30,49 @@ export const metadata: Metadata = {
   },
 }
 
+// Jump cards at the top of the page — scroll to the corresponding inline section.
 const projects = [
-  // Brand Campaigns - walkthrough films, reels, posts & branding
   {
     title: 'Brand Campaigns',
-    client: 'All Clients',
     category: 'Brand Campaigns',
-    description: 'Walkthrough films, social media reels, posts & branding',
+    description: 'Walkthrough films & brand storytelling',
     image: '/images/socials/thumbnails/brand-campaigns.jpg',
-    href: '/work/socials/brand-campaigns',
+    href: '#brand-campaigns',
   },
-  // Performance Ads - links to category page showing all clients
+  {
+    title: 'Reels',
+    category: 'Reels',
+    description: 'Scroll-stopping vertical content',
+    image: '/images/socials/brand-campaigns/static-posts/anjani-scroll-1.webp',
+    href: '#reels',
+  },
+  {
+    title: 'Posts',
+    category: 'Posts',
+    description: 'Static creatives built for engagement',
+    image: '/images/socials/brand-campaigns/static-posts/best-of-both.webp',
+    href: '#posts',
+  },
+  {
+    title: 'Branding',
+    category: 'Branding',
+    description: 'Logos & identities built to last',
+    image: '/images/designs/logos/bake-a-luru.jpg',
+    href: '#branding',
+  },
   {
     title: 'Performance Ads',
-    client: 'All Clients',
     category: 'Performance Ads',
     description: 'ROI-focused Meta & Google ad campaigns',
     image: '/images/socials/thumbnails/performance-ads.jpg',
-    href: '/work/socials/performance-ads',
-  },
-  // Influencer Marketing - links to category page showing all clients
-  {
-    title: 'Influencer Marketing Campaign',
-    client: 'All Clients',
-    category: 'Influencer Marketing',
-    description: '43 influencer collaborations',
-    image: '/images/socials/thumbnails/influencer-marketing.jpg',
-    href: '/work/socials/influencer-marketing',
-  },
-]
-
-const services = [
-  {
-    title: 'AI Digital Marketing',
-    description: 'Leverage AI for smarter targeting, content optimization, and campaign automation.',
+    href: '#performance-ads',
   },
   {
     title: 'Influencer Marketing',
-    description: 'Strategic partnerships with creators who align with your brand values.',
-  },
-  {
-    title: 'Paid Media Strategy',
-    description: 'ROI-focused campaigns across Meta, Google, YouTube, and LinkedIn.',
-  },
-  {
-    title: 'Founder Branding',
-    description: 'Build your personal brand and thought leadership presence.',
-  },
-  {
-    title: 'Social Media Management',
-    description: 'End-to-end content creation, scheduling, and community management.',
-  },
-  {
-    title: 'Campaign Planning',
-    description: 'Strategic campaign development from concept to execution.',
-  },
-]
-
-// Real Estate Marketing Services
-const realEstateServices = [
-  {
-    icon: Video,
-    title: 'Cinematic Property Walkthroughs',
-    description: 'Our signature product — immersive video tours that sell belief, not just square feet.',
-  },
-  {
-    icon: Target,
-    title: 'Brand & Project Positioning',
-    description: 'Strategic positioning that differentiates your development in a crowded market.',
-  },
-  {
-    icon: Building2,
-    title: 'Digital Launch Campaigns',
-    description: 'Cinematic production quality for your property launches across all channels.',
-  },
-  {
-    icon: Users,
-    title: 'Social Media Management',
-    description: 'Creatives, reels, and community growth that builds your developer brand.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Performance Marketing',
-    description: 'Lead generation campaigns on Meta, Google, and YouTube that deliver ROI.',
-  },
-  {
-    icon: Settings,
-    title: 'CRM & Lead Automation',
-    description: 'Setup and nurturing workflows that convert inquiries into site visits.',
+    category: 'Influencer Marketing',
+    description: '43 influencer collaborations',
+    image: '/images/socials/thumbnails/influencer-marketing.jpg',
+    href: '#influencer-marketing',
   },
 ]
 
@@ -180,36 +138,25 @@ export default function SocialsPage() {
               </Button>
             </div>
           </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Services Grid */}
-      <section className="section-light section-padding">
-        <div className="container-content">
-          <ScrollReveal>
-            <SectionLabel>What We Do</SectionLabel>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-charcoal mt-4 mb-12">
-              Our Digital Services
-            </h2>
-          </ScrollReveal>
-
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.map((service) => (
-              <div
-                key={service.title}
-                className="p-6 bg-white rounded-xl border border-charcoal/10 hover:border-primary-red/30 hover:shadow-lg transition-all"
+          <ScrollReveal delay={0.5}>
+            <div className="flex flex-wrap items-center gap-5 mt-10 text-sm">
+              <Link
+                href="/services#socials"
+                className="group inline-flex items-center gap-2 text-warm-gray hover:text-primary-red transition-colors"
               >
-                <h3 className="text-lg font-semibold text-charcoal mb-2">
-                  {service.title}
-                </h3>
-                <p className="text-warm-gray text-sm">
-                  {service.description}
-                </p>
-              </div>
-            ))}
-          </StaggerReveal>
+                Browse all Socials services
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </Link>
+              <span className="text-warm-gray/30">·</span>
+              <Link
+                href="/industries"
+                className="group inline-flex items-center gap-2 text-warm-gray hover:text-primary-red transition-colors"
+              >
+                Pick your industry
+                <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </Link>
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -225,10 +172,10 @@ export default function SocialsPage() {
             </h2>
           </ScrollReveal>
 
-          {/* Projects Grid */}
+          {/* Jump-to cards — scroll to inline sections below */}
           <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project) => (
-              <Link
+              <a
                 key={project.title}
                 href={project.href}
                 className="group bg-white rounded-xl overflow-hidden hover:shadow-xl transition-shadow"
@@ -244,7 +191,7 @@ export default function SocialsPage() {
                   <div className="absolute inset-0 bg-gradient-to-t from-deep-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   <div className="absolute bottom-4 left-4 right-4 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
                     <span className="inline-flex items-center gap-1 text-white text-sm">
-                      View Project <ExternalLink className="w-4 h-4" />
+                      Jump to section <ArrowUpRight className="w-4 h-4" />
                     </span>
                   </div>
                 </div>
@@ -257,56 +204,16 @@ export default function SocialsPage() {
                   </h3>
                   <p className="text-warm-gray text-sm">{project.description}</p>
                 </div>
-              </Link>
+              </a>
             ))}
           </StaggerReveal>
         </div>
       </section>
 
-      {/* ========== REAL ESTATE MARKETING SECTION ========== */}
-      <section className="section-dark section-padding" id="real-estate">
-        <div className="container-content">
-          <ScrollReveal>
-            <SectionLabel>Real Estate Marketing</SectionLabel>
-          </ScrollReveal>
-          <ScrollReveal delay={0.1}>
-            <h2 className="text-section font-bold text-white mt-4 mb-6">
-              Marketing That Sells Belief,<br />Not Square Feet.
-            </h2>
-          </ScrollReveal>
-          <ScrollReveal delay={0.2}>
-            <p className="text-xl text-warm-gray max-w-3xl mb-12">
-              We bring cinema-grade storytelling to real estate — turning properties into
-              aspirational narratives and developers into trusted brands. From cinematic
-              walkthrough videos to full-stack digital marketing, we are the creative
-              partner developers trust.
-            </p>
-          </ScrollReveal>
-
-          {/* Real Estate Services */}
-          <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {realEstateServices.map((service) => {
-              const Icon = service.icon
-              return (
-                <div
-                  key={service.title}
-                  className="p-6 bg-charcoal rounded-xl border border-white/10 hover:border-primary-red/30 transition-all"
-                >
-                  <div className="w-12 h-12 rounded-lg bg-primary-red/10 flex items-center justify-center mb-4">
-                    <Icon className="w-6 h-6 text-primary-red" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-white mb-2">
-                    {service.title}
-                  </h3>
-                  <p className="text-warm-gray text-sm">
-                    {service.description}
-                  </p>
-                </div>
-              )
-            })}
-          </StaggerReveal>
-        </div>
-      </section>
+      {/* Inline sections — moved from former /work/socials/* sub-pages */}
+      <BrandCampaignsSection />
+      <PerformanceAdsSection />
+      <InfluencerMarketingSection />
 
       {/* Engagement Models */}
       <section className="section-light section-padding">

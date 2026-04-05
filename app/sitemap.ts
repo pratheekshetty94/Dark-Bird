@@ -73,24 +73,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Sub-service pages
   const subServicePages: MetadataRoute.Sitemap = [
     {
-      url: `${BASE_URL}/work/socials/brand-campaigns`,
-      lastModified: LAST_UPDATED,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/work/socials/influencer-marketing`,
-      lastModified: LAST_UPDATED,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/work/socials/performance-ads`,
-      lastModified: LAST_UPDATED,
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
-    {
       url: `${BASE_URL}/work/designs/websites/gk-builders`,
       lastModified: LAST_UPDATED,
       changeFrequency: 'monthly',

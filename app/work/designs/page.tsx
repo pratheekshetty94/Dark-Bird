@@ -87,6 +87,11 @@ const offlineDesigns = [
 
 // Digital Designs / Ad Posters
 const adPosters = [
+  { src: '/images/socials/performance-ads/SP_1.png', title: 'Anjani Lake Woods — Why Drive to a Hill Station?' },
+  { src: '/images/socials/performance-ads/SP_2.png', title: 'Anjani Lake Woods — Live Between the Lake & Hills' },
+  { src: '/images/socials/performance-ads/SP_3.png', title: 'Anjani Lake Woods — Your Kids Don\u2019t Need a Phone' },
+  { src: '/images/socials/performance-ads/SP_4.png', title: 'Anjani Lake Woods — The Gateway to Premium Living' },
+  { src: '/images/socials/performance-ads/SP_5.png', title: 'Anjani Lake Woods — Slow Down. Breathe. You Are Home.' },
   { src: '/images/designs/ad-posters/ad-creative_1-1.jpg', title: 'Ad Creative' },
   { src: '/images/designs/ad-posters/ad-creative_2.jpg', title: 'Ad Creative' },
   { src: '/images/designs/ad-posters/ad-creative_6.jpg', title: 'Ad Creative' },

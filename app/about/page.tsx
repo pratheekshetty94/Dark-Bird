@@ -35,7 +35,6 @@ const btsImages = [
   { src: '/images/about/bts-smoky-studio-bw.jpg', caption: 'Studio — Smoke & Light', film: '' },
   { src: '/images/about/bts-forest-camera-rig.jpg', caption: 'Misty Forest — Camera Rig', film: '' },
   { src: '/images/about/bts-on-set-07.jpeg', caption: 'Red-Lit Music Video Shoot', film: '' },
-  { src: '/images/about/bts-wildlife-cinematography.jpg', caption: 'Wildlife Cinematography', film: '' },
   { src: '/images/about/bts-sunrise-cinematography.jpg', caption: 'Dawn Shoot — Misty Lake', film: '' },
   { src: '/images/about/bts-on-set-01.jpeg', caption: 'Blue Smoke — Dance Sequence', film: '' },
   { src: '/images/about/bts-dhaba-laptop-review.jpg', caption: 'Roadside Laptop Review', film: '' },
@@ -47,12 +46,10 @@ const btsImages = [
   { src: '/images/about/bts-yellow-festival.jpg', caption: 'Turmeric Festival', film: '' },
   { src: '/images/about/bts-on-set-05.jpg', caption: 'Directing — Body Paint Sequence', film: '' },
   { src: '/images/about/bts-on-set-04.jpg', caption: 'With Puneeth Rajkumar', film: 'Gandhada Gudi' },
-  { src: '/images/about/bts-snow-mountain-crew.jpg', caption: 'Crew at Snow Mountains', film: '' },
   { src: '/images/about/bts-ladakh-festival.jpg', caption: 'Ladakh Festival Shoot', film: '' },
   { src: '/images/about/bts-gandhadagudi-boat-crew.jpg', caption: 'Boat Crew — Gandhada Gudi', film: 'Gandhada Gudi' },
   { src: '/images/about/bts-on-set-03.jpeg', caption: 'Camera Setup — Blue Haze', film: '' },
   { src: '/images/about/bts-777charlie-editing.jpeg', caption: 'Editing 777 Charlie', film: '777 Charlie' },
-  { src: '/images/about/bts-gandhadagudi-cinematography.jpg', caption: 'RED Camera — Western Ghats', film: 'Gandhada Gudi' },
 ]
 
 /* Visual Gallery — compact strip, travel cinematography */

@@ -1,72 +1,31 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowLeft, Target, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Target, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollReveal'
-import CTABand from '@/components/sections/CTABand'
 
-// All performance ads from all clients (no duplicates)
 const performanceAds = [
-  {
-    client: 'GK Builders & Developers',
-    title: 'Anjani Lake Woods - Lead Gen Ad',
-    src: '/images/socials/performance-ads/ad-creative-1.jpg',
-    type: 'image',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Property Features Ad',
-    src: '/images/socials/performance-ads/ad-creative-2.jpg',
-    type: 'image',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Investment Opportunity Ad',
-    src: '/images/socials/performance-ads/ad-creative-6.jpg',
-    type: 'image',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'GK Takeoff Campaign',
-    src: '/images/socials/performance-ads/gk-takeoff.png',
-    type: 'image',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Social Post 1',
-    src: '/images/socials/gk-ads/post-1.jpg',
-    type: 'image',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Social Post 2',
-    src: '/images/socials/gk-ads/post-2.jpg',
-    type: 'image',
-  },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods — Why Drive to a Hill Station?', src: '/images/socials/performance-ads/SP_1.png' },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods — Live Between the Lake & Hills', src: '/images/socials/performance-ads/SP_2.png' },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods — Your Kids Don\u2019t Need a Phone', src: '/images/socials/performance-ads/SP_3.png' },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods — The Gateway to Premium Living', src: '/images/socials/performance-ads/SP_4.png' },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods — Slow Down. Breathe. You Are Home.', src: '/images/socials/performance-ads/SP_5.png' },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods — Lead Gen Ad', src: '/images/socials/performance-ads/ad-creative-1.jpg' },
+  { client: 'GK Builders & Developers', title: 'Property Features Ad', src: '/images/socials/performance-ads/ad-creative-2.jpg' },
+  { client: 'GK Builders & Developers', title: 'Investment Opportunity Ad', src: '/images/socials/performance-ads/ad-creative-6.jpg' },
+  { client: 'GK Builders & Developers', title: 'GK Takeoff Campaign', src: '/images/socials/performance-ads/gk-takeoff.png' },
+  { client: 'GK Builders & Developers', title: 'Social Post 1', src: '/images/socials/gk-ads/post-1.jpg' },
+  { client: 'GK Builders & Developers', title: 'Social Post 2', src: '/images/socials/gk-ads/post-2.jpg' },
 ]
 
-// Video ads
 const videoAds = [
-  {
-    client: 'GK Builders & Developers',
-    title: 'Anjani Lake Woods - Kids to Old Age',
-    src: '/images/socials/performance-ads/videos/anjani-kids-oldage.mp4',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Anjani Lake Woods - Amenities',
-    src: '/images/socials/performance-ads/videos/anjani-amenities.mp4',
-  },
-  {
-    client: 'GK Builders & Developers',
-    title: 'Anjani Lake Woods - Sundowner',
-    src: '/images/socials/performance-ads/videos/anjani-sundowner.mp4',
-  },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods - Kids to Old Age', src: '/images/socials/performance-ads/videos/anjani-kids-oldage.mp4' },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods - Amenities', src: '/images/socials/performance-ads/videos/anjani-amenities.mp4' },
+  { client: 'GK Builders & Developers', title: 'Anjani Lake Woods - Sundowner', src: '/images/socials/performance-ads/videos/anjani-sundowner.mp4' },
 ]
 
-export default function PerformanceAdsPage() {
+export default function PerformanceAdsSection() {
   const [lightboxOpen, setLightboxOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -74,20 +33,10 @@ export default function PerformanceAdsPage() {
     setCurrentIndex(index)
     setLightboxOpen(true)
   }
+  const closeLightbox = () => setLightboxOpen(false)
+  const goToPrevious = () => setCurrentIndex((prev) => (prev === 0 ? performanceAds.length - 1 : prev - 1))
+  const goToNext = () => setCurrentIndex((prev) => (prev === performanceAds.length - 1 ? 0 : prev + 1))
 
-  const closeLightbox = () => {
-    setLightboxOpen(false)
-  }
-
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? performanceAds.length - 1 : prev - 1))
-  }
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev === performanceAds.length - 1 ? 0 : prev + 1))
-  }
-
-  // Handle keyboard navigation
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') closeLightbox()
     if (e.key === 'ArrowLeft') goToPrevious()
@@ -96,55 +45,27 @@ export default function PerformanceAdsPage() {
 
   return (
     <>
-      {/* Hero Section */}
-      <section className="section-dark pt-44 pb-16">
+      {/* Ads Grid */}
+      <section id="performance-ads" className="section-light section-padding scroll-mt-24">
         <div className="container-content">
-          {/* Back link */}
           <ScrollReveal>
-            <Link
-              href="/work/socials"
-              className="inline-flex items-center gap-2 text-warm-gray hover:text-accent transition-all mb-8 group"
-            >
-              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span className="font-mono text-sm uppercase tracking-wider">Back to Socials</span>
-            </Link>
-          </ScrollReveal>
-
-          {/* Category Badge */}
-          <ScrollReveal delay={0.1}>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center">
                 <Target className="w-6 h-6 text-white" />
               </div>
-              <span className="px-4 py-1 bg-red-600/20 text-red-400 rounded-full text-sm font-medium">
+              <span className="px-4 py-1 bg-red-600/20 text-red-600 rounded-full text-sm font-medium">
                 Performance Ads
               </span>
             </div>
           </ScrollReveal>
-
-          {/* Title */}
-          <ScrollReveal delay={0.2}>
-            <h1 className="text-hero font-bold text-white mb-4">
-              Performance Ads
-            </h1>
+          <ScrollReveal delay={0.1}>
+            <h2 className="text-section font-bold text-charcoal mb-4">Ad Creatives</h2>
           </ScrollReveal>
-
-          <ScrollReveal delay={0.3}>
-            <p className="text-xl text-warm-gray max-w-3xl mb-8">
+          <ScrollReveal delay={0.2}>
+            <p className="text-warm-gray max-w-2xl mb-10">
               ROI-focused ad creatives designed to drive engagement and conversions
               across Meta and Google platforms. We create ads that perform.
             </p>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Ads Grid */}
-      <section className="section-light section-padding">
-        <div className="container-content">
-          <ScrollReveal>
-            <h2 className="text-2xl font-bold text-charcoal mb-8">
-              Ad Creatives
-            </h2>
           </ScrollReveal>
 
           <StaggerReveal className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -154,7 +75,6 @@ export default function PerformanceAdsPage() {
                 onClick={() => openLightbox(index)}
                 className="group relative rounded-xl overflow-hidden shadow-lg bg-white cursor-pointer text-left"
               >
-                {/* Show full image without cropping */}
                 <div className="relative">
                   <Image
                     src={ad.src}
@@ -178,21 +98,16 @@ export default function PerformanceAdsPage() {
         </div>
       </section>
 
-      {/* Video Ads Section */}
+      {/* Video Ads */}
       <section className="section-dark section-padding">
         <div className="container-content">
           <ScrollReveal>
-            <h2 className="text-2xl font-bold text-white mb-8">
-              Video Ad Creatives
-            </h2>
+            <h2 className="text-2xl font-bold text-white mb-8">Video Ad Creatives</h2>
           </ScrollReveal>
 
           <StaggerReveal className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {videoAds.map((video) => (
-              <div
-                key={video.src}
-                className="rounded-xl overflow-hidden shadow-lg bg-charcoal"
-              >
+              <div key={video.src} className="rounded-xl overflow-hidden shadow-lg bg-charcoal">
                 <video
                   src={`${video.src}#t=0.5`}
                   controls
@@ -213,7 +128,7 @@ export default function PerformanceAdsPage() {
         </div>
       </section>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox */}
       {lightboxOpen && (
         <div
           className="fixed inset-0 z-50 bg-deep-black/95 flex items-center justify-center"
@@ -221,37 +136,24 @@ export default function PerformanceAdsPage() {
           onKeyDown={handleKeyDown}
           tabIndex={0}
         >
-          {/* Close Button */}
           <button
             onClick={closeLightbox}
             className="absolute top-4 right-4 p-2 text-white/80 hover:text-white transition-colors z-10"
           >
             <X className="w-8 h-8" />
           </button>
-
-          {/* Previous Button */}
           <button
-            onClick={(e) => {
-              e.stopPropagation()
-              goToPrevious()
-            }}
+            onClick={(e) => { e.stopPropagation(); goToPrevious() }}
             className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-white/80 hover:text-white transition-colors z-10 bg-white/10 rounded-full hover:bg-white/20"
           >
             <ChevronLeft className="w-8 h-8" />
           </button>
-
-          {/* Next Button */}
           <button
-            onClick={(e) => {
-              e.stopPropagation()
-              goToNext()
-            }}
+            onClick={(e) => { e.stopPropagation(); goToNext() }}
             className="absolute right-4 top-1/2 -translate-y-1/2 p-2 text-white/80 hover:text-white transition-colors z-10 bg-white/10 rounded-full hover:bg-white/20"
           >
             <ChevronRight className="w-8 h-8" />
           </button>
-
-          {/* Image Container */}
           <div
             className="max-w-[90vw] max-h-[90vh] relative"
             onClick={(e) => e.stopPropagation()}
@@ -264,7 +166,6 @@ export default function PerformanceAdsPage() {
               className="max-w-full max-h-[85vh] w-auto h-auto object-contain"
               unoptimized
             />
-            {/* Caption */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-deep-black/90 to-transparent p-4 text-center">
               <span className="text-xs text-primary-red font-medium uppercase tracking-wider block">
                 {performanceAds[currentIndex].client}
@@ -279,14 +180,6 @@ export default function PerformanceAdsPage() {
           </div>
         </div>
       )}
-
-      {/* CTA */}
-      <CTABand
-        headline="Need Performance Ads?"
-        description="Let us create ad campaigns that drive real results for your business."
-        buttonText="Let's Talk"
-        buttonHref="/contact"
-      />
     </>
   )
 }
