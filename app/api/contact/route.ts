@@ -3,14 +3,68 @@ import { NextResponse } from 'next/server'
 
 export const dynamic = 'force-dynamic'
 
+// Per-instance rate limit. Serverless means this is best-effort, not a hard
+// guarantee, but it cuts the bulk of scripted submissions.
+const RATE_LIMIT_MAX = 5
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000
+const MIN_FILL_MS = 3000
+const hits = new Map<string, number[]>()
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now()
+  const recent = (hits.get(ip) || []).filter(t => now - t < RATE_LIMIT_WINDOW_MS)
+  recent.push(now)
+  hits.set(ip, recent)
+
+  if (hits.size > 5000) {
+    Array.from(hits.entries()).forEach(([key, times]) => {
+      if (times.every((t: number) => now - t >= RATE_LIMIT_WINDOW_MS)) hits.delete(key)
+    })
+  }
+  return recent.length > RATE_LIMIT_MAX
+}
+
 export async function POST(request: Request) {
   try {
-    const { name, email, phone, company, service, budget, message } = await request.json()
+    const { name, email, phone, company, service, budget, message, website, startedAt } =
+      await request.json()
+
+    // Honeypot: real people never see this field, so anything in it is a bot.
+    // Answer 200 so the bot believes it succeeded and does not retry.
+    if (website) {
+      console.warn('Contact form: honeypot triggered')
+      return NextResponse.json({ success: true })
+    }
+
+    // Bots submit near-instantly; humans do not.
+    if (typeof startedAt === 'number' && Date.now() - startedAt < MIN_FILL_MS) {
+      console.warn('Contact form: submitted too fast')
+      return NextResponse.json({ success: true })
+    }
+
+    const ip =
+      request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+      request.headers.get('x-real-ip') ||
+      'unknown'
+
+    if (isRateLimited(ip)) {
+      return NextResponse.json(
+        { error: 'Too many submissions. Please try again later or email us directly.' },
+        { status: 429 }
+      )
+    }
 
     // Validate required fields
     if (!name || !email || !service || !message) {
       return NextResponse.json(
         { error: 'Please fill in all required fields.' },
+        { status: 400 }
+      )
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(String(email))) {
+      return NextResponse.json(
+        { error: 'Please enter a valid email address.' },
         { status: 400 }
       )
     }

@@ -40,28 +40,8 @@ const socialLinks = [
   { href: 'https://www.facebook.com/Darkbirdfilms/', icon: Facebook, label: 'Facebook', handle: 'Dark Bird Films' },
 ]
 
-/* ─── Time Slots ─── */
-const TIME_SLOTS = [
-  '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM',
-  '12:00 PM', '12:30 PM', '02:00 PM', '02:30 PM',
-  '03:00 PM', '03:30 PM', '04:00 PM', '04:30 PM',
-  '05:00 PM', '05:30 PM',
-]
-
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-
-function parseTimeSlot(dateStr: string, timeStr: string): Date {
-  const [year, month, day] = dateStr.split('-').map(Number)
-  const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i)
-  if (!match) return new Date()
-  let hours = parseInt(match[1])
-  const minutes = parseInt(match[2])
-  const ampm = match[3].toUpperCase()
-  if (ampm === 'PM' && hours !== 12) hours += 12
-  if (ampm === 'AM' && hours === 12) hours = 0
-  return new Date(year, month - 1, day, hours, minutes)
-}
 
 function formatDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -74,7 +54,8 @@ function BookingWidget() {
   const [currentYear, setCurrentYear] = useState(() => new Date().getFullYear())
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
-  const [busySlots, setBusySlots] = useState<string[]>([])
+  const [availableSlots, setAvailableSlots] = useState<string[]>([])
+  const [slotsError, setSlotsError] = useState(false)
   const [loadingSlots, setLoadingSlots] = useState(false)
   const [step, setStep] = useState<'date' | 'details' | 'confirmed'>('date')
   const [isBooking, setIsBooking] = useState(false)
@@ -99,15 +80,20 @@ function BookingWidget() {
   useEffect(() => {
     if (!selectedDate) return
     setLoadingSlots(true)
-    setBusySlots([])
+    setAvailableSlots([])
+    setSlotsError(false)
     setSelectedTime(null)
 
     fetch(`/api/booking/availability?date=${selectedDate}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data.busySlots) setBusySlots(data.busySlots)
+      .then(async r => {
+        const data = await r.json()
+        if (!r.ok || data.error) throw new Error('unavailable')
+        return data
       })
-      .catch(() => {})
+      .then(data => {
+        setAvailableSlots(Array.isArray(data.slots) ? data.slots : [])
+      })
+      .catch(() => setSlotsError(true))
       .finally(() => setLoadingSlots(false))
   }, [selectedDate])
 
@@ -171,8 +157,6 @@ function BookingWidget() {
       setIsBooking(false)
     }
   }
-
-  const availableSlots = TIME_SLOTS.filter(slot => !busySlots.includes(slot))
 
   if (step === 'confirmed') {
     return (
@@ -380,6 +364,18 @@ function BookingWidget() {
             <div className="flex items-center justify-center h-48">
               <div className="w-6 h-6 border-2 border-accent border-t-transparent rounded-full animate-spin" />
             </div>
+          ) : slotsError ? (
+            <div className="flex flex-col items-center justify-center h-48 gap-3 border border-dashed border-accent/30 rounded-xl px-6 text-center">
+              <p className="text-cream/60 text-sm">Couldn&apos;t load available times right now.</p>
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-accent text-sm underline underline-offset-4 hover:text-accent-hover"
+              >
+                Message us on WhatsApp to book
+              </a>
+            </div>
           ) : availableSlots.length === 0 ? (
             <div className="flex items-center justify-center h-48 border border-dashed border-white/[0.08] rounded-xl">
               <p className="text-cream/30 text-sm">No slots available for this date</p>
@@ -427,11 +423,15 @@ export default function ContactPage() {
     service: '',
     budget: '',
     message: '',
+    website: '', // honeypot — must stay empty
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [hasStarted, setHasStarted] = useState(false)
+  const [startedAt, setStartedAt] = useState<number | null>(null)
+
+  useEffect(() => setStartedAt(Date.now()), [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     if (!hasStarted) {
@@ -453,7 +453,7 @@ export default function ContactPage() {
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, startedAt }),
       })
 
       const data = await response.json()
@@ -565,6 +565,19 @@ export default function ContactPage() {
                 </ScrollReveal>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Honeypot — hidden from humans, irresistible to bots */}
+                  <div className="absolute left-[-9999px] top-0 w-px h-px overflow-hidden" aria-hidden="true">
+                    <label htmlFor="website">Website</label>
+                    <input
+                      type="text"
+                      id="website"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleChange}
+                      tabIndex={-1}
+                      autoComplete="off"
+                    />
+                  </div>
                   {/* Name & Email Row */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

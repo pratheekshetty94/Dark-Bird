@@ -2,27 +2,44 @@ import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
 const CAL_API_KEY = process.env.CAL_API_KEY || ''
-const CAL_EVENT_TYPE_ID = 4773493 // 30 min meeting
+const CAL_EVENT_TYPE_ID = 4773493 // 30 min Discovery Call
+const CAL_API_VERSION = '2024-08-13'
+const TIME_ZONE = 'Asia/Kolkata'
 
+// Build a UTC instant from an IST date + "hh:mm AM/PM" slot, with the
+// offset stated explicitly so the result never depends on server timezone.
 function parseTimeToISO(dateStr: string, timeStr: string): string {
-  const [year, month, day] = dateStr.split('-').map(Number)
-  const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/i)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) return ''
+  const match = timeStr.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
   if (!match) return ''
-  let hours = parseInt(match[1])
-  const minutes = parseInt(match[2])
+  let hours = parseInt(match[1], 10)
+  const minutes = parseInt(match[2], 10)
+  if (hours < 1 || hours > 12 || minutes > 59) return ''
   const ampm = match[3].toUpperCase()
   if (ampm === 'PM' && hours !== 12) hours += 12
   if (ampm === 'AM' && hours === 12) hours = 0
 
-  // IST offset: +5:30 — convert to UTC
-  const istDate = new Date(Date.UTC(year, month - 1, day, hours - 5, minutes - 30, 0))
-  return istDate.toISOString()
+  const hh = String(hours).padStart(2, '0')
+  const mm = String(minutes).padStart(2, '0')
+  const d = new Date(`${dateStr}T${hh}:${mm}:00.000+05:30`)
+  if (isNaN(d.getTime())) return ''
+  return d.toISOString()
 }
 
-function formatEndTime(startISO: string): string {
-  const start = new Date(startISO)
-  start.setMinutes(start.getMinutes() + 30)
-  return start.toISOString()
+// Cal.com requires E.164. Indian numbers are commonly typed as "08884888518"
+// or "8884888518" — a naive "+91" prefix would keep the trunk 0 and produce an
+// invalid number, so strip it before defaulting to the India country code.
+function normalizePhone(raw: unknown): string {
+  if (typeof raw !== 'string') return ''
+  let phone = raw.replace(/[\s\-().]/g, '')
+  if (!phone) return ''
+
+  if (phone.startsWith('00')) phone = `+${phone.slice(2)}`
+  if (phone.startsWith('+')) return phone
+
+  phone = phone.replace(/^0+/, '')
+  if (phone.startsWith('91') && phone.length > 10) return `+${phone}`
+  return `+91${phone}`
 }
 
 export async function POST(request: NextRequest) {
@@ -30,11 +47,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { date, time, name, email, phone: rawPhone, notes } = body
 
-    // Cal.com requires E.164 format — ensure phone has country code
-    let phone = rawPhone ? rawPhone.replace(/[\s\-()]/g, '') : ''
-    if (phone && !phone.startsWith('+')) {
-      phone = `+91${phone}` // Default to India country code
-    }
+    const phone = normalizePhone(rawPhone)
 
     if (!date || !time || !name || !email) {
       return NextResponse.json(
@@ -48,24 +61,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid time format' }, { status: 400 })
     }
 
-    const endTime = formatEndTime(startTime)
 
-    // Create booking via Cal.com API
-    const calResponse = await fetch(`https://api.cal.com/v1/bookings?apiKey=${CAL_API_KEY}`, {
+    // Create booking via Cal.com API v2 (v1 was decommissioned 08-04-2026)
+    const calHeaders: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'cal-api-version': CAL_API_VERSION,
+    }
+    if (CAL_API_KEY) calHeaders.Authorization = `Bearer ${CAL_API_KEY}`
+
+    const calResponse = await fetch('https://api.cal.com/v2/bookings', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: calHeaders,
       body: JSON.stringify({
-        eventTypeId: CAL_EVENT_TYPE_ID,
         start: startTime,
-        end: endTime,
-        responses: {
-          name: name,
-          email: email,
-          attendeePhoneNumber: phone || '',
-          notes: notes || undefined,
+        eventTypeId: CAL_EVENT_TYPE_ID,
+        attendee: {
+          name,
+          email,
+          timeZone: TIME_ZONE,
+          language: 'en',
+          phoneNumber: phone || undefined,
         },
-        timeZone: 'Asia/Kolkata',
-        language: 'en',
+        bookingFieldsResponses: {
+          attendeePhoneNumber: phone || '',
+          ...(notes ? { notes } : {}),
+        },
         metadata: {
           source: 'darkbirdfilms.com',
         },
@@ -78,13 +98,20 @@ export async function POST(request: NextRequest) {
       console.error('Cal.com booking error:', JSON.stringify(calData, null, 2))
 
       // Map Cal.com error codes to user-friendly messages
-      const rawMsg = calData.message || ''
+      // v2 nests the message under `error`; keep the flat read as a fallback.
+      const rawMsg: string = calData?.error?.message || calData?.message || ''
       let userMessage = 'Failed to create booking. Please try again or contact us directly.'
-      if (rawMsg.includes('no_available_users_found')) {
+      const lower = rawMsg.toLowerCase()
+      if (
+        lower.includes('no_available_users_found') ||
+        lower.includes('not available') ||
+        lower.includes('already has booking') ||
+        lower.includes('no longer available')
+      ) {
         userMessage = 'This time slot is no longer available. Please pick a different time.'
-      } else if (rawMsg.includes('invalid_number') || rawMsg.includes('attendeePhoneNumber')) {
+      } else if (lower.includes('invalid_number') || lower.includes('attendeephonenumber')) {
         userMessage = 'Please enter a valid phone number with country code (e.g. +91...).'
-      } else if (rawMsg.includes('error_required_field')) {
+      } else if (lower.includes('error_required_field')) {
         userMessage = 'Please fill in all required fields.'
       }
 
@@ -160,7 +187,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      bookingId: calData.id || calData.uid,
+      bookingId: calData?.data?.uid || calData?.data?.id || calData?.uid || calData?.id,
       message: 'Booking confirmed!',
     })
   } catch (error) {
