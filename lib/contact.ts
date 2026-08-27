@@ -1,7 +1,7 @@
 // Centralized contact details — edit here to update across the entire site.
 
-// WhatsApp (AiSensy-automated number, separate from main CTA line)
-export const WHATSAPP_NUMBER = '919187533221'
+// WhatsApp — same line as the main phone number below
+export const WHATSAPP_NUMBER = '919108955609'
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`
 
 // Main phone line
