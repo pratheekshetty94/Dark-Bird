@@ -26,8 +26,8 @@ function parseTimeToISO(dateStr: string, timeStr: string): string {
   return d.toISOString()
 }
 
-// Cal.com requires E.164. Indian numbers are commonly typed as "08884888518"
-// or "8884888518" — a naive "+91" prefix would keep the trunk 0 and produce an
+// Cal.com requires E.164. Indian numbers are commonly typed as "09108955609"
+// or "9108955609" — a naive "+91" prefix would keep the trunk 0 and produce an
 // invalid number, so strip it before defaulting to the India country code.
 function normalizePhone(raw: unknown): string {
   if (typeof raw !== 'string') return ''
