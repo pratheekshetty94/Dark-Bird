@@ -20,11 +20,21 @@ export default function HomeVideoHero() {
       }, 5000)
     }
 
+    // iOS may reject the first play() (still buffering, Low Power Mode);
+    // retry once enough data arrives. AutoplayRescue covers the
+    // gesture-required case globally.
+    const tryPlay = () => {
+      video.muted = true
+      video.play().catch(() => {})
+    }
+
     video.addEventListener('ended', handleEnded)
-    video.play().catch(() => {})
+    video.addEventListener('canplay', tryPlay)
+    tryPlay()
 
     return () => {
       video.removeEventListener('ended', handleEnded)
+      video.removeEventListener('canplay', tryPlay)
     }
   }, [])
 
