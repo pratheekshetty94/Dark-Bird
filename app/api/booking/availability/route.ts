@@ -37,7 +37,12 @@ export async function GET(request: NextRequest) {
     const headers: Record<string, string> = { 'cal-api-version': CAL_API_VERSION }
     if (CAL_API_KEY) headers.Authorization = `Bearer ${CAL_API_KEY}`
 
-    const response = await fetch(url, { headers, next: { revalidate: 60 } })
+    // Cap the upstream call so a slow Cal.com cannot hold the function open.
+    const response = await fetch(url, {
+      headers,
+      next: { revalidate: 60 },
+      signal: AbortSignal.timeout(8000),
+    })
 
     if (!response.ok) {
       // Never invent availability — a wrong "free" slot costs a real lead.
@@ -47,16 +52,23 @@ export async function GET(request: NextRequest) {
     }
 
     const data = await response.json()
-    const raw = data?.data?.[date]
+    const payload = data?.data
 
-    if (!Array.isArray(raw)) {
+    // Only a malformed payload is an error. A successful response with no
+    // entry for the date means the day is simply fully booked or outside
+    // availability — that is a real answer, not a failure, and must not
+    // surface as "couldn't load times".
+    if (payload === null || typeof payload !== 'object') {
       console.error('Cal.com slots: unexpected shape', JSON.stringify(data).slice(0, 300))
       return NextResponse.json({ error: 'unavailable', slots: [] }, { status: 502 })
     }
 
-    const slots = raw
-      .map((s: unknown) => formatSlot(typeof s === 'string' ? s : (s as { start: string })?.start ?? ''))
-      .filter(Boolean)
+    const raw = payload[date]
+    const slots = Array.isArray(raw)
+      ? raw
+          .map((s: unknown) => formatSlot(typeof s === 'string' ? s : (s as { start: string })?.start ?? ''))
+          .filter(Boolean)
+      : []
 
     return NextResponse.json({ slots })
   } catch (error) {

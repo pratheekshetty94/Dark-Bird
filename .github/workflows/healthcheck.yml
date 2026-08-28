@@ -1,0 +1,25 @@
+name: Production health check
+
+# Cal.com shut off API v1 on 08-04-2026 and bookings failed silently for
+# ~4.5 months. This runs daily so the next such break surfaces in a day.
+on:
+  schedule:
+    - cron: '17 3 * * *' # 08:47 IST daily (03:17 UTC)
+  workflow_dispatch: # allow manual runs from the Actions tab
+
+jobs:
+  healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check lead-capture paths
+        env:
+          # Optional. Without it the Cal.com key validity check is skipped;
+          # every other check still runs.
+          CAL_API_KEY: ${{ secrets.CAL_API_KEY }}
+        run: node scripts/healthcheck.mjs
