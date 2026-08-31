@@ -35,6 +35,8 @@ export const filmsData: Record<string, FilmData> = {
     cast: ['Prajwal Devaraj', 'Raj B. Shetty', 'Sampada Hulivana'],
     genre: ['Action', 'Drama'],
     language: 'Kannada',
+    imdb: 'https://www.imdb.com/title/tt29521397/',
+    wiki: 'https://en.wikipedia.org/wiki/Karavali_(film)',
   },
   'kantara': {
     id: 'kantara',

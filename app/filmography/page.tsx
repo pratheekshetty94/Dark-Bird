@@ -36,6 +36,8 @@ const films: FilmItem[] = [
     role: 'Editor',
     category: 'feature',
     description: 'Animal vs Human — Gurudatha Ganiga\'s coastal Karnataka action drama, led by Prajwal Devaraj.',
+    wikiUrl: 'https://en.wikipedia.org/wiki/Karavali_(film)',
+    imdbUrl: 'https://www.imdb.com/title/tt29521397/',
   },
   {
     id: 'kantara',
