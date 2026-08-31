@@ -8,7 +8,7 @@ import BTSGallery from '@/components/about/BTSGallery'
 import { Award, Film, Share2, Palette, Cpu, ArrowUpRight, Quote } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About Dark Bird Films & Founder Pratheek Shetty | Award-Winning Production House',
+  title: 'About Us & Founder Pratheek Shetty',
   description: 'Founded in 2016 by Pratheek Shetty, Dark Bird Films is the award-winning production house behind Kantara, 777 Charlie & Gandhada Gudi. Meet our team in HSR Layout, Bengaluru.',
   keywords: [
     'about dark bird films', 'pratheek shetty filmmaker', 'pratheek shetty editor',
@@ -19,11 +19,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'About Dark Bird Films & Pratheek Shetty',
     description: 'The story behind the studio that edited Kantara, 777 Charlie & 100+ brand campaigns.',
-    url: 'https://darkbirdfilms.com/about',
+    url: 'https://www.darkbirdfilms.com/about',
     type: 'profile',
   },
   alternates: {
-    canonical: 'https://darkbirdfilms.com/about',
+    canonical: 'https://www.darkbirdfilms.com/about',
   },
 }
 

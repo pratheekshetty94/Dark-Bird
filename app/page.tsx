@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import HomeVideoHero from '@/components/sections/HomeVideoHero'
+import HomeIntro from '@/components/sections/HomeIntro'
 
 // Components - loaded dynamically
 const MetricsBar = dynamic(() => import('@/components/sections/MetricsBar'), { ssr: false })
@@ -18,6 +19,7 @@ export default function Home() {
   return (
     <>
       <HomeVideoHero />
+      <HomeIntro />
       <MetricsBar />
       <ClientMarquee />
       <BrandPositioning />

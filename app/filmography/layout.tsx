@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Dark Bird Films | #1 Film Production House in India · Kantara, 777 Charlie',
+  title: 'Filmography — Kantara, 777 Charlie & More',
   description: 'Dark Bird Films — India\'s leading film production house. Behind Kantara, 777 Charlie, Gandhada Gudi, Su From So and 100+ feature credits. Feature films, ad films, music videos, brand films, documentaries & founder stories. Based in Bengaluru.',
   keywords: [
     // High-intent #1 / best queries
@@ -27,11 +27,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Dark Bird Films | #1 Film Production House in India',
     description: 'From Kantara to 777 Charlie — India\'s leading film production house. Feature films, ad films, music videos & brand films out of Bengaluru.',
-    url: 'https://darkbirdfilms.com/filmography',
+    url: 'https://www.darkbirdfilms.com/filmography',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://darkbirdfilms.com/filmography',
+    canonical: 'https://www.darkbirdfilms.com/filmography',
   },
 }
 

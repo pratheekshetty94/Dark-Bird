@@ -36,7 +36,7 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ['400', '500'],
 })
 
-const BASE_URL = 'https://darkbirdfilms.com'
+const BASE_URL = 'https://www.darkbirdfilms.com'
 
 export const viewport: Viewport = {
   width: 'device-width',

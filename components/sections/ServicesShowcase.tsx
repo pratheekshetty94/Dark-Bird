@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import LazyLoopVideo from '@/components/ui/LazyLoopVideo'
 import { ArrowUpRight } from 'lucide-react'
 import ScrollReveal from '@/components/animations/ScrollReveal'
 import { cn } from '@/lib/utils'
@@ -239,15 +240,10 @@ export default function ServicesShowcase() {
               >
                 <ScrollReveal delay={0.2} x={index % 2 === 0 ? 30 : -30} y={0}>
                   <div className="aspect-video bg-charcoal rounded-2xl overflow-hidden relative group">
-                    <video
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
+                    <LazyLoopVideo
+                      src={division.video}
                       className="absolute inset-0 w-full h-full object-cover"
-                    >
-                      <source src={division.video} type="video/mp4" />
-                    </video>
+                    />
                     <div className="absolute inset-0 border-2 border-accent/0 group-hover:border-accent/30 rounded-2xl transition-colors" />
                   </div>
                 </ScrollReveal>

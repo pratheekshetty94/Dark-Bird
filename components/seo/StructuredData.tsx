@@ -1,6 +1,5 @@
-import Script from 'next/script'
 
-const BASE_URL = 'https://darkbirdfilms.com'
+const BASE_URL = 'https://www.darkbirdfilms.com'
 
 // ─── Organization Schema ───
 // Tells Google: "We are a legitimate company with this brand identity"
@@ -526,51 +525,32 @@ const faqSchema = {
   ],
 }
 
+// Plain <script> tags render into the server HTML, so crawlers that do not
+// execute JavaScript (GPTBot, ClaudeBot, PerplexityBot) still receive every
+// schema block. next/script injected these after hydration, which left the
+// crawl-visible HTML with no JSON-LD at all.
 export default function StructuredData() {
+  const blocks = [
+    organizationSchema,
+    localBusinessSchema,
+    founderSchema,
+    websiteSchema,
+    breadcrumbSchema,
+    faqSchema,
+  ]
   return (
     <>
-      <Script
-        id="schema-organization"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-      />
-      <Script
-        id="schema-local-business"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
-      />
-      <Script
-        id="schema-founder"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(founderSchema) }}
-      />
-      <Script
-        id="schema-website"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-      />
-      <Script
-        id="schema-breadcrumb"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
-      />
-      <Script
-        id="schema-faq"
-        type="application/ld+json"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      {videoSchemas.map((schema, index) => (
-        <Script
-          key={`video-${index}`}
-          id={`schema-video-${index}`}
+      {blocks.map((block, index) => (
+        <script
+          key={index}
           type="application/ld+json"
-          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(block) }}
+        />
+      ))}
+      {videoSchemas.map((schema, index) => (
+        <script
+          key={`video-${index}`}
+          type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
       ))}

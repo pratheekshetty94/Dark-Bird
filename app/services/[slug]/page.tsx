@@ -16,9 +16,11 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const service = getServiceBySlug(params.slug)
   if (!service) return {}
-  const url = `https://darkbirdfilms.com/services/${service.slug}`
+  const url = `https://www.darkbirdfilms.com/services/${service.slug}`
   return {
-    title: service.meta.title,
+    // Data titles already end in "| Dark Bird Films"; absolute skips the
+    // layout template so the brand is not appended twice.
+    title: { absolute: service.meta.title },
     description: service.meta.description,
     keywords: service.meta.keywords,
     alternates: { canonical: url },
@@ -43,7 +45,7 @@ export default function ServicePage({ params }: { params: Params }) {
     provider: {
       '@type': 'Organization',
       name: 'Dark Bird Films',
-      url: 'https://darkbirdfilms.com',
+      url: 'https://www.darkbirdfilms.com',
     },
     areaServed: { '@type': 'City', name: 'Bangalore' },
     serviceType: service.name,

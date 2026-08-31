@@ -59,8 +59,14 @@ export default function HomeVideoHero() {
         <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-ink/90 via-ink/40 to-transparent" />
       </div>
 
-      {/* CTAs */}
-      <div className="absolute inset-x-0 bottom-28 md:bottom-32 z-20 flex justify-center px-4">
+      {/* Headline + CTAs */}
+      <div className="absolute inset-x-0 bottom-28 md:bottom-32 z-20 flex flex-col items-center gap-5 md:gap-6 px-4">
+        <h1 className="max-w-3xl text-center font-display text-xl md:text-3xl text-cream/95 leading-snug [text-wrap:balance]">
+          Film Production &amp; Marketing Agency in Bengaluru
+          <span className="block mt-1 text-sm md:text-base font-sans font-normal text-cream/60">
+            The studio behind Kantara and 777 Charlie — ad films, brand campaigns, design and AI content.
+          </span>
+        </h1>
         <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4">
           <Link
             href="/contact#book-call"

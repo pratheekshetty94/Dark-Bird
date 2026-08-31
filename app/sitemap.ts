@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { getIndustrySlugs } from '@/lib/industries'
 import { getServiceSlugs } from '@/lib/services'
 
-const BASE_URL = 'https://darkbirdfilms.com'
+const BASE_URL = 'https://www.darkbirdfilms.com'
 
 // Use a stable date that updates only when content actually changes
 const LAST_UPDATED = '2026-04-05'

@@ -8,7 +8,7 @@ import LazySplineBanner from '@/components/LazySplineBanner'
 import { Palette, Layout, Box, MessageSquare, Sparkles, Video, Monitor, Printer, ExternalLink, Megaphone, Instagram } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Dark Bird Designs | #1 Brand Design Agency in India & Bangalore',
+  title: 'Designs — Brand Design Agency',
   description: 'Dark Bird Designs — India\'s #1 brand design agency. Brand identity, logo design, website design, motion graphics, 3D modelling, social media design & WhatsApp stickers. Design that looks cinematic and performs. Based in Bengaluru.',
   keywords: [
     // High-intent #1 / best queries
@@ -30,11 +30,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Dark Bird Designs | #1 Brand Design Agency in India',
     description: 'Brand identity, website design, motion graphics & 3D modelling that looks cinematic and performs. India\'s #1 design agency, based in Bangalore.',
-    url: 'https://darkbirdfilms.com/work/designs',
+    url: 'https://www.darkbirdfilms.com/work/designs',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://darkbirdfilms.com/work/designs',
+    canonical: 'https://www.darkbirdfilms.com/work/designs',
   },
 }
 

@@ -5,7 +5,7 @@ import ScrollReveal, { StaggerReveal } from '@/components/animations/ScrollRevea
 import { Briefcase, MapPin, Clock, ArrowRight } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Careers at Dark Bird Films | Video Editor, Cinematographer & Marketing Jobs',
+  title: 'Careers — Editors, DOPs & Marketers',
   description: 'Join Dark Bird Films in Bengaluru. Open roles for video editors, cinematographers, marketers, designers & storytellers. Work on Kantara-level projects. Apply now.',
   keywords: [
     'dark bird films careers', 'film production jobs bengaluru', 'video editor jobs india',
@@ -15,11 +15,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Careers at Dark Bird Films | Join Our Team',
     description: 'We\'re hiring editors, cinematographers, marketers & designers. Work on Kantara-level projects in Bengaluru.',
-    url: 'https://darkbirdfilms.com/careers',
+    url: 'https://www.darkbirdfilms.com/careers',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://darkbirdfilms.com/careers',
+    canonical: 'https://www.darkbirdfilms.com/careers',
   },
 }
 

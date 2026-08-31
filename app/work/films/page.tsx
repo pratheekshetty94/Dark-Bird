@@ -7,7 +7,7 @@ import CTABand from '@/components/sections/CTABand'
 import { VideoItem } from '@/lib/videos'
 
 export const metadata: Metadata = {
-  title: 'Film Production Portfolio | Kantara, 777 Charlie & Ad Films',
+  title: 'Films — Kantara, 777 Charlie & Ad Films',
   description: 'Watch our complete film portfolio: Kantara (100M+ views), 777 Charlie, ad films for Flipkart & top brands, and 15+ music videos. Feature films, commercials & music video production.',
   keywords: [
     'kantara trailer', 'kantara editing', '777 charlie trailer', '777 charlie cinematography',
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Films Portfolio | Dark Bird Films',
     description: 'Feature films, ad films & music videos. Watch our complete portfolio including Kantara & 777 Charlie.',
-    url: 'https://darkbirdfilms.com/work/films',
+    url: 'https://www.darkbirdfilms.com/work/films',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://darkbirdfilms.com/work/films',
+    canonical: 'https://www.darkbirdfilms.com/work/films',
   },
 }
 

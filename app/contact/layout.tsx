@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Contact Us | Film Production & Marketing Agency Bengaluru',
+  title: 'Contact',
   description: 'Get in touch with Dark Bird Films for film production, ad films, social media marketing, brand design, and AI-powered content. HSR Layout, Bengaluru. Call or WhatsApp us today.',
   keywords: [
     'contact dark bird films', 'film production enquiry', 'video production quote',
@@ -11,11 +11,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Contact Dark Bird Films | Get a Free Quote',
     description: 'Ready to create something extraordinary? Reach out for film production, marketing, design, and AI content services. Based in HSR Layout, Bengaluru.',
-    url: 'https://darkbirdfilms.com/contact',
+    url: 'https://www.darkbirdfilms.com/contact',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://darkbirdfilms.com/contact',
+    canonical: 'https://www.darkbirdfilms.com/contact',
   },
 }
 

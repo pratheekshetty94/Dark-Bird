@@ -70,7 +70,7 @@ const socialsServices = [
 ]
 
 export const metadata: Metadata = {
-  title: 'Dark Bird Socials | #1 Marketing Agency in India & Bangalore',
+  title: 'Socials — Marketing Agency, Bengaluru',
   description: 'Dark Bird Socials — India\'s #1 marketing agency. Brand campaigns, performance marketing, influencer marketing, paid media, founder branding, social media management & AI digital marketing. Based in Bengaluru, serving brands across India.',
   keywords: [
     // High-intent #1 / best queries
@@ -92,11 +92,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Dark Bird Socials | #1 Marketing Agency in India',
     description: 'Brand campaigns, performance marketing, influencer marketing & AI digital marketing that convert. India\'s #1 marketing agency, based in Bangalore.',
-    url: 'https://darkbirdfilms.com/work/socials',
+    url: 'https://www.darkbirdfilms.com/work/socials',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://darkbirdfilms.com/work/socials',
+    canonical: 'https://www.darkbirdfilms.com/work/socials',
   },
 }
 

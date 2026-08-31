@@ -5,15 +5,15 @@ import { industries } from '@/lib/industries'
 import CTABand from '@/components/sections/CTABand'
 
 export const metadata: Metadata = {
-  title: 'Industries We Serve | Dark Bird Films Bangalore',
+  title: 'Industries We Serve in Bengaluru',
   description:
     'Industry-specific film, video and brand storytelling across real estate, e-commerce, restaurants, healthcare, pharma, interior design, CA firms, law firms and edtech. Bangalore-based, India-wide.',
-  alternates: { canonical: 'https://darkbirdfilms.com/industries' },
+  alternates: { canonical: 'https://www.darkbirdfilms.com/industries' },
   openGraph: {
     title: 'Industries We Serve | Dark Bird Films',
     description:
       'Cinematic video production and brand storytelling for every major industry in India. Made in Bangalore.',
-    url: 'https://darkbirdfilms.com/industries',
+    url: 'https://www.darkbirdfilms.com/industries',
   },
 }
 

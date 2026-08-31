@@ -7,15 +7,15 @@ import CTABand from '@/components/sections/CTABand'
 import { divisions } from '@/lib/divisions'
 
 export const metadata: Metadata = {
-  title: 'Services | Dark Bird Films Bangalore',
+  title: 'Services in Bengaluru',
   description:
     'Film production, performance marketing, brand identity, website design and AI video — from a 9-year film studio in Bangalore. One team, four divisions.',
-  alternates: { canonical: 'https://darkbirdfilms.com/services' },
+  alternates: { canonical: 'https://www.darkbirdfilms.com/services' },
   openGraph: {
     title: 'Services | Dark Bird Films',
     description:
       'Film production, performance marketing, design and AI video from a 9-year film studio in Bangalore.',
-    url: 'https://darkbirdfilms.com/services',
+    url: 'https://www.darkbirdfilms.com/services',
   },
 }
 

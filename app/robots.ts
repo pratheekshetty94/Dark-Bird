@@ -50,7 +50,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: '/',
       },
     ],
-    sitemap: 'https://darkbirdfilms.com/sitemap.xml',
-    host: 'https://darkbirdfilms.com',
+    sitemap: 'https://www.darkbirdfilms.com/sitemap.xml',
+    host: 'https://www.darkbirdfilms.com',
   }
 }

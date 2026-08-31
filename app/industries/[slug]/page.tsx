@@ -16,9 +16,11 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: Params }): Metadata {
   const industry = getIndustryBySlug(params.slug)
   if (!industry) return {}
-  const url = `https://darkbirdfilms.com/industries/${industry.slug}`
+  const url = `https://www.darkbirdfilms.com/industries/${industry.slug}`
   return {
-    title: industry.meta.title,
+    // Data titles already end in "| Dark Bird Films"; absolute skips the
+    // layout template so the brand is not appended twice.
+    title: { absolute: industry.meta.title },
     description: industry.meta.description,
     keywords: industry.meta.keywords,
     alternates: { canonical: url },
@@ -43,7 +45,7 @@ export default function IndustryPage({ params }: { params: Params }) {
     provider: {
       '@type': 'Organization',
       name: 'Dark Bird Films',
-      url: 'https://darkbirdfilms.com',
+      url: 'https://www.darkbirdfilms.com',
     },
     areaServed: {
       '@type': 'City',

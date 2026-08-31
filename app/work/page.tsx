@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import { resolveServiceItemHref, type DivisionServiceItem } from '@/lib/divisions'
 
 export const metadata: Metadata = {
-  title: 'Our Services | Film Production, Marketing, Design & AI Content',
+  title: 'Work — Films, Marketing, Design & AI',
   description: 'Explore Dark Bird Films\' services: Film production, social media marketing, brand design & AI-powered content. Ad films, music videos, influencer marketing, motion graphics & VFX.',
   keywords: [
     'film production services india', 'video production services bengaluru',
@@ -18,11 +18,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Our Services | Dark Bird Films',
     description: 'Films, Socials, Designs & Labs — everything your brand needs under one roof.',
-    url: 'https://darkbirdfilms.com/work',
+    url: 'https://www.darkbirdfilms.com/work',
     type: 'website',
   },
   alternates: {
-    canonical: 'https://darkbirdfilms.com/work',
+    canonical: 'https://www.darkbirdfilms.com/work',
   },
 }
 
