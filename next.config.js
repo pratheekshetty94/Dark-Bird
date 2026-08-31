@@ -41,6 +41,13 @@ const nextConfig = {
         statusCode: 301,
       },
       {
+        // Review ask-link: memorable, on-domain, safe to print anywhere.
+        source: '/review',
+        destination:
+          'https://search.google.com/local/writereview?placeid=ChIJH70q5wAVrjsREZ0jQcdaMmc',
+        statusCode: 301,
+      },
+      {
         source: '/reel',
         destination:
           'https://www.darkbirdfilms.com/industries/real-estate-video-production-bangalore',
