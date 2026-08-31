@@ -157,6 +157,27 @@ export const commercials: VideoItem[] = [
     client: 'Zomato',
   },
   {
+    id: 'jlr-walkthrough',
+    youtubeId: 'SxdaspulBqI',
+    title: 'JLR Walkthrough - Jungle Lodges & Resorts',
+    category: 'commercial',
+    client: 'Jungle Lodges & Resorts',
+  },
+  {
+    id: 'jlr-bheemeshwari',
+    youtubeId: 'ZJEFXz6j3qw',
+    title: 'Bheemeshwari Adventure Camp - Jungle Lodges & Resorts',
+    category: 'commercial',
+    client: 'Jungle Lodges & Resorts',
+  },
+  {
+    id: 'jlr-sharavathi',
+    youtubeId: 'VX0RC288Fhs',
+    title: 'Sharavathi Adventure Camp - Jungle Lodges & Resorts',
+    category: 'commercial',
+    client: 'Jungle Lodges & Resorts',
+  },
+  {
     id: 'shopsy-guruji',
     localVideoSrc: '/videos/commercials/shopsy-guruji.mp4',
     title: 'Guruji - Shopsy by Flipkart',
