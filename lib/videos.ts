@@ -150,11 +150,33 @@ export const featureFilms: VideoItem[] = [
 
 export const commercials: VideoItem[] = [
   {
+    id: 'flipkart-findyourmatch',
+    youtubeId: 'a1P87WpuCM4',
+    title: '#FindYourMatch - Flipkart x Sima Taparia',
+    category: 'commercial',
+    client: 'Flipkart',
+    services: ['Production', 'Direction'],
+  },
+  {
     id: 'zomato-delivery-partner',
     youtubeId: '7zZmaO7s7oI',
     title: 'Delivery Partner for a Day ft. Danish Sait - Zomato',
     category: 'commercial',
     client: 'Zomato',
+  },
+  {
+    id: 'shopsy-guruji',
+    localVideoSrc: '/videos/commercials/shopsy-guruji.mp4',
+    title: 'Guruji - Shopsy by Flipkart',
+    category: 'commercial',
+    client: 'Shopsy by Flipkart',
+  },
+  {
+    id: 'shopsy-astrologer',
+    localVideoSrc: '/videos/commercials/shopsy-astrologer.mp4',
+    title: 'Astrologer - Shopsy by Flipkart',
+    category: 'commercial',
+    client: 'Shopsy by Flipkart',
   },
   {
     id: 'jlr-walkthrough',
@@ -185,25 +207,11 @@ export const commercials: VideoItem[] = [
     client: 'Jungle Lodges & Resorts',
   },
   {
-    id: 'shopsy-guruji',
-    localVideoSrc: '/videos/commercials/shopsy-guruji.mp4',
-    title: 'Guruji - Shopsy by Flipkart',
+    id: 'hangyo-icecream',
+    youtubeId: 'fBkKkgfa5-0',
+    title: 'Hangyo Ice Cream - TVC',
     category: 'commercial',
-    client: 'Shopsy by Flipkart',
-  },
-  {
-    id: 'shopsy-astrologer',
-    localVideoSrc: '/videos/commercials/shopsy-astrologer.mp4',
-    title: 'Astrologer - Shopsy by Flipkart',
-    category: 'commercial',
-    client: 'Shopsy by Flipkart',
-  },
-  {
-    id: 'flipkart-findyourmatch',
-    youtubeId: 'a1P87WpuCM4',
-    title: '#FindYourMatch - Flipkart x Sima Taparia',
-    category: 'commercial',
-    client: 'Flipkart',
+    client: 'Hangyo',
     services: ['Production', 'Direction'],
   },
   {
@@ -220,14 +228,6 @@ export const commercials: VideoItem[] = [
     title: 'YO Fruits - Aap Jahan Phal Wahan',
     category: 'commercial',
     client: 'YO Fruits',
-    services: ['Production', 'Direction'],
-  },
-  {
-    id: 'hangyo-icecream',
-    youtubeId: 'fBkKkgfa5-0',
-    title: 'Hangyo Ice Cream - TVC',
-    category: 'commercial',
-    client: 'Hangyo',
     services: ['Production', 'Direction'],
   },
   {
