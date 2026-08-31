@@ -47,14 +47,6 @@ export function getYouTubeWatchUrl(videoId: string): string {
 
 export const featureFilms: VideoItem[] = [
   {
-    id: 'karavali-trailer',
-    youtubeId: 'DxZ2RuvRrbs',
-    title: 'Karavali - Official Trailer',
-    category: 'feature-film',
-    year: '2026',
-    services: ['Editing'],
-  },
-  {
     id: 'kantara-trailer',
     youtubeId: '8mrVmf239GU',
     title: 'Kantara - Official Trailer',
@@ -93,19 +85,18 @@ export const featureFilms: VideoItem[] = [
     services: ['Cinematography', 'Documentary'],
   },
   {
+    id: 'madharaasi',
+    youtubeId: 'Hgw4S7SDo3U',
+    title: 'Madharaasi - Official Trailer',
+    category: 'feature-film',
+    services: ['Post-Production'],
+  },
+  {
     id: 'su-from-so',
     youtubeId: 'Fe11GLdTL5k',
     title: 'Su From So - Official Trailer',
     category: 'feature-film',
     client: 'Lighter Buddha Films',
-    services: ['Editing', 'Post-Production'],
-  },
-  {
-    id: 'shpsk',
-    youtubeId: 'oA-U1rR3pNc',
-    title: 'Sarkari Hi. Pra. Shaale, Kasaragodu - Trailer',
-    category: 'feature-film',
-    client: 'Rishab Shetty Films',
     services: ['Editing', 'Post-Production'],
   },
   {
@@ -117,12 +108,20 @@ export const featureFilms: VideoItem[] = [
     services: ['Production Support'],
   },
   {
-    id: 'hero-trailer',
-    youtubeId: 'MiJPnyCOoUc',
-    title: 'HERO - Official Trailer',
+    id: 'shpsk',
+    youtubeId: 'oA-U1rR3pNc',
+    title: 'Sarkari Hi. Pra. Shaale, Kasaragodu - Trailer',
     category: 'feature-film',
     client: 'Rishab Shetty Films',
     services: ['Editing', 'Post-Production'],
+  },
+  {
+    id: 'karavali-trailer',
+    youtubeId: 'DxZ2RuvRrbs',
+    title: 'Karavali - Official Trailer',
+    category: 'feature-film',
+    year: '2026',
+    services: ['Editing'],
   },
   {
     id: 'katha-sangama',
@@ -133,18 +132,19 @@ export const featureFilms: VideoItem[] = [
     services: ['Editing', 'Post-Production'],
   },
   {
+    id: 'hero-trailer',
+    youtubeId: 'MiJPnyCOoUc',
+    title: 'HERO - Official Trailer',
+    category: 'feature-film',
+    client: 'Rishab Shetty Films',
+    services: ['Editing', 'Post-Production'],
+  },
+  {
     id: 'anukta',
     youtubeId: '4RksJ7IAcVY',
     title: 'Anukta - Official Trailer',
     category: 'feature-film',
     services: ['Editing', 'Post-Production'],
-  },
-  {
-    id: 'madharaasi',
-    youtubeId: 'Hgw4S7SDo3U',
-    title: 'Madharaasi - Official Trailer',
-    category: 'feature-film',
-    services: ['Post-Production'],
   },
 ]
 
