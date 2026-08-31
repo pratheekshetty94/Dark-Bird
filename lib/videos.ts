@@ -171,6 +171,13 @@ export const commercials: VideoItem[] = [
     client: 'Jungle Lodges & Resorts',
   },
   {
+    id: 'jlr-hampi',
+    youtubeId: 'BEsP-3N6yyU',
+    title: 'Hampi Heritage & Wilderness Resort - Jungle Lodges & Resorts',
+    category: 'commercial',
+    client: 'Jungle Lodges & Resorts',
+  },
+  {
     id: 'jlr-sharavathi',
     youtubeId: 'VX0RC288Fhs',
     title: 'Sharavathi Adventure Camp - Jungle Lodges & Resorts',
