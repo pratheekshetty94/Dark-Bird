@@ -27,7 +27,6 @@ export const metadata: Metadata = {
 }
 
 
-// Note: Shopsy videos (Guruji, Astrologer) can be added when YouTube IDs are available
 
 
 export default function FilmsPage() {

@@ -150,6 +150,20 @@ export const featureFilms: VideoItem[] = [
 
 export const commercials: VideoItem[] = [
   {
+    id: 'shopsy-guruji',
+    localVideoSrc: '/videos/commercials/shopsy-guruji.mp4',
+    title: 'Guruji - Shopsy by Flipkart',
+    category: 'commercial',
+    client: 'Shopsy by Flipkart',
+  },
+  {
+    id: 'shopsy-astrologer',
+    localVideoSrc: '/videos/commercials/shopsy-astrologer.mp4',
+    title: 'Astrologer - Shopsy by Flipkart',
+    category: 'commercial',
+    client: 'Shopsy by Flipkart',
+  },
+  {
     id: 'flipkart-findyourmatch',
     youtubeId: 'a1P87WpuCM4',
     title: '#FindYourMatch - Flipkart x Sima Taparia',
