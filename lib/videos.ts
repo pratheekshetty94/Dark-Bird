@@ -150,6 +150,13 @@ export const featureFilms: VideoItem[] = [
 
 export const commercials: VideoItem[] = [
   {
+    id: 'zomato-delivery-partner',
+    youtubeId: '7zZmaO7s7oI',
+    title: 'Delivery Partner for a Day ft. Danish Sait - Zomato',
+    category: 'commercial',
+    client: 'Zomato',
+  },
+  {
     id: 'shopsy-guruji',
     localVideoSrc: '/videos/commercials/shopsy-guruji.mp4',
     title: 'Guruji - Shopsy by Flipkart',
