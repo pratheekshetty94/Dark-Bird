@@ -196,6 +196,13 @@ const commercials: VideoItem[] = [
 // Music Videos - Correctly mapped from darkbirdfilms.com
 const musicVideos: VideoItem[] = [
   {
+    id: 'fire',
+    youtubeId: 'Vsu5n0K0Z84',
+    title: 'Fire - Shine Shetty, Yashashree Rao',
+    category: 'music-video',
+    year: '2026',
+  },
+  {
     id: 'danks-anthem',
     youtubeId: 'RldAVzPGMuA',
     title: 'DANKS ANTHEM - Su From So',
