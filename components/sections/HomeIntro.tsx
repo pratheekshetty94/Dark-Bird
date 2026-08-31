@@ -14,11 +14,11 @@ export default function HomeIntro() {
           <div className="space-y-4 text-silver text-body">
             <p>
               Dark Bird Films is a Bengaluru-based film production house and marketing
-              agency founded by editor Pratheek Shetty, whose credits include{' '}
+              agency founded by editor Pratheek Shetty, with editing credits on films like{' '}
               <Link href="/filmography/kantara" className="text-cream underline-offset-4 hover:text-accent underline">Kantara</Link>{' '}
               and{' '}
-              <Link href="/filmography/777-charlie" className="text-cream underline-offset-4 hover:text-accent underline">777 Charlie</Link>{' '}
-              — winners of National Film Awards. The same editorial craft goes into{' '}
+              <Link href="/filmography/777-charlie" className="text-cream underline-offset-4 hover:text-accent underline">777 Charlie</Link>.
+              The same editorial craft goes into{' '}
               <Link href="/services/ad-film-production-bangalore" className="text-cream underline-offset-4 hover:text-accent underline">ad films</Link>,{' '}
               <Link href="/services/corporate-video-production-bangalore" className="text-cream underline-offset-4 hover:text-accent underline">corporate videos</Link>,
               brand campaigns and founder stories for 100+ brands.
