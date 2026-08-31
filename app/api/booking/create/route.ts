@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
 
+// Room for Cal.com's slow spells (see availability route).
+export const maxDuration = 30
+
 const CAL_API_KEY = process.env.CAL_API_KEY || ''
 const CAL_EVENT_TYPE_ID = 4773493 // 30 min Discovery Call
 const CAL_API_VERSION = '2024-08-13'
@@ -72,6 +75,7 @@ export async function POST(request: NextRequest) {
     const calResponse = await fetch('https://api.cal.com/v2/bookings', {
       method: 'POST',
       headers: calHeaders,
+      signal: AbortSignal.timeout(25000),
       body: JSON.stringify({
         start: startTime,
         eventTypeId: CAL_EVENT_TYPE_ID,

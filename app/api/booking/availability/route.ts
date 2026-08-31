@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Cal.com's slots API intermittently takes 15-20s (observed 31-08-2026), so
+// the function needs headroom beyond the default duration.
+export const maxDuration = 30
+
 const CAL_API_KEY = process.env.CAL_API_KEY || ''
 const CAL_EVENT_TYPE_ID = 4773493 // 30 min Discovery Call
 const CAL_API_VERSION = '2024-09-04'
@@ -37,11 +41,14 @@ export async function GET(request: NextRequest) {
     const headers: Record<string, string> = { 'cal-api-version': CAL_API_VERSION }
     if (CAL_API_KEY) headers.Authorization = `Bearer ${CAL_API_KEY}`
 
-    // Cap the upstream call so a slow Cal.com cannot hold the function open.
+    // Cap the upstream call so a slow Cal.com cannot hold the function open,
+    // but give it room for their observed slow spells. Good responses are
+    // cached for 5 minutes, so most visitors never wait on Cal.com at all —
+    // double-booking a stale slot is still caught at booking time.
     const response = await fetch(url, {
       headers,
-      next: { revalidate: 60 },
-      signal: AbortSignal.timeout(8000),
+      next: { revalidate: 300 },
+      signal: AbortSignal.timeout(20000),
     })
 
     if (!response.ok) {

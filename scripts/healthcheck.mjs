@@ -15,7 +15,7 @@ const CAL_API_KEY = process.env.CAL_API_KEY || ''
 const failures = []
 const notes = []
 
-const TIMEOUT_MS = 15000
+const TIMEOUT_MS = 30000 // above the API routes' 20s Cal.com budget
 
 function ymd(d) {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
