@@ -37,15 +37,6 @@ const featureFilms: VideoItem[] = [
     services: ['Editing'],
   },
   {
-    id: 'kantara-2-trailer',
-    youtubeId: '0_W_PhKaQaY',
-    title: 'Kantara: Chapter 1 - Official Trailer',
-    category: 'feature-film',
-    client: 'Hombale Films',
-    year: '2025',
-    services: ['Editing', 'Post-Production'],
-  },
-  {
     id: 'kantara-trailer',
     youtubeId: '8mrVmf239GU',
     title: 'Kantara - Official Trailer',
