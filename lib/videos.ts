@@ -267,6 +267,14 @@ export const musicVideos: VideoItem[] = [
     services: ['Direction', 'Cinematography', 'Editing', 'DI'],
   },
   {
+    id: 'rage-of-kambala',
+    youtubeId: 'WuIVjtQ15xQ',
+    title: 'Rage of Kambala - Karavali',
+    category: 'music-video',
+    year: '2026',
+    services: ['Cinematography', 'Editing', 'DI'],
+  },
+  {
     id: 'danks-anthem',
     youtubeId: 'RldAVzPGMuA',
     title: 'DANKS ANTHEM - Su From So',
