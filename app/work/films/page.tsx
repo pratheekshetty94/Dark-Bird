@@ -29,6 +29,14 @@ export const metadata: Metadata = {
 // Feature Films - Correctly mapped from darkbirdfilms.com
 const featureFilms: VideoItem[] = [
   {
+    id: 'karavali-trailer',
+    youtubeId: 'DxZ2RuvRrbs',
+    title: 'Karavali - Official Trailer',
+    category: 'feature-film',
+    year: '2026',
+    services: ['Editing'],
+  },
+  {
     id: 'kantara-2-trailer',
     youtubeId: '0_W_PhKaQaY',
     title: 'Kantara: Chapter 1 - Official Trailer',
@@ -201,6 +209,7 @@ const musicVideos: VideoItem[] = [
     title: 'Fire - Shine Shetty, Yashashree Rao',
     category: 'music-video',
     year: '2026',
+    services: ['Direction', 'Cinematography', 'Editing', 'DI'],
   },
   {
     id: 'danks-anthem',

@@ -22,6 +22,20 @@ export interface FilmData {
 }
 
 export const filmsData: Record<string, FilmData> = {
+  'karavali': {
+    id: 'karavali',
+    title: 'Karavali',
+    year: '2026',
+    poster: '/images/posters/karavali.jpg',
+    role: 'Editor',
+    category: 'feature',
+    description: 'Animal vs Human — Gurudatha Ganiga\'s Kannada action drama set in the Kambala heartland of coastal Karnataka, led by Prajwal Devaraj.',
+    trailer: 'https://www.youtube.com/embed/DxZ2RuvRrbs',
+    director: 'Gurudatha Ganiga',
+    cast: ['Prajwal Devaraj', 'Raj B. Shetty', 'Sampada Hulivana'],
+    genre: ['Action', 'Drama'],
+    language: 'Kannada',
+  },
   'kantara': {
     id: 'kantara',
     title: 'Kantara',

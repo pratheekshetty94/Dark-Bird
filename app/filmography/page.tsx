@@ -29,6 +29,15 @@ interface FilmItem {
 
 const films: FilmItem[] = [
   {
+    id: 'karavali',
+    title: 'Karavali',
+    year: '2026',
+    poster: '/images/posters/karavali.jpg',
+    role: 'Editor',
+    category: 'feature',
+    description: 'Animal vs Human — Gurudatha Ganiga\'s coastal Karnataka action drama, led by Prajwal Devaraj.',
+  },
+  {
     id: 'kantara',
     title: 'Kantara',
     year: '2022',
