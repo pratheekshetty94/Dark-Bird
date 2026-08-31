@@ -17,9 +17,9 @@ export function generateMetadata({ params }: { params: Params }): Metadata {
   // The filmography layout's own title breaks the root template chain here,
   // so the brand suffix is appended explicitly.
   const title = `${film.title} (${film.year}) — ${film.role} | Dark Bird Films`
-  const description = film.award
-    ? `${film.description} ${film.role} by Dark Bird Films. Awards: ${film.award}.`.slice(0, 158)
-    : `${film.description} ${film.role} by Dark Bird Films.`.slice(0, 158)
+  // Attribution must stay precise: the role is Dark Bird's, the film's own
+  // awards belong to the film and are not listed here.
+  const description = `Dark Bird Films — ${film.role} on ${film.title} (${film.year}). ${film.description}`.slice(0, 158)
   return {
     title,
     description,

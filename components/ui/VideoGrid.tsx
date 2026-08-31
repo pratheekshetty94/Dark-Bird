@@ -144,18 +144,6 @@ export function VideoCard({ video, isPlaying, onPlay, onClose, className }: Vide
         )}>
           {video.title}
         </h3>
-        {video.services && video.services.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
-            {video.services.slice(0, 3).map((service) => (
-              <span
-                key={service}
-                className="px-2 py-0.5 bg-white/5 text-warm-gray rounded text-xs"
-              >
-                {service}
-              </span>
-            ))}
-          </div>
-        )}
       </div>
     </div>
   )
