@@ -248,10 +248,19 @@ export default function RootLayout({
         <meta name="geo.placename" content="Bengaluru" />
         <meta name="geo.position" content="12.9121;77.6446" />
         <meta name="ICBM" content="12.9121, 77.6446" />
+        <Script id="zsiq-init" strategy="beforeInteractive">
+          {'window.$zoho=window.$zoho||{};$zoho.salesiq=$zoho.salesiq||{ready:function(){}}'}
+        </Script>
       </head>
       <body className="font-sans bg-ink text-cream antialiased">
         {/* JSON-LD Structured Data */}
         <StructuredData />
+
+        <Script
+          id="zsiqscript"
+          src="https://salesiq.zoho.in/widget?wc=siqd5edfdccba5eb4c36d058a1e2c12a2e32fc707c2637a9a3765e56e5e52496ea6"
+          strategy="afterInteractive"
+        />
 
         {/* Google Analytics (GA4) */}
         <Script
