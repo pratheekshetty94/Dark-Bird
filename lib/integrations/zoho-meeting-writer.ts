@@ -36,6 +36,7 @@ export function meetingFields(operation: ReservedOperation, contactId: string) {
     End_DateTime: crmDate(booking.endAt),
     Who_Id: { id: contactId },
     Meeting_Venue__s: 'Online',
+    $send_notification: false,
     Description: `Cal.com iCalUID: ${booking.calendarUid}\nBooking UID: ${booking.bookingUid}`,
   }
 }
@@ -49,6 +50,7 @@ export class ZohoMeetingWriter implements CrmMeetingWriter {
   private readonly credentials: ZohoCredentials
   private readonly request: typeof fetch
   private readonly now: () => number
+  private readonly requiredContactId: string | undefined
   private accessToken: { value: string; expiresAt: number } | null = null
   private tokenInFlight: Promise<string> | null = null
   private verifiedOrgToken: string | null = null
@@ -57,7 +59,8 @@ export class ZohoMeetingWriter implements CrmMeetingWriter {
   constructor(
     credentials: ZohoCredentials,
     request: typeof fetch = fetch,
-    now: () => number = Date.now
+    now: () => number = Date.now,
+    requiredContactId?: string
   ) {
     if (credentials.confirmedRegion !== 'in' || !credentials.clientId ||
         !credentials.clientSecret || !credentials.refreshToken) {
@@ -66,6 +69,7 @@ export class ZohoMeetingWriter implements CrmMeetingWriter {
     this.credentials = credentials
     this.request = request
     this.now = now
+    this.requiredContactId = requiredContactId
   }
 
   private async token(): Promise<string> {
@@ -131,6 +135,9 @@ export class ZohoMeetingWriter implements CrmMeetingWriter {
     )
     if (exact.length !== 1 || typeof exact[0].id !== 'string' || !exact[0].id) {
       throw new Error('zoho_contact_ambiguous')
+    }
+    if (this.requiredContactId && exact[0].id !== this.requiredContactId) {
+      throw new Error('zoho_test_contact_mismatch')
     }
     return exact[0].id
   }
@@ -219,11 +226,11 @@ export class ZohoMeetingWriter implements CrmMeetingWriter {
 }
 
 /** Do not call until Zoho India DC and server-side OAuth setup are reviewed. */
-export function createZohoWriterFromEnvironment(): ZohoMeetingWriter {
+export function createZohoWriterFromEnvironment(requiredContactId?: string): ZohoMeetingWriter {
   return new ZohoMeetingWriter({
     clientId: process.env.ZOHO_CLIENT_ID ?? '',
     clientSecret: process.env.ZOHO_CLIENT_SECRET ?? '',
     refreshToken: process.env.ZOHO_REFRESH_TOKEN ?? '',
     confirmedRegion: process.env.ZOHO_DC ?? '',
-  })
+  }, fetch, Date.now, requiredContactId)
 }

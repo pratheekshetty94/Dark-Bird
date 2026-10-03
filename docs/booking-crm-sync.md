@@ -204,3 +204,34 @@ throughout validation mode. Test only with a manually submitted synthetic,
 signed request; do not create a booking to generate a test event. Disable the
 validation flag before activating any subscription. A Cal UI ping is not a
 validated booking, and real booking traffic during validation would be lost.
+
+## Single internal booking test mode
+
+`BOOKING_CRM_TEST_SYNC_ENABLED=true` is separate from validation mode and the
+normal sync flag. Exactly one of these three flags may be true. The normal
+`BOOKING_CRM_SYNC_ENABLED` flag stays unset for the internal test. Test mode
+requires `BOOKING_CRM_TEST_START_UTC` and `BOOKING_CRM_TEST_END_UTC` to be the
+exact approved appointment window as UTC ISO timestamps with milliseconds.
+Missing or malformed values keep the endpoint disabled. Only a signed
+`BOOKING_CREATED` for event type `4773493`, that window, one attendee
+`pratheek@darkbirdfilms.com`, organizer `management@darkbirdfilms.com`, and no
+additional guests can reach the ledger. Other signed bookings are acknowledged
+as `test_scope_ignored` or rejected before a ledger or Zoho request.
+
+Apply `db/migrations/002_single_booking_test_claim.sql` to the approved ledger
+database before enabling test mode. Inside the ledger reservation transaction,
+the singleton claim records the first matching booking UID and calendar UID.
+Any different booking UID or series is skipped, even if the time, attendee and
+organizer match. The claim remains after the test and is never reset
+automatically; do not use this mode for a second booking.
+
+The test writer requires the unique internal Contact ID `1457002000000562075`
+after an exact primary-email search; any other Contact is rejected before an
+Events request. Meetings omit Participants and Remind_At and set
+`$send_notification: false` per [Zoho's Events invitation control](https://help.zoho.com/portal/en/community/topic/kaizen-8-handling-recurrence-and-participants-in-the-events-module-via-api). This older
+Zoho documentation describes participant invitations; the V8 endpoint and
+the organization's automation settings still need observation during the
+single authorized internal test. Cal confirmation and reminders must be
+limited separately to `pratheek@darkbirdfilms.com` and
+`management@darkbirdfilms.com` before creating that booking. Disable test mode
+and the Cal subscription after the test; do not enable normal sync.

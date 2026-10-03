@@ -7,7 +7,10 @@ import type { BookingLedger, ReservedOperation } from '../lib/integrations/booki
 const secret = 'a-strong-local-test-secret-of-at-least-32-bytes'
 const now = Date.parse('2026-10-03T12:00:00.000Z')
 
-function request(trigger: 'BOOKING_CREATED' | 'BOOKING_CANCELLED' = 'BOOKING_CREATED'): Request {
+function request(
+  trigger: 'BOOKING_CREATED' | 'BOOKING_RESCHEDULED' | 'BOOKING_CANCELLED' = 'BOOKING_CREATED',
+  overrides: Record<string, unknown> = {}
+): Request {
   const body = JSON.stringify({
     triggerEvent: trigger, createdAt: '2026-10-03T11:59:00.000Z',
     payload: {
@@ -15,6 +18,8 @@ function request(trigger: 'BOOKING_CREATED' | 'BOOKING_CANCELLED' = 'BOOKING_CRE
       iCalSequence: trigger === 'BOOKING_CANCELLED' ? 1 : 0,
       startTime: '2026-10-04T12:00:00.000Z', endTime: '2026-10-04T12:30:00.000Z',
       attendees: [{ email: 'person@example.com' }],
+      organizer: { email: 'management@example.com' },
+      ...overrides,
     },
   })
   return new Request('https://example.test/api/integrations/cal-booking', {
@@ -60,6 +65,44 @@ test('invalid signature never reaches ledger or writer', async () => {
   })
   assert.equal(result.status, 400)
   assert.deepEqual(calls, [])
+})
+
+test('test scope skips other booking UIDs, attendees and trigger types before ledger or CRM', async () => {
+  const calls: string[] = []
+  const scoped = {
+    secret, ledger: ledger(calls), now: () => now,
+    writer: { async apply() { calls.push('writer'); return { meetingId: 'm1', contactId: 'c1' } } },
+    testScope: {
+      startAt: '2026-10-04T12:00:00.000Z', endAt: '2026-10-04T12:30:00.000Z',
+      attendeeEmail: 'person@example.com', organizerEmail: 'management@example.com',
+    },
+  }
+  for (const incoming of [
+    request('BOOKING_CREATED', { startTime: '2026-10-04T13:00:00.000Z' }),
+    request('BOOKING_CREATED', { endTime: '2026-10-04T12:45:00.000Z' }),
+    request('BOOKING_CREATED', { attendees: [{ email: 'other@example.com' }] }),
+    request('BOOKING_CREATED', { attendees: [
+      { email: 'person@example.com' }, { email: 'guest@example.com' },
+    ] }),
+    request('BOOKING_CREATED', { guests: ['guest@example.com'] }),
+    request('BOOKING_CREATED', { organizer: { email: 'other@example.com' } }),
+    request('BOOKING_CREATED', { organizer: null }),
+    request('BOOKING_RESCHEDULED', { rescheduleUid: 'prior-booking' }),
+    request('BOOKING_CANCELLED'),
+  ]) {
+    const response = await handleBookingWebhook(incoming, scoped)
+    assert.ok([202, 400].includes(response.status))
+    if (response.status === 202) {
+      assert.deepEqual(await response.json(), { outcome: 'test_scope_ignored' })
+    }
+  }
+  assert.deepEqual(calls, [])
+  const wrongEvent = await handleBookingWebhook(request('BOOKING_CREATED', { eventTypeId: 1 }), scoped)
+  assert.equal(wrongEvent.status, 400)
+  assert.deepEqual(calls, [])
+  const accepted = await handleBookingWebhook(request(), scoped)
+  assert.equal(accepted.status, 200)
+  assert.deepEqual(calls, ['reserve', 'start', 'writer', 'apply'])
 })
 
 test('uncertain writer result is quarantined without retry', async () => {

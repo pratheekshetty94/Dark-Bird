@@ -42,7 +42,7 @@ export type ReservedOperation = {
 export interface BookingLedger {
   reserve(booking: VerifiedCalBooking): Promise<
     | { outcome: 'reserved'; operation: ReservedOperation }
-    | { outcome: 'duplicate' | 'stale' | 'quarantined' }
+    | { outcome: 'duplicate' | 'stale' | 'quarantined' | 'test_scope_ignored' }
   >
   markStarted(operationId: string): Promise<void>
   markApplied(operationId: string, crmMeetingId: string, contactId: string): Promise<void>

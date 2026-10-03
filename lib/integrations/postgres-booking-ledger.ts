@@ -23,16 +23,36 @@ type SeriesRow = {
 /** PostgreSQL transaction adapter. The caller supplies a server-only pool. */
 export class PostgresBookingLedger implements BookingLedger {
   private readonly pool: SqlPool
+  private readonly claimSingleTestCreate: boolean
 
-  constructor(pool: SqlPool) { this.pool = pool }
+  constructor(pool: SqlPool, options: { claimSingleTestCreate?: boolean } = {}) {
+    this.pool = pool
+    this.claimSingleTestCreate = options.claimSingleTestCreate === true
+  }
 
   async reserve(booking: VerifiedCalBooking): Promise<
     | { outcome: 'reserved'; operation: ReservedOperation }
-    | { outcome: 'duplicate' | 'stale' | 'quarantined' }
+    | { outcome: 'duplicate' | 'stale' | 'quarantined' | 'test_scope_ignored' }
   > {
     const client = await this.pool.connect()
     try {
       await client.query('BEGIN')
+      if (this.claimSingleTestCreate) {
+        // The singleton primary key serializes competing first bookings across
+        // Function instances. The claim commits with the first reservation.
+        await client.query(
+          `INSERT INTO cal_booking_test_claim (singleton, booking_uid, calendar_uid)
+           VALUES (true, $1, $2) ON CONFLICT (singleton) DO NOTHING`,
+          [booking.bookingUid, booking.calendarUid]
+        )
+        const claim = (await client.query<{ booking_uid: string; calendar_uid: string }>(
+          'SELECT booking_uid, calendar_uid FROM cal_booking_test_claim WHERE singleton = true FOR UPDATE'
+        )).rows[0]
+        if (!claim || claim.booking_uid !== booking.bookingUid ||
+            claim.calendar_uid !== booking.calendarUid) {
+          return await this.finish(client, 'test_scope_ignored')
+        }
+      }
       // The hash only selects a lock; collisions serialize extra series safely.
       await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', [
         `${booking.eventTypeId}:${booking.calendarUid}`,
@@ -145,7 +165,7 @@ export class PostgresBookingLedger implements BookingLedger {
     }
   }
 
-  private async finish(client: SqlClient, outcome: 'duplicate' | 'stale' | 'quarantined') {
+  private async finish(client: SqlClient, outcome: 'duplicate' | 'stale' | 'quarantined' | 'test_scope_ignored') {
     await client.query('COMMIT')
     return { outcome } as const
   }

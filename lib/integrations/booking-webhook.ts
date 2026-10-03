@@ -10,6 +10,7 @@ export type BookingWebhookDependencies = {
   secret: string | undefined
   ledger: BookingLedger
   writer: CrmMeetingWriter
+  testScope?: { startAt: string; endAt: string; attendeeEmail: string; organizerEmail: string }
   now?: () => number
   log?: (code: string) => void
 }
@@ -35,6 +36,19 @@ export async function handleBookingWebhook(
     return Response.json({ error: code }, { status: code === 'not_configured' ? 503 : 400 })
   }
 
+  if (dependencies.testScope && (
+    booking.trigger !== 'BOOKING_CREATED' ||
+    booking.sequence !== 0 || booking.previousBookingUid !== null ||
+    booking.hasOtherGuests === true ||
+    booking.startAt !== dependencies.testScope.startAt ||
+    booking.endAt !== dependencies.testScope.endAt ||
+    booking.attendeeEmail !== dependencies.testScope.attendeeEmail ||
+    booking.organizerEmail !== dependencies.testScope.organizerEmail
+  )) {
+    dependencies.log?.('test_scope_ignored')
+    return Response.json({ outcome: 'test_scope_ignored' }, { status: 202 })
+  }
+
   let reservation
   try {
     reservation = await dependencies.ledger.reserve(booking)
@@ -44,7 +58,9 @@ export async function handleBookingWebhook(
   }
   if (reservation.outcome !== 'reserved') {
     dependencies.log?.(`ledger_${reservation.outcome}`)
-    return Response.json({ outcome: reservation.outcome }, { status: reservation.outcome === 'quarantined' ? 202 : 200 })
+    return Response.json({ outcome: reservation.outcome }, {
+      status: reservation.outcome === 'quarantined' || reservation.outcome === 'test_scope_ignored' ? 202 : 200,
+    })
   }
 
   const { operation } = reservation

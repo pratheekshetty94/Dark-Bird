@@ -5,7 +5,9 @@ import { POST } from '../app/api/integrations/cal-booking/route.ts'
 
 const secret = 'synthetic-cal-signing-secret-over-thirty-two-chars'
 const environmentNames = [
-  'BOOKING_CRM_SYNC_ENABLED', 'BOOKING_CRM_VALIDATE_ONLY', 'CAL_WEBHOOK_SECRET',
+  'BOOKING_CRM_SYNC_ENABLED', 'BOOKING_CRM_VALIDATE_ONLY',
+  'BOOKING_CRM_TEST_SYNC_ENABLED', 'BOOKING_CRM_TEST_START_UTC',
+  'BOOKING_CRM_TEST_END_UTC', 'CAL_WEBHOOK_SECRET',
   'DATABASE_URL', 'ZOHO_DC', 'ZOHO_CLIENT_ID', 'ZOHO_CLIENT_SECRET', 'ZOHO_REFRESH_TOKEN',
 ] as const
 
@@ -41,6 +43,9 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     process.env.DATABASE_URL = 'must-not-be-used'
     delete process.env.BOOKING_CRM_SYNC_ENABLED
     delete process.env.BOOKING_CRM_VALIDATE_ONLY
+    delete process.env.BOOKING_CRM_TEST_SYNC_ENABLED
+    delete process.env.BOOKING_CRM_TEST_START_UTC
+    delete process.env.BOOKING_CRM_TEST_END_UTC
     process.env.CAL_WEBHOOK_SECRET = secret
     process.env.ZOHO_DC = 'in'
     process.env.ZOHO_CLIENT_ID = 'synthetic-id'
@@ -110,11 +115,24 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
 
     process.env.BOOKING_CRM_SYNC_ENABLED = 'true'
     assert.equal((await POST(request('BOOKING_CREATED'))).status, 503)
+    delete process.env.BOOKING_CRM_SYNC_ENABLED
+    process.env.BOOKING_CRM_TEST_SYNC_ENABLED = 'true'
+    assert.equal((await POST(request('BOOKING_CREATED'))).status, 503,
+      'validation and test modes cannot run together')
+    delete process.env.BOOKING_CRM_VALIDATE_ONLY
+    assert.equal((await POST(request('BOOKING_CREATED'))).status, 503,
+      'test mode requires an exact UTC slot')
+    process.env.BOOKING_CRM_TEST_START_UTC = '2026-10-05T12:00:00.000Z'
+    process.env.BOOKING_CRM_TEST_END_UTC = '2026-10-05T12:30:00.000Z'
+    process.env.DATABASE_URL = 'postgresql://synthetic:synthetic@127.0.0.1:5432/test'
+    const skipped = await POST(request('BOOKING_CREATED'))
+    assert.equal(skipped.status, 202)
+    assert.deepEqual(await skipped.json(), { outcome: 'test_scope_ignored' })
     assert.equal(calls.length, 2, 'conflicting modes fail before provider work')
-    assert.ok(logs.every(args => args[0] === 'booking_crm_validation' &&
+    assert.ok(logs.every(args => ['booking_crm_validation', 'booking_crm_webhook'].includes(args[0]) &&
       ['digest_mismatch', 'header_absent', 'no_secret_marker', 'malformed_digest',
         'unsupported_version', 'wrong_event_type', 'invalid_size',
-        'signed_transport_only', 'booking_payload_valid'].includes(args[1])))
+        'signed_transport_only', 'booking_payload_valid', 'test_scope_ignored'].includes(args[1])))
   } finally {
     globalThis.fetch = originalFetch
     console.info = originalInfo

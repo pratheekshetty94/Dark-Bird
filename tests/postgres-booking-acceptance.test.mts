@@ -30,6 +30,7 @@ function signedRequest(series: string, uid: string, sequence: number,
     payload: {
       eventTypeId: 4773493, uid, iCalUID: series, iCalSequence: sequence,
       rescheduleUid: previousUid, attendees: [{ email: 'synthetic@example.invalid' }],
+      organizer: { email: 'management@example.invalid' },
       startTime: '2026-10-05T12:00:00.000Z', endTime: '2026-10-05T12:30:00.000Z',
     },
   })
@@ -62,6 +63,7 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       const existing = await pool.query("SELECT to_regclass('public.cal_booking_series') AS name")
       assert.equal(existing.rows[0].name, null, 'test database must be fresh')
       await pool.query(await readFile(new URL('../db/migrations/001_booking_ledger.sql', import.meta.url), 'utf8'))
+      await pool.query(await readFile(new URL('../db/migrations/002_single_booking_test_claim.sql', import.meta.url), 'utf8'))
       const ledger = new PostgresBookingLedger(pool)
       const writes: ReservedOperation[] = []
       const writer = { async apply(operation: ReservedOperation) {
@@ -69,6 +71,34 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
         return { meetingId: `meeting-${writes.length}`, contactId: 'contact-synthetic' }
       } }
       const send = (request: Request) => handleBookingWebhook(request, { secret, ledger, writer })
+
+      const testLedger = new PostgresBookingLedger(pool, { claimSingleTestCreate: true })
+      const testWrites: ReservedOperation[] = []
+      const testScope = {
+        startAt: '2026-10-05T12:00:00.000Z', endAt: '2026-10-05T12:30:00.000Z',
+        attendeeEmail: 'synthetic@example.invalid', organizerEmail: 'management@example.invalid',
+      }
+      const sendTest = (request: Request) => handleBookingWebhook(request, {
+        secret, ledger: testLedger, testScope,
+        writer: { async apply(operation) {
+          testWrites.push(operation)
+          return { meetingId: 'test-meeting', contactId: 'test-contact' }
+        } },
+      })
+      const testResults = await Promise.all([
+        sendTest(signedRequest('test-series-one', 'test-uid-one', 0)),
+        sendTest(signedRequest('test-series-two', 'test-uid-two', 0)),
+      ])
+      assert.deepEqual(testResults.map(result => result.status).sort(), [200, 202])
+      assert.equal(testWrites.length, 1, 'only the first claimed UID can reach CRM')
+      const testClaim = await pool.query('SELECT booking_uid, calendar_uid FROM cal_booking_test_claim')
+      assert.equal(testClaim.rowCount, 1)
+      assert.equal(testClaim.rows[0].booking_uid, testWrites[0].booking.bookingUid)
+      assert.equal(testClaim.rows[0].calendar_uid, testWrites[0].booking.calendarUid)
+      assert.equal((await sendTest(signedRequest('different-series', testClaim.rows[0].booking_uid, 0))).status, 202)
+      assert.equal((await sendTest(signedRequest(testClaim.rows[0].calendar_uid,
+        testClaim.rows[0].booking_uid, 0))).status, 200)
+      assert.equal(testWrites.length, 1, 'another series and an exact replay make no second write')
 
       const [a, b] = await Promise.all([
         send(signedRequest('concurrent', 'booking-1', 0)),

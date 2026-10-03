@@ -79,9 +79,10 @@ test('creates one CRM Event for one exact primary-email Contact', async () => {
   assert.deepEqual(body.trigger, [])
   assert.deepEqual(body.skip_feature_execution, [{ name: 'cadences' }])
   assert.deepEqual(Object.keys(body.data[0]).sort(), [
-    'Description', 'End_DateTime', 'Event_Title', 'Meeting_Venue__s',
+    '$send_notification', 'Description', 'End_DateTime', 'Event_Title', 'Meeting_Venue__s',
     'Start_DateTime', 'Who_Id',
   ])
+  assert.equal(body.data[0].$send_notification, false)
   assert.deepEqual(body.data[0].Who_Id, { id: 'contact-1' })
   assert.equal(body.data[0].Start_DateTime, '2026-10-04T12:00:00+00:00')
 })
@@ -114,6 +115,15 @@ test('updates the known Meeting once and includes its id', async () => {
   assert.equal(body.data[0].id, 'meeting-1')
   assert.equal(body.data[0].Event_Title, 'Discovery Call')
   assert.ok(!('Participants' in body.data[0]))
+  assert.ok(!('Remind_At' in body.data[0]))
+  assert.equal(body.data[0].$send_notification, false)
+})
+
+test('test writer rejects any Contact other than its exact allowed ID before an Event write', async () => {
+  const mock = mockFetch()
+  const writer = new ZohoMeetingWriter(credentials, mock.request, Date.now, 'internal-test-contact')
+  await assert.rejects(writer.apply(operation), /zoho_test_contact_mismatch/)
+  assert.equal(mock.calls.filter(call => call.url.includes('/Events')).length, 0)
 })
 
 for (const [name, config] of [

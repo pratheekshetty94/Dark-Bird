@@ -19,6 +19,8 @@ export type VerifiedCalBooking = {
   sequence: number
   previousBookingUid: string | null
   attendeeEmail: string
+  organizerEmail?: string | null
+  hasOtherGuests?: boolean
   startAt: string
   endAt: string
   occurredAt: string
@@ -160,6 +162,14 @@ export function verifyCalBookingWebhook(
   if (!Array.isArray(attendees) || attendees.length !== 1) throw new CalWebhookError('ambiguous_attendee')
   const email = boundedString(object(attendees[0]).email, 320).trim().toLowerCase()
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new CalWebhookError('invalid_email')
+  const organizer = payload.organizer && typeof payload.organizer === 'object' &&
+    !Array.isArray(payload.organizer) ? payload.organizer as Record<string, unknown> : null
+  const organizerEmail = typeof organizer?.email === 'string'
+    ? organizer.email.trim().toLowerCase() : null
+  const hasOtherGuests = ['guests', 'additionalGuests', 'additionalAttendees'].some(key => {
+    const value = payload[key]
+    return value != null && (!Array.isArray(value) || value.length > 0)
+  })
   const sequence = payload.iCalSequence
   if (!Number.isSafeInteger(sequence) || (sequence as number) < 0) {
     throw new CalWebhookError('invalid_sequence')
@@ -186,6 +196,8 @@ export function verifyCalBookingWebhook(
     sequence: sequence as number,
     previousBookingUid,
     attendeeEmail: email,
+    organizerEmail,
+    hasOtherGuests,
     startAt,
     endAt,
     occurredAt,

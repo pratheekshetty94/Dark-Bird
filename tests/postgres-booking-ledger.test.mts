@@ -50,6 +50,25 @@ test('duplicate delivery stops before a CRM operation is reserved', async () => 
   assert.ok(!statements.some(sql => sql.includes('INSERT INTO cal_crm_operations')))
 })
 
+test('single-test claim skips a different UID before reserving a CRM operation', async () => {
+  const statements: string[] = []
+  const client = {
+    async query(sql: string) {
+      statements.push(sql)
+      if (sql.includes('FROM cal_booking_test_claim')) return {
+        rows: [{ booking_uid: 'already-claimed', calendar_uid: 'other-series' }], rowCount: 1,
+      }
+      return { rows: [], rowCount: 1 }
+    },
+    release() {},
+  }
+  const ledger = new PostgresBookingLedger({ connect: async () => client } as unknown as SqlPool,
+    { claimSingleTestCreate: true })
+  assert.deepEqual(await ledger.reserve(booking), { outcome: 'test_scope_ignored' })
+  assert.ok(statements.some(sql => sql.includes('INSERT INTO cal_booking_test_claim')))
+  assert.ok(!statements.some(sql => sql.includes('INSERT INTO cal_crm_operations')))
+})
+
 function statefulPool() {
   const deliveries = new Set<string>()
   let unresolved = false
