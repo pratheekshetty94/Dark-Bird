@@ -162,6 +162,12 @@ export class ZohoMeetingWriter implements CrmMeetingWriter {
     }
   }
 
+  /** OAuth refresh and GET /org only. Never searches Contacts or writes Events. */
+  async verifyOrganizationReadOnly(): Promise<void> {
+    const token = await this.token()
+    await this.verifyOrg(token)
+  }
+
   async apply(operation: ReservedOperation): Promise<{ meetingId: string; contactId: string }> {
     if (operation.booking.trigger === 'BOOKING_CANCELLED') {
       throw new Error('zoho_cancellation_manual_review')

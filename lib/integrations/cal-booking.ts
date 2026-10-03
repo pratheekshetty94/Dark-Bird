@@ -100,13 +100,12 @@ function isoTime(value: unknown): string {
   return date.toISOString()
 }
 
-/** Verify the raw bytes before parsing. No unverified payload reaches the ledger. */
-export function verifyCalBookingWebhook(
+/** Authenticate transport before parsing or contacting any provider. */
+export function authenticateCalWebhook(
   rawBody: Uint8Array,
   headers: Headers,
-  secret: string | undefined,
-  nowMs = Date.now()
-): VerifiedCalBooking {
+  secret: string | undefined
+): void {
   if (!secret || secret.length < 32) throw new CalWebhookError('not_configured')
   if (!rawBody.length || rawBody.length > MAX_BODY_BYTES) throw new CalWebhookError('invalid_size')
 
@@ -123,6 +122,16 @@ export function verifyCalBookingWebhook(
   if (!CAL_WEBHOOK_VERSIONS.some(allowed => allowed === version)) {
     throw new CalWebhookError('unsupported_version')
   }
+}
+
+/** Verify the raw bytes before parsing. No unverified payload reaches the ledger. */
+export function verifyCalBookingWebhook(
+  rawBody: Uint8Array,
+  headers: Headers,
+  secret: string | undefined,
+  nowMs = Date.now()
+): VerifiedCalBooking {
+  authenticateCalWebhook(rawBody, headers, secret)
 
   let decoded: unknown
   try {

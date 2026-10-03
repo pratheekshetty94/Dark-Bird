@@ -175,3 +175,26 @@ database, then tests concurrent duplicate delivery, replay, out-of-order
 cancellation, crash after `started`, and uncertain CRM response using synthetic
 data and a fake CRM writer. The test is skipped without that URL. Never point
 it at the production Neon database. No real Zoho request is made by this test.
+
+## Validation-only webhook mode
+
+`BOOKING_CRM_VALIDATE_ONLY=true` is a temporary mode on the existing POST
+endpoint. It requires `BOOKING_CRM_SYNC_ENABLED` to remain unset/false and
+`CAL_WEBHOOK_SECRET` to be configured. If both flags are true, the route
+returns 503 before provider work. This mode checks body size, raw HMAC, and
+webhook version first. Recognized booking triggers must pass the full event
+type and payload checks and return `booking_payload_valid`. A signed JSON
+message with an unrecognized trigger returns `signed_transport_only`; that
+result does not establish booking payload compatibility. Cal's public docs do
+not specify a ping payload, so a ping is not counted as a validated booking.
+
+After local validation, this mode only refreshes OAuth and reads the Zoho org.
+It does not instantiate the Postgres ledger, search Contacts, write Events,
+store payloads, or log personal data. The Zoho writer caches the verified org
+per access token within the Function process, limiting repeated provider
+requests. There is no cross-process replay cache in this mode; accepted
+deliveries are deliberately discarded. Keep the Cal subscription **inactive**
+throughout validation mode. Test only with a manually submitted synthetic,
+signed request; do not create a booking to generate a test event. Disable the
+validation flag before activating any subscription. A Cal UI ping is not a
+validated booking, and real booking traffic during validation would be lost.
