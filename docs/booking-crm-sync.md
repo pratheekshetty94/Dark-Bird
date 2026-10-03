@@ -188,6 +188,12 @@ message with an unrecognized trigger returns `signed_transport_only`; that
 result does not establish booking payload compatibility. Cal's public docs do
 not specify a ping payload, so a ping is not counted as a validated booking.
 
+Signature failures return and log only a fixed diagnostic code:
+`header_absent`, `no_secret_marker`, `malformed_digest`, or `digest_mismatch`.
+The last code means the received body, signing secret, and digest do not match;
+it cannot identify which input differs. The request remains rejected, and the
+diagnostic does not include the header, body, secret, or their lengths.
+
 After local validation, this mode only refreshes OAuth and reads the Zoho org.
 It does not instantiate the Postgres ledger, search Contacts, write Events,
 store payloads, or log personal data. The Zoho writer caches the verified org

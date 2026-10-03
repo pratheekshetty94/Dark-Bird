@@ -42,7 +42,9 @@ export async function handleBookingValidation(
       outcome = 'signed_transport_only'
     }
   } catch (error) {
-    const code = error instanceof CalWebhookError ? error.code : 'invalid_request'
+    const code = error instanceof CalWebhookError
+      ? error.signatureFailure ?? error.code
+      : 'invalid_request'
     dependencies.log?.(code)
     return Response.json({ error: code }, { status: code === 'invalid_size' ? 413 : 400 })
   }

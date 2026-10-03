@@ -27,10 +27,12 @@ export type VerifiedCalBooking = {
 
 export class CalWebhookError extends Error {
   readonly code: string
+  readonly signatureFailure?: 'header_absent' | 'no_secret_marker' | 'malformed_digest' | 'digest_mismatch'
 
-  constructor(code: string) {
+  constructor(code: string, signatureFailure?: CalWebhookError['signatureFailure']) {
     super(code)
     this.code = code
+    this.signatureFailure = signatureFailure
   }
 }
 
@@ -110,12 +112,16 @@ export function authenticateCalWebhook(
   if (!rawBody.length || rawBody.length > MAX_BODY_BYTES) throw new CalWebhookError('invalid_size')
 
   const signature = headers.get('x-cal-signature-256')
-  if (!signature || !/^[a-fA-F0-9]{64}$/.test(signature)) {
-    throw new CalWebhookError('invalid_signature')
+  if (!signature) throw new CalWebhookError('invalid_signature', 'header_absent')
+  if (signature === 'no-secret-provided') {
+    throw new CalWebhookError('invalid_signature', 'no_secret_marker')
+  }
+  if (!/^[a-fA-F0-9]{64}$/.test(signature)) {
+    throw new CalWebhookError('invalid_signature', 'malformed_digest')
   }
   const expected = createHmac('sha256', secret).update(rawBody).digest()
   if (!timingSafeEqual(expected, Buffer.from(signature, 'hex'))) {
-    throw new CalWebhookError('invalid_signature')
+    throw new CalWebhookError('invalid_signature', 'digest_mismatch')
   }
 
   const version = headers.get('x-cal-webhook-version')

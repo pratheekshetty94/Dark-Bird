@@ -68,7 +68,21 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     delete process.env.CAL_WEBHOOK_SECRET
     assert.equal((await POST(request('BOOKING_CREATED'))).status, 503)
     process.env.CAL_WEBHOOK_SECRET = secret
-    assert.equal((await POST(request('BOOKING_CREATED', false))).status, 400)
+    const mismatch = await POST(request('BOOKING_CREATED', false))
+    assert.equal(mismatch.status, 400)
+    assert.deepEqual(await mismatch.json(), { error: 'digest_mismatch' })
+    for (const [header, failure] of [
+      [null, 'header_absent'],
+      ['no-secret-provided', 'no_secret_marker'],
+      ['sha256=bad', 'malformed_digest'],
+    ] as const) {
+      const malformed = request('UNSPECIFIED_TEST_PING')
+      if (header === null) malformed.headers.delete('x-cal-signature-256')
+      else malformed.headers.set('x-cal-signature-256', header)
+      const response = await POST(malformed)
+      assert.equal(response.status, 400)
+      assert.deepEqual(await response.json(), { error: failure })
+    }
     assert.equal((await POST(request('UNSPECIFIED_TEST_PING', true, {}, 'unsupported'))).status, 400)
     assert.equal((await POST(request('BOOKING_CREATED', true, { eventTypeId: 1 }))).status, 400)
     const oversizedBody = 'x'.repeat(128 * 1024 + 1)
@@ -98,7 +112,8 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     assert.equal((await POST(request('BOOKING_CREATED'))).status, 503)
     assert.equal(calls.length, 2, 'conflicting modes fail before provider work')
     assert.ok(logs.every(args => args[0] === 'booking_crm_validation' &&
-      ['invalid_signature', 'unsupported_version', 'wrong_event_type', 'invalid_size',
+      ['digest_mismatch', 'header_absent', 'no_secret_marker', 'malformed_digest',
+        'unsupported_version', 'wrong_event_type', 'invalid_size',
         'signed_transport_only', 'booking_payload_valid'].includes(args[1])))
   } finally {
     globalThis.fetch = originalFetch
