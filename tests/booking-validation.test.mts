@@ -123,6 +123,8 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     process.env.BOOKING_CRM_CONTACT_PREFLIGHT = 'true'
     assert.equal((await POST(request('UNSPECIFIED_TEST_PING'))).status, 202)
     assert.equal(calls.filter(call => call.url.includes('/Contacts/search')).length, 1)
+    assert.ok(logs.some(args => args[0] === 'booking_crm_validation' &&
+      args[1] === 'contact_preflight_valid'))
     contactId = 'different-contact'
     const mismatchContact = await POST(request('UNSPECIFIED_TEST_PING'))
     assert.equal(mismatchContact.status, 503)
@@ -152,7 +154,8 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
         ['digest_mismatch', 'header_absent', 'no_secret_marker', 'malformed_digest',
           'unsupported_version', 'wrong_event_type', 'invalid_size',
           'signed_transport_only', 'booking_payload_valid', 'test_scope_ignored',
-          'contact_unavailable'].includes(args[1]))))
+          'contact_unavailable', 'contact_preflight_valid',
+          'contact_preflight_skipped'].includes(args[1]))))
   } finally {
     globalThis.fetch = originalFetch
     console.info = originalInfo

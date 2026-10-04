@@ -63,6 +63,9 @@ export async function handleBookingValidation(
       dependencies.log?.('contact_unavailable')
       return Response.json({ error: 'contact_unavailable' }, { status: 503 })
     }
+    dependencies.log?.('contact_preflight_valid')
+  } else {
+    dependencies.log?.('contact_preflight_skipped')
   }
   dependencies.log?.(outcome)
   return Response.json({ outcome }, { status: outcome === 'booking_payload_valid' ? 200 : 202 })
