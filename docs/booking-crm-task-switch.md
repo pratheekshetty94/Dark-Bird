@@ -68,10 +68,12 @@ known Task ID, is quarantined. No Task is deleted. A timeout or malformed CRM
 response remains quarantined with no automatic retry.
 
 For manual operations review, run `scripts/booking-crm-review-queue.sql` only in
-the private ledger SQL editor. It returns counts and up to 50 existing IDs for
+an authorized private ledger SQL editor. It returns counts and up to 50 existing IDs for
 unresolved, quarantined, and started/reserved operations aged 15 minutes. It is
 read-only and never clears or retries a row. This is a manual report, not an
-automatic user alert.
+automatic user alert. Its `calendar_uid` values are linkable and may contain
+personal text, so treat the results as private. There is no scheduled alert,
+assigned review owner, or reconciliation workflow yet.
 
 ## Minimal authorization and private setup
 

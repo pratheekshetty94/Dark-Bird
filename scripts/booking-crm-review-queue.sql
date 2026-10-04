@@ -1,7 +1,10 @@
--- Run manually in the private ledger SQL editor with read-only access.
--- Four category counts plus at most 50 existing IDs per category. No payload,
--- email, name, URL, token, or CRM request/response content is selected.
+-- Run manually only in an authorized private ledger SQL editor with read-only access.
+-- Four category counts plus at most 50 existing IDs per category. calendar_uid
+-- is linkable and may itself contain personal text (including @). Do not share
+-- the result publicly. No separate payload, email, name, URL, token, or CRM
+-- request/response columns are selected.
 -- A reserved/started operation is aged after 15 minutes. Do not retry or clear it.
+-- This report has no schedule, alert owner, or reconciliation workflow.
 WITH categories(category) AS (
   VALUES ('unresolved'), ('quarantined'), ('aged_started'), ('aged_reserved')
 ), review_items AS (
