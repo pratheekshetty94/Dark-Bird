@@ -67,6 +67,12 @@ the original join URL in its description. Cancellation before creation, or witho
 known Task ID, is quarantined. No Task is deleted. A timeout or malformed CRM
 response remains quarantined with no automatic retry.
 
+For manual operations review, run `scripts/booking-crm-review-queue.sql` only in
+the private ledger SQL editor. It returns counts and up to 50 existing IDs for
+unresolved, quarantined, and started/reserved operations aged 15 minutes. It is
+read-only and never clears or retries a row. This is a manual report, not an
+automatic user alert.
+
 ## Minimal authorization and private setup
 
 The exact scope set is `ZohoCRM.org.READ`, `ZohoCRM.modules.contacts.READ`,

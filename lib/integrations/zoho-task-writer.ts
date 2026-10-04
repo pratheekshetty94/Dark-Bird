@@ -21,7 +21,8 @@ const PROVIDER_CODES = new Set([
 const PREWRITE_CODES = new Set([
   'zoho_token_rejected', 'zoho_token_invalid', 'zoho_org_check_failed',
   'zoho_org_invalid', 'zoho_org_mismatch', 'zoho_contact_missing',
-  'zoho_contact_search_failed', 'zoho_contact_ambiguous',
+  'zoho_contact_search_failed', 'zoho_contact_page_incomplete',
+  'zoho_contact_result_invalid', 'zoho_contact_duplicate',
   'zoho_test_contact_mismatch', 'zoho_missing_task_id', 'zoho_missing_join_url',
 ])
 
@@ -185,17 +186,25 @@ export class ZohoTaskWriter implements CrmTaskWriter {
       await this.logHttpFailure('contacts', response)
       throw new Error('zoho_contact_search_failed')
     }
-    const result = object(await response.json())
-    if (!Array.isArray(result.data) || !result.info ||
-        object(result.info).more_records !== false) {
-      throw new Error('zoho_contact_ambiguous')
+    const raw: unknown = await response.json().catch(() => null)
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      throw new Error('zoho_contact_result_invalid')
     }
-    const exact = result.data.map(object).filter(contact =>
+    const result = raw as Record<string, unknown>
+    if (!Array.isArray(result.data) || !result.info ||
+        typeof result.info !== 'object' || Array.isArray(result.info) ||
+        result.data.some(item => !item || typeof item !== 'object' || Array.isArray(item))) {
+      throw new Error('zoho_contact_result_invalid')
+    }
+    const moreRecords = (result.info as Record<string, unknown>).more_records
+    if (moreRecords === true) throw new Error('zoho_contact_page_incomplete')
+    if (moreRecords !== false) throw new Error('zoho_contact_result_invalid')
+    const exact = (result.data as Record<string, unknown>[]).filter(contact =>
       typeof contact.Email === 'string' && contact.Email.trim().toLowerCase() === email
     )
-    if (exact.length !== 1 || typeof exact[0].id !== 'string' || !exact[0].id) {
-      throw new Error('zoho_contact_ambiguous')
-    }
+    if (exact.length === 0) throw new Error('zoho_contact_missing')
+    if (exact.length > 1) throw new Error('zoho_contact_duplicate')
+    if (typeof exact[0].id !== 'string' || !exact[0].id) throw new Error('zoho_contact_result_invalid')
     if (this.requiredContactId && exact[0].id !== this.requiredContactId) {
       throw new Error('zoho_test_contact_mismatch')
     }

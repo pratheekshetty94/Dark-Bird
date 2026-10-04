@@ -213,6 +213,24 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       assert.equal((await pool.query("SELECT state FROM cal_crm_operations WHERE calendar_uid = 'uncertain'")).rows[0].state, 'quarantined')
       assert.equal((await send(signedRequest('uncertain', 'booking-4', 1, 'BOOKING_RESCHEDULED', 'booking-3'))).status, 202)
       assert.equal(writes.length, 2)
+
+      // The operator report must include old quarantines and aged open work,
+      // with category counts and only existing IDs in its result.
+      const reserved = await ledger.reserve(syntheticBooking('aged-reserved', 'f'))
+      assert.equal(reserved.outcome, 'reserved')
+      await pool.query("UPDATE cal_crm_operations SET started_at = now() - interval '16 minutes' WHERE calendar_uid = 'crashed'")
+      await pool.query("UPDATE cal_webhook_deliveries SET received_at = now() - interval '16 minutes' WHERE body_sha256 = $1",
+        [syntheticBooking('aged-reserved', 'f').deliveryHash])
+      const reportSql = await readFile(new URL('../scripts/booking-crm-review-queue.sql', import.meta.url), 'utf8')
+      assert.ok(!/\b(?:email|name|description|url|token)\b/i.test(reportSql.split('WITH categories')[1]))
+      const report = await pool.query(reportSql)
+      const categories = Object.fromEntries(report.rows.map(row => [row.category, row]))
+      assert.equal(report.rowCount, 4)
+      assert.ok(Number(categories.unresolved.total_count) >= 2)
+      assert.ok(Number(categories.quarantined.total_count) >= 1)
+      assert.ok(Number(categories.aged_started.total_count) >= 1)
+      assert.ok(Number(categories.aged_reserved.total_count) >= 1)
+      assert.ok(categories.quarantined.ids.some((id: { calendar_uid: string }) => id.calendar_uid === 'uncertain'))
     } finally {
       await pool.end()
     }

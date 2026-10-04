@@ -174,6 +174,25 @@ test('cancellation completes the existing Task without losing its original link'
   assert.equal(body.data[0].Send_Notification_Email, false)
 })
 
+test('cancellation with missing or duplicate Contact never reads or updates Tasks', async () => {
+  for (const item of [
+    { config: { noContact: true }, code: 'prewrite_zoho_contact_missing' },
+    { config: { contacts: [
+      { id: 'contact-1', Email: 'person@example.com' },
+      { id: 'contact-2', Email: 'person@example.com' },
+    ] }, code: 'prewrite_zoho_contact_duplicate' },
+  ]) {
+    const mock = mockFetch(item.config)
+    const diagnostics: string[] = []
+    const writer = new ZohoTaskWriter(credentials, mock.request, Date.now, undefined,
+      code => diagnostics.push(code))
+    await assert.rejects(writer.apply({ ...operation, action: 'update', crmTaskId: 'task-1',
+      booking: { ...operation.booking, trigger: 'BOOKING_CANCELLED', joinUrl: null } }))
+    assert.deepEqual(diagnostics, [item.code])
+    assert.equal(mock.calls.filter(call => call.url.includes('/Tasks')).length, 0)
+  }
+})
+
 test('an uncertain write is not retried by the writer', async () => {
   const mock = mockFetch({ writeError: true })
   const writer = new ZohoTaskWriter(credentials, mock.request)
@@ -211,6 +230,30 @@ test('fixed diagnostics separate Contact rejection, Tasks rejection and transpor
     assert.deepEqual(logs, item.expected)
     assert.equal(mock.calls.filter(call => call.url.includes('/Tasks')).length, item.taskCalls)
     assert.ok(logs.every(code => !code.includes(sensitive)))
+  }
+})
+
+test('Contact lookup diagnostics use bounded non-personal reason codes', async () => {
+  const cases = [
+    { config: { noContact: true }, expected: 'prewrite_zoho_contact_missing' },
+    { config: { moreRecords: true }, expected: 'prewrite_zoho_contact_page_incomplete' },
+    { config: { contactBody: { data: [{ id: null, Email: 'person@example.com' }],
+      info: { more_records: false } }, contactStatus: 200 },
+    expected: 'prewrite_zoho_contact_result_invalid' },
+    { config: { contacts: [
+      { id: 'contact-1', Email: 'person@example.com' },
+      { id: 'contact-2', Email: 'person@example.com' },
+    ] }, expected: 'prewrite_zoho_contact_duplicate' },
+  ] as const
+  for (const item of cases) {
+    const mock = mockFetch(item.config)
+    const diagnostics: string[] = []
+    const writer = new ZohoTaskWriter(credentials, mock.request, Date.now, undefined,
+      code => diagnostics.push(code))
+    await assert.rejects(writer.apply(operation))
+    assert.deepEqual(diagnostics, [item.expected])
+    assert.ok(diagnostics.every(code => !code.includes('@') && !code.includes('person')))
+    assert.equal(mock.calls.filter(call => call.url.includes('/Tasks')).length, 0)
   }
 })
 

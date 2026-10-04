@@ -77,7 +77,8 @@ export async function POST(request: Request): Promise<Response> {
     }
     if (syncEnabled && !dependencies) dependencies = {
       ledger: new PostgresBookingLedger(createPgPoolFromEnvironment()),
-      writer: createZohoTaskWriterFromEnvironment(),
+      writer: createZohoTaskWriterFromEnvironment(undefined,
+        code => console.info('booking_crm_zoho', code)),
     }
   } catch {
     return Response.json({ error: 'not_configured' }, { status: 503 })
