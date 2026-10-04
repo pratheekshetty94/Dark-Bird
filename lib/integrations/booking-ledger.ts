@@ -6,7 +6,7 @@ export type BookingSeries = {
   sequence: number
   bookingUid: string
   trigger: VerifiedCalBooking['trigger']
-  crmMeetingId: string | null
+  crmTaskId: string | null
   contactId: string | null
 }
 
@@ -26,7 +26,7 @@ export type ReservedOperation = {
   id: string
   booking: VerifiedCalBooking
   action: 'create' | 'update'
-  crmMeetingId: string | null
+  crmTaskId: string | null
 }
 
 /**
@@ -45,6 +45,6 @@ export interface BookingLedger {
     | { outcome: 'duplicate' | 'stale' | 'quarantined' | 'test_scope_ignored' }
   >
   markStarted(operationId: string): Promise<void>
-  markApplied(operationId: string, crmMeetingId: string, contactId: string): Promise<void>
+  markApplied(operationId: string, crmTaskId: string, contactId: string): Promise<void>
   quarantine(operationId: string, reason: string): Promise<void>
 }

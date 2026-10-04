@@ -7,6 +7,7 @@ type ValidationDependencies = {
   secret: string | undefined
   verifyOrg: () => Promise<void>
   verifyContact?: () => Promise<void>
+  verifyTasks?: () => Promise<void>
   log?: (code: string) => void
   now?: () => number
 }
@@ -66,6 +67,15 @@ export async function handleBookingValidation(
     dependencies.log?.('contact_preflight_valid')
   } else {
     dependencies.log?.('contact_preflight_skipped')
+  }
+  if (dependencies.verifyTasks) {
+    try {
+      await dependencies.verifyTasks()
+    } catch {
+      dependencies.log?.('tasks_read_unavailable')
+      return Response.json({ error: 'tasks_read_unavailable' }, { status: 503 })
+    }
+    dependencies.log?.('tasks_read_preflight_valid')
   }
   dependencies.log?.(outcome)
   return Response.json({ outcome }, { status: outcome === 'booking_payload_valid' ? 200 : 202 })

@@ -7,7 +7,8 @@ const booking: VerifiedCalBooking = {
   trigger: 'BOOKING_CREATED', eventTypeId: 4773493, bookingUid: 'booking-1',
   calendarUid: 'series-1', sequence: 0, previousBookingUid: null,
   attendeeEmail: 'person@example.com', startAt: '2026-10-04T12:00:00.000Z',
-  endAt: '2026-10-04T12:30:00.000Z', occurredAt: '2026-10-03T12:00:00.000Z',
+  endAt: '2026-10-04T12:30:00.000Z', attendeeTimeZone: 'Asia/Kolkata',
+  joinUrl: 'https://meet.google.com/abc-defg-hij', occurredAt: '2026-10-03T12:00:00.000Z',
   deliveryHash: 'a'.repeat(64),
 }
 
@@ -18,7 +19,7 @@ test('first delivery reserves within transaction; start is a separate committed 
       statements.push(sql)
       if (sql.includes('INSERT INTO cal_booking_series')) return { rows: [{
         id: '7', current_sequence: 0, current_booking_uid: 'booking-1',
-        current_trigger: 'BOOKING_CREATED', crm_meeting_id: null,
+        current_trigger: 'BOOKING_CREATED', crm_task_id: null,
       }], rowCount: 1 }
       if (sql.includes('INSERT INTO cal_crm_operations')) return { rows: [{ id: '9' }], rowCount: 1 }
       if (sql.includes("SET state = 'started'")) return { rows: [{ id: '9' }], rowCount: 1 }
@@ -94,7 +95,7 @@ function statefulPool() {
         if (sql.includes('INSERT INTO cal_booking_series')) {
           series = true
           return { rows: [{ id: '7', current_sequence: 0, current_booking_uid: 'booking-1',
-            current_trigger: 'BOOKING_CREATED', crm_meeting_id: null }], rowCount: 1 }
+            current_trigger: 'BOOKING_CREATED', crm_task_id: null }], rowCount: 1 }
         }
         if (sql.includes('INSERT INTO cal_crm_operations')) return { rows: [{ id: '9' }], rowCount: 1 }
         return { rows: [], rowCount: 0 }
@@ -136,7 +137,7 @@ test('concurrent early cancellation serializes before a stale create', async () 
   assert.ok(!state.statements.some(sql => sql.includes('INSERT INTO cal_crm_operations')))
 })
 
-type ExistingCase = { open?: boolean; alias?: boolean; foreignUid?: boolean }
+type ExistingCase = { open?: boolean; alias?: boolean; foreignUid?: boolean; legacyEvent?: boolean; noTask?: boolean }
 
 function existingSeriesPool(options: ExistingCase = {}) {
   const statements: string[] = []
@@ -152,7 +153,9 @@ function existingSeriesPool(options: ExistingCase = {}) {
         if (sql.includes('FROM cal_booking_unresolved')) return { rows: [], rowCount: unresolved ? 1 : 0 }
         if (sql.includes('FROM cal_booking_series')) return { rows: [{
           id: '7', current_sequence: 1, current_booking_uid: 'booking-1',
-          current_trigger: 'BOOKING_CREATED', crm_meeting_id: 'meeting-1',
+          current_trigger: 'BOOKING_CREATED',
+          crm_meeting_id: options.legacyEvent ? 'event-1' : null,
+          crm_task_id: options.noTask ? null : 'task-1',
         }], rowCount: 1 }
         if (sql.includes('FROM cal_crm_operations')) return { rows: [], rowCount: options.open ? 1 : 0 }
         if (sql.includes('SELECT 1 FROM cal_booking_uids')) {
@@ -174,6 +177,10 @@ function existingSeriesPool(options: ExistingCase = {}) {
 }
 
 const conflictingCases: { name: string; incoming: Partial<VerifiedCalBooking>; options?: ExistingCase }[] = [
+  { name: 'legacy Event ID never reaches Tasks', incoming: { trigger: 'BOOKING_RESCHEDULED',
+    previousBookingUid: 'booking-1', bookingUid: 'booking-2' }, options: { legacyEvent: true } },
+  { name: 'cancellation without an applied Task', incoming: { trigger: 'BOOKING_CANCELLED' },
+    options: { noTask: true } },
   { name: 'unknown previous UID', incoming: { trigger: 'BOOKING_RESCHEDULED',
     previousBookingUid: 'unknown', bookingUid: 'booking-2' } },
   { name: 'missing previous UID alias', incoming: { trigger: 'BOOKING_RESCHEDULED',

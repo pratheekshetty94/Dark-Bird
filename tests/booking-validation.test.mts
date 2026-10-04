@@ -9,6 +9,7 @@ const environmentNames = [
   'BOOKING_CRM_TEST_SYNC_ENABLED', 'BOOKING_CRM_TEST_START_UTC',
   'BOOKING_CRM_TEST_END_UTC', 'CAL_WEBHOOK_SECRET',
   'BOOKING_CRM_CONTACT_PREFLIGHT',
+  'BOOKING_CRM_TASK_READ_PREFLIGHT',
   'DATABASE_URL', 'ZOHO_DC', 'ZOHO_CLIENT_ID', 'ZOHO_CLIENT_SECRET', 'ZOHO_REFRESH_TOKEN',
 ] as const
 
@@ -19,7 +20,8 @@ function request(triggerEvent: string, signed = true, payloadOverride: Record<st
     payload: {
       eventTypeId: 4773493, uid: 'synthetic-booking',
       iCalUID: 'synthetic-series', iCalSequence: 0,
-      attendees: [{ email: 'synthetic@example.invalid' }],
+      attendees: [{ email: 'synthetic@example.invalid', timeZone: 'Asia/Kolkata' }],
+      metadata: { videoCallUrl: 'https://meet.google.com/abc-defg-hij' },
       startTime: '2026-10-05T12:00:00.000Z', endTime: '2026-10-05T12:30:00.000Z',
       ...payloadOverride,
     },
@@ -34,13 +36,14 @@ function request(triggerEvent: string, signed = true, payloadOverride: Record<st
   })
 }
 
-test('validation-only route authenticates first and never calls DB, Contacts or Events', async () => {
+test('validation-only route authenticates first and never calls DB, Contacts or Tasks', async () => {
   const saved = Object.fromEntries(environmentNames.map(name => [name, process.env[name]]))
   const originalFetch = globalThis.fetch
   const originalInfo = console.info
   const calls: { url: string; method: string }[] = []
   const logs: string[][] = []
   let contactId = '1457002000000562075'
+  let taskReadStatus = 204
   try {
     process.env.DATABASE_URL = 'must-not-be-used'
     delete process.env.BOOKING_CRM_SYNC_ENABLED
@@ -49,6 +52,7 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     delete process.env.BOOKING_CRM_TEST_START_UTC
     delete process.env.BOOKING_CRM_TEST_END_UTC
     delete process.env.BOOKING_CRM_CONTACT_PREFLIGHT
+    delete process.env.BOOKING_CRM_TASK_READ_PREFLIGHT
     process.env.CAL_WEBHOOK_SECRET = secret
     process.env.ZOHO_DC = 'in'
     process.env.ZOHO_CLIENT_ID = 'synthetic-id'
@@ -71,6 +75,10 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
       if (url.startsWith('https://www.zohoapis.in/crm/v8/Contacts/search?') && method === 'GET') {
         return Response.json({ data: [{ id: contactId, Email: 'pratheek@darkbirdfilms.com' }],
           info: { more_records: false } })
+      }
+      if (url === 'https://www.zohoapis.in/crm/v8/Tasks?fields=id&per_page=1' && method === 'GET') {
+        return taskReadStatus === 204 ? new Response(null, { status: 204 })
+          : Response.json({ code: 'NO_PERMISSION' }, { status: taskReadStatus })
       }
       throw new Error('unexpected_provider_call')
     }) as typeof fetch
@@ -132,6 +140,16 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     assert.equal(calls.filter(call => call.url.includes('/Contacts/search')).length, 2)
     delete process.env.BOOKING_CRM_CONTACT_PREFLIGHT
 
+    process.env.BOOKING_CRM_TASK_READ_PREFLIGHT = 'true'
+    assert.equal((await POST(request('UNSPECIFIED_TEST_PING'))).status, 202)
+    assert.ok(logs.some(args => args[0] === 'booking_crm_validation' &&
+      args[1] === 'tasks_read_preflight_valid'))
+    taskReadStatus = 403
+    const deniedTaskRead = await POST(request('UNSPECIFIED_TEST_PING'))
+    assert.equal(deniedTaskRead.status, 503)
+    assert.deepEqual(await deniedTaskRead.json(), { error: 'tasks_read_unavailable' })
+    delete process.env.BOOKING_CRM_TASK_READ_PREFLIGHT
+
     process.env.BOOKING_CRM_SYNC_ENABLED = 'true'
     assert.equal((await POST(request('BOOKING_CREATED'))).status, 503)
     delete process.env.BOOKING_CRM_SYNC_ENABLED
@@ -147,15 +165,17 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     const skipped = await POST(request('BOOKING_CREATED'))
     assert.equal(skipped.status, 202)
     assert.deepEqual(await skipped.json(), { outcome: 'test_scope_ignored' })
-    assert.equal(calls.length, 4, 'conflicting modes and scope skips make no further provider calls')
+    assert.equal(calls.length, 6, 'conflicting modes and scope skips make no further provider calls')
     assert.ok(logs.every(args =>
-      (args[0] === 'booking_crm_zoho' && args[1] === 'prewrite_zoho_test_contact_mismatch') ||
+      (args[0] === 'booking_crm_zoho' &&
+        ['prewrite_zoho_test_contact_mismatch', 'tasks_http_403_NO_PERMISSION'].includes(args[1])) ||
       (['booking_crm_validation', 'booking_crm_webhook'].includes(args[0]) &&
         ['digest_mismatch', 'header_absent', 'no_secret_marker', 'malformed_digest',
           'unsupported_version', 'wrong_event_type', 'invalid_size',
           'signed_transport_only', 'booking_payload_valid', 'test_scope_ignored',
           'contact_unavailable', 'contact_preflight_valid',
-          'contact_preflight_skipped'].includes(args[1]))))
+          'contact_preflight_skipped', 'tasks_read_preflight_valid',
+          'tasks_read_unavailable'].includes(args[1]))))
   } finally {
     globalThis.fetch = originalFetch
     console.info = originalInfo

@@ -23,6 +23,8 @@ export type VerifiedCalBooking = {
   hasOtherGuests?: boolean
   startAt: string
   endAt: string
+  attendeeTimeZone: string
+  joinUrl: string | null
   occurredAt: string
   deliveryHash: string
 }
@@ -160,8 +162,28 @@ export function verifyCalBookingWebhook(
 
   const attendees = payload.attendees
   if (!Array.isArray(attendees) || attendees.length !== 1) throw new CalWebhookError('ambiguous_attendee')
-  const email = boundedString(object(attendees[0]).email, 320).trim().toLowerCase()
+  const attendee = object(attendees[0])
+  const email = boundedString(attendee.email, 320).trim().toLowerCase()
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new CalWebhookError('invalid_email')
+  const attendeeTimeZone = boundedString(attendee.timeZone, 80)
+  try { new Intl.DateTimeFormat('en-US', { timeZone: attendeeTimeZone }) } catch {
+    throw new CalWebhookError('invalid_timezone')
+  }
+  let joinUrl: string | null = null
+  if (trigger !== 'BOOKING_CANCELLED') {
+    const metadata = object(payload.metadata)
+    const value = boundedString(metadata.videoCallUrl, 2048)
+    let parsed: URL
+    try { parsed = new URL(value) } catch { throw new CalWebhookError('invalid_join_url') }
+    const calVideo = ['app.cal.com', 'cal.com'].includes(parsed.hostname) &&
+      parsed.pathname.startsWith('/video/') && parsed.pathname.length > '/video/'.length
+    const googleMeet = parsed.hostname === 'meet.google.com' && parsed.pathname.length > 1
+    if (parsed.protocol !== 'https:' || parsed.username || parsed.password ||
+        !googleMeet && !calVideo) {
+      throw new CalWebhookError('invalid_join_url')
+    }
+    joinUrl = value
+  }
   const organizer = payload.organizer && typeof payload.organizer === 'object' &&
     !Array.isArray(payload.organizer) ? payload.organizer as Record<string, unknown> : null
   const organizerEmail = typeof organizer?.email === 'string'
@@ -200,6 +222,8 @@ export function verifyCalBookingWebhook(
     hasOtherGuests,
     startAt,
     endAt,
+    attendeeTimeZone,
+    joinUrl,
     occurredAt,
     deliveryHash: createHash('sha256').update(rawBody).digest('hex'),
   }

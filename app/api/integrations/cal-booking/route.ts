@@ -2,17 +2,17 @@ import { handleBookingWebhook } from '../../../../lib/integrations/booking-webho
 import { handleBookingValidation } from '../../../../lib/integrations/booking-validation.ts'
 import { PostgresBookingLedger } from '../../../../lib/integrations/postgres-booking-ledger.ts'
 import { createPgPoolFromEnvironment } from '../../../../lib/integrations/pg-pool.ts'
-import { createZohoWriterFromEnvironment } from '../../../../lib/integrations/zoho-meeting-writer.ts'
+import { createZohoTaskWriterFromEnvironment } from '../../../../lib/integrations/zoho-task-writer.ts'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 type WriterDependencies = {
   ledger: PostgresBookingLedger
-  writer: ReturnType<typeof createZohoWriterFromEnvironment>
+  writer: ReturnType<typeof createZohoTaskWriterFromEnvironment>
 }
 let dependencies: WriterDependencies | null = null
-let validationWriter: ReturnType<typeof createZohoWriterFromEnvironment> | null = null
+let validationWriter: ReturnType<typeof createZohoTaskWriterFromEnvironment> | null = null
 let testDependencies: WriterDependencies | null = null
 const TEST_ATTENDEE_EMAIL = 'pratheek@darkbirdfilms.com'
 const TEST_ORGANIZER_EMAIL = 'management@darkbirdfilms.com'
@@ -32,8 +32,9 @@ export async function POST(request: Request): Promise<Response> {
   }
   if (validationEnabled) {
     const contactPreflight = process.env.BOOKING_CRM_CONTACT_PREFLIGHT === 'true'
+    const taskReadPreflight = process.env.BOOKING_CRM_TASK_READ_PREFLIGHT === 'true'
     const writer = () => {
-      if (!validationWriter) validationWriter = createZohoWriterFromEnvironment(TEST_CONTACT_ID,
+      if (!validationWriter) validationWriter = createZohoTaskWriterFromEnvironment(TEST_CONTACT_ID,
         code => console.info('booking_crm_zoho', code))
       return validationWriter
     }
@@ -42,6 +43,7 @@ export async function POST(request: Request): Promise<Response> {
       verifyOrg: () => writer().verifyOrganizationReadOnly(),
       verifyContact: contactPreflight
         ? () => writer().verifyInternalContactReadOnly(TEST_ATTENDEE_EMAIL) : undefined,
+      verifyTasks: taskReadPreflight ? () => writer().verifyTasksReadOnly() : undefined,
       log: code => console.info('booking_crm_validation', code),
     })
   }
@@ -63,12 +65,12 @@ export async function POST(request: Request): Promise<Response> {
   try {
     if (testEnabled && !testDependencies) testDependencies = {
       ledger: new PostgresBookingLedger(createPgPoolFromEnvironment(), { claimSingleTestCreate: true }),
-      writer: createZohoWriterFromEnvironment(TEST_CONTACT_ID,
+      writer: createZohoTaskWriterFromEnvironment(TEST_CONTACT_ID,
         code => console.info('booking_crm_zoho', code)),
     }
     if (syncEnabled && !dependencies) dependencies = {
       ledger: new PostgresBookingLedger(createPgPoolFromEnvironment()),
-      writer: createZohoWriterFromEnvironment(),
+      writer: createZohoTaskWriterFromEnvironment(),
     }
   } catch {
     return Response.json({ error: 'not_configured' }, { status: 503 })

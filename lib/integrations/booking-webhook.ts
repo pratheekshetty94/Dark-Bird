@@ -1,15 +1,15 @@
 import { CalWebhookError, readBoundedWebhookBody, verifyCalBookingWebhook } from './cal-booking.ts'
 import type { BookingLedger, ReservedOperation } from './booking-ledger.ts'
 
-export interface CrmMeetingWriter {
+export interface CrmTaskWriter {
   /** Must return only after a definitive Zoho success and exact one-Contact match. */
-  apply(operation: ReservedOperation): Promise<{ meetingId: string; contactId: string }>
+  apply(operation: ReservedOperation): Promise<{ taskId: string; contactId: string }>
 }
 
 export type BookingWebhookDependencies = {
   secret: string | undefined
   ledger: BookingLedger
-  writer: CrmMeetingWriter
+  writer: CrmTaskWriter
   testScope?: { startAt: string; endAt: string; attendeeEmail: string; organizerEmail: string }
   now?: () => number
   log?: (code: string) => void
@@ -64,16 +64,6 @@ export async function handleBookingWebhook(
   }
 
   const { operation } = reservation
-  if (booking.trigger === 'BOOKING_CANCELLED') {
-    try {
-      await dependencies.ledger.quarantine(operation.id, 'cancellation_manual_review')
-    } catch {
-      dependencies.log?.('cancellation_quarantine_failed')
-      return Response.json({ error: 'ledger_unavailable' }, { status: 503 })
-    }
-    dependencies.log?.('cancellation_manual_review')
-    return Response.json({ outcome: 'quarantined' }, { status: 202 })
-  }
   try {
     // This transition must commit before the first outbound CRM request.
     await dependencies.ledger.markStarted(operation.id)
@@ -83,8 +73,8 @@ export async function handleBookingWebhook(
   }
   try {
     const result = await dependencies.writer.apply(operation)
-    if (!result.meetingId || !result.contactId) throw new Error('ambiguous_crm_result')
-    await dependencies.ledger.markApplied(operation.id, result.meetingId, result.contactId)
+    if (!result.taskId || !result.contactId) throw new Error('ambiguous_crm_result')
+    await dependencies.ledger.markApplied(operation.id, result.taskId, result.contactId)
     return Response.json({ outcome: 'applied' })
   } catch {
     // Even an apparent timeout can mean Zoho committed. Never resend.

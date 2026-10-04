@@ -16,7 +16,8 @@ function payload(overrides: Record<string, unknown> = {}) {
       uid: 'cal-booking-1',
       iCalUID: 'calendar-booking-1@example.com',
       iCalSequence: 0,
-      attendees: [{ email: 'Person@Example.com' }],
+      attendees: [{ email: 'Person@Example.com', timeZone: 'Asia/Kolkata' }],
+      metadata: { videoCallUrl: 'https://meet.google.com/abc-defg-hij' },
       startTime: '2026-10-05T10:00:00Z',
       endTime: '2026-10-05T10:30:00Z',
       ...overrides,
@@ -97,4 +98,23 @@ test('unsupported trigger and oversized body are rejected before ledger access',
   reject({ ...payload(), triggerEvent: 'BOOKING_REQUESTED' }, 'unsupported_trigger')
   const { headers } = signed(payload())
   assert.throws(() => verifyCalBookingWebhook(Buffer.alloc(128 * 1024 + 1), headers, secret, now), /invalid_size/)
+})
+
+
+test('create and reschedule require the original approved join URL before ledger work', () => {
+  reject(payload({ metadata: {} }), 'invalid_payload')
+  reject(payload({ metadata: { videoCallUrl: 'https://meet.google.com.evil.invalid/x' } }), 'invalid_join_url')
+  reject(payload({ metadata: { videoCallUrl: 'http://meet.google.com/abc-defg-hij' } }), 'invalid_join_url')
+  const { raw, headers } = signed(payload({ metadata: {
+    videoCallUrl: 'https://meet.google.com/abc-defg-hij?authuser=1',
+  } }))
+  const booking = verifyCalBookingWebhook(raw, headers, secret, now)
+  assert.equal(booking.joinUrl, 'https://meet.google.com/abc-defg-hij?authuser=1')
+  assert.equal(booking.attendeeTimeZone, 'Asia/Kolkata')
+})
+
+
+test('missing or invalid attendee timezone fails before ledger reservation', () => {
+  reject(payload({ attendees: [{ email: 'person@example.com' }] }), 'invalid_payload')
+  reject(payload({ attendees: [{ email: 'person@example.com', timeZone: 'Invalid/Zone' }] }), 'invalid_timezone')
 })

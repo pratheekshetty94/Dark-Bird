@@ -18,6 +18,7 @@ type SeriesRow = {
   current_booking_uid: string
   current_trigger: VerifiedCalBooking['trigger']
   crm_meeting_id: string | null
+  crm_task_id: string | null
 }
 
 /** PostgreSQL transaction adapter. The caller supplies a server-only pool. */
@@ -70,10 +71,16 @@ export class PostgresBookingLedger implements BookingLedger {
       }
 
       let series = (await client.query<SeriesRow>(
-        `SELECT id::text, current_sequence, current_booking_uid, current_trigger, crm_meeting_id
+        `SELECT id::text, current_sequence, current_booking_uid, current_trigger, crm_meeting_id, crm_task_id
            FROM cal_booking_series WHERE event_type_id = $1 AND calendar_uid = $2 FOR UPDATE`,
         [booking.eventTypeId, booking.calendarUid]
       )).rows[0]
+
+      // Legacy Event IDs must never be sent to the Tasks endpoint.
+      if (series?.crm_meeting_id) return await this.quarantineSeries(client, booking, series.id)
+      if (series && booking.trigger === 'BOOKING_CANCELLED' && !series.crm_task_id) {
+        return await this.quarantineSeries(client, booking, series.id)
+      }
 
       if (!series) {
         if (booking.trigger !== 'BOOKING_CREATED') {
@@ -93,7 +100,7 @@ export class PostgresBookingLedger implements BookingLedger {
           `INSERT INTO cal_booking_series
              (event_type_id, calendar_uid, current_booking_uid, current_sequence, current_trigger)
            VALUES ($1, $2, $3, $4, $5) RETURNING id::text, current_sequence,
-             current_booking_uid, current_trigger, crm_meeting_id`,
+             current_booking_uid, current_trigger, crm_meeting_id, crm_task_id`,
           [booking.eventTypeId, booking.calendarUid, booking.bookingUid, booking.sequence, booking.trigger]
         )).rows[0]
       } else {
@@ -146,17 +153,17 @@ export class PostgresBookingLedger implements BookingLedger {
         [booking.eventTypeId, booking.bookingUid, series.id]
       )
       await this.recordDelivery(client, booking, series.id)
-      const action = series.crm_meeting_id ? 'update' : 'create'
+      const action = series.crm_task_id ? 'update' : 'create'
       const operation = (await client.query<{ id: string }>(
         `INSERT INTO cal_crm_operations
            (series_id, body_sha256, event_type_id, calendar_uid, booking_uid, sequence,
-            trigger, action, state, crm_meeting_id)
+            trigger, action, state, crm_task_id)
          VALUES ($1,$2,$3,$4,$5,$6,$7,$8,'reserved',$9) RETURNING id::text`,
         [series.id, booking.deliveryHash, booking.eventTypeId, booking.calendarUid,
-          booking.bookingUid, booking.sequence, booking.trigger, action, series.crm_meeting_id]
+          booking.bookingUid, booking.sequence, booking.trigger, action, series.crm_task_id]
       )).rows[0]
       await client.query('COMMIT')
-      return { outcome: 'reserved', operation: { id: operation.id, booking, action, crmMeetingId: series.crm_meeting_id } }
+      return { outcome: 'reserved', operation: { id: operation.id, booking, action, crmTaskId: series.crm_task_id } }
     } catch (error) {
       await client.query('ROLLBACK').catch(() => undefined)
       throw error
@@ -202,19 +209,19 @@ export class PostgresBookingLedger implements BookingLedger {
     } finally { client.release() }
   }
 
-  async markApplied(operationId: string, crmMeetingId: string, contactId: string): Promise<void> {
+  async markApplied(operationId: string, crmTaskId: string, contactId: string): Promise<void> {
     const client = await this.pool.connect()
     try {
       await client.query('BEGIN')
       const rows = await client.query<{ series_id: string; body_sha256: string }>(
-        `UPDATE cal_crm_operations SET state = 'applied', crm_meeting_id = $2,
+        `UPDATE cal_crm_operations SET state = 'applied', crm_task_id = $2,
            applied_at = now() WHERE id = $1 AND state = 'started'
-         RETURNING series_id::text, body_sha256`, [operationId, crmMeetingId]
+         RETURNING series_id::text, body_sha256`, [operationId, crmTaskId]
       )
       if (rows.rowCount !== 1) throw new Error('operation_not_started')
       await client.query(
-        `UPDATE cal_booking_series SET crm_meeting_id = $2, contact_id = $3,
-           updated_at = now() WHERE id = $1`, [rows.rows[0].series_id, crmMeetingId, contactId]
+        `UPDATE cal_booking_series SET crm_task_id = $2, contact_id = $3,
+           updated_at = now() WHERE id = $1`, [rows.rows[0].series_id, crmTaskId, contactId]
       )
       await client.query('UPDATE cal_webhook_deliveries SET applied_at = now() WHERE body_sha256 = $1', [rows.rows[0].body_sha256])
       await client.query('COMMIT')

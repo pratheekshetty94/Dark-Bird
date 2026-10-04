@@ -17,7 +17,8 @@ function request(
       eventTypeId: 4773493, uid: 'booking-1', iCalUID: 'series-1',
       iCalSequence: trigger === 'BOOKING_CANCELLED' ? 1 : 0,
       startTime: '2026-10-04T12:00:00.000Z', endTime: '2026-10-04T12:30:00.000Z',
-      attendees: [{ email: 'person@example.com' }],
+      attendees: [{ email: 'person@example.com', timeZone: 'Asia/Kolkata' }],
+      metadata: { videoCallUrl: 'https://meet.google.com/abc-defg-hij' },
       organizer: { email: 'management@example.com' },
       ...overrides,
     },
@@ -36,7 +37,7 @@ function ledger(calls: string[]): BookingLedger {
     async reserve(booking) {
       calls.push('reserve')
       return { outcome: 'reserved', operation: {
-        id: '1', booking, action: 'create', crmMeetingId: null,
+        id: '1', booking, action: 'create', crmTaskId: null,
       } satisfies ReservedOperation }
     },
     async markStarted() { calls.push('start') },
@@ -49,7 +50,7 @@ test('authenticates before reserving and commits started before writer', async (
   const calls: string[] = []
   const result = await handleBookingWebhook(request(), {
     secret, ledger: ledger(calls), now: () => now,
-    writer: { async apply() { calls.push('writer'); return { meetingId: 'm1', contactId: 'c1' } } },
+    writer: { async apply() { calls.push('writer'); return { taskId: 'm1', contactId: 'c1' } } },
   })
   assert.equal(result.status, 200)
   assert.deepEqual(calls, ['reserve', 'start', 'writer', 'apply'])
@@ -61,7 +62,7 @@ test('invalid signature never reaches ledger or writer', async () => {
   incoming.headers.set('x-cal-signature-256', '0'.repeat(64))
   const result = await handleBookingWebhook(incoming, {
     secret, ledger: ledger(calls), now: () => now,
-    writer: { async apply() { calls.push('writer'); return { meetingId: 'm1', contactId: 'c1' } } },
+    writer: { async apply() { calls.push('writer'); return { taskId: 'm1', contactId: 'c1' } } },
   })
   assert.equal(result.status, 400)
   assert.deepEqual(calls, [])
@@ -71,7 +72,7 @@ test('test scope skips other booking UIDs, attendees and trigger types before le
   const calls: string[] = []
   const scoped = {
     secret, ledger: ledger(calls), now: () => now,
-    writer: { async apply() { calls.push('writer'); return { meetingId: 'm1', contactId: 'c1' } } },
+    writer: { async apply() { calls.push('writer'); return { taskId: 'm1', contactId: 'c1' } } },
     testScope: {
       startAt: '2026-10-04T12:00:00.000Z', endAt: '2026-10-04T12:30:00.000Z',
       attendeeEmail: 'person@example.com', organizerEmail: 'management@example.com',
@@ -121,18 +122,22 @@ test('failed start prevents outbound request', async () => {
   original.markStarted = async () => { calls.push('start'); throw new Error('database unavailable') }
   const result = await handleBookingWebhook(request(), {
     secret, ledger: original, now: () => now,
-    writer: { async apply() { calls.push('writer'); return { meetingId: 'm1', contactId: 'c1' } } },
+    writer: { async apply() { calls.push('writer'); return { taskId: 'm1', contactId: 'c1' } } },
   })
   assert.equal(result.status, 503)
   assert.deepEqual(calls, ['reserve', 'start'])
 })
 
-test('cancellation is durably quarantined for manual reconciliation without CRM call', async () => {
+test('cancellation updates only a previously reserved Task operation', async () => {
   const calls: string[] = []
   const result = await handleBookingWebhook(request('BOOKING_CANCELLED'), {
-    secret, ledger: ledger(calls), now: () => now,
-    writer: { async apply() { calls.push('writer'); return { meetingId: 'm1', contactId: 'c1' } } },
+    secret, ledger: { ...ledger(calls), async reserve(booking) {
+      calls.push('reserve')
+      return { outcome: 'reserved', operation: { id: '1', booking, action: 'update',
+        crmTaskId: 'task-1' } } as const
+    } }, now: () => now,
+    writer: { async apply() { calls.push('writer'); return { taskId: 'task-1', contactId: 'c1' } } },
   })
-  assert.equal(result.status, 202)
-  assert.deepEqual(calls, ['reserve', 'quarantine'])
+  assert.equal(result.status, 200)
+  assert.deepEqual(calls, ['reserve', 'start', 'writer', 'apply'])
 })

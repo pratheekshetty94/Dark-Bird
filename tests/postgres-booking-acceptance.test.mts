@@ -29,7 +29,8 @@ function signedRequest(series: string, uid: string, sequence: number,
     createdAt: fixedCreatedAt,
     payload: {
       eventTypeId: 4773493, uid, iCalUID: series, iCalSequence: sequence,
-      rescheduleUid: previousUid, attendees: [{ email: 'synthetic@example.invalid' }],
+      rescheduleUid: previousUid, attendees: [{ email: 'synthetic@example.invalid', timeZone: 'Asia/Kolkata' }],
+      metadata: { videoCallUrl: 'https://meet.google.com/abc-defg-hij' },
       organizer: { email: 'management@example.invalid' },
       startTime: '2026-10-05T12:00:00.000Z', endTime: '2026-10-05T12:30:00.000Z',
     },
@@ -49,7 +50,8 @@ function syntheticBooking(series: string, hash: string): VerifiedCalBooking {
     trigger: 'BOOKING_CREATED', eventTypeId: 4773493, bookingUid: `${series}-uid`,
     calendarUid: series, sequence: 0, previousBookingUid: null,
     attendeeEmail: 'synthetic@example.invalid',
-    startAt: '2026-10-05T12:00:00.000Z', endAt: '2026-10-05T12:30:00.000Z',
+    startAt: '2026-10-05T12:00:00.000Z', endAt: '2026-10-05T12:30:00.000Z', attendeeTimeZone: 'Asia/Kolkata',
+    joinUrl: 'https://meet.google.com/abc-defg-hij',
     occurredAt: fixedCreatedAt, deliveryHash: hash.repeat(64),
   }
 }
@@ -64,25 +66,27 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       assert.equal(existing.rows[0].name, null, 'test database must be fresh')
       await pool.query(await readFile(new URL('../db/migrations/001_booking_ledger.sql', import.meta.url), 'utf8'))
       await pool.query(await readFile(new URL('../db/migrations/002_single_booking_test_claim.sql', import.meta.url), 'utf8'))
+      await pool.query(await readFile(new URL('../db/migrations/003_crm_task_ids.sql', import.meta.url), 'utf8'))
       const ledger = new PostgresBookingLedger(pool)
       const writes: ReservedOperation[] = []
       const writer = { async apply(operation: ReservedOperation) {
         writes.push(operation)
-        return { meetingId: `meeting-${writes.length}`, contactId: 'contact-synthetic' }
+        return { taskId: `task-${writes.length}`, contactId: 'contact-synthetic' }
       } }
       const send = (request: Request) => handleBookingWebhook(request, { secret, ledger, writer })
 
       const testLedger = new PostgresBookingLedger(pool, { claimSingleTestCreate: true })
       const testWrites: ReservedOperation[] = []
       const testScope = {
-        startAt: '2026-10-05T12:00:00.000Z', endAt: '2026-10-05T12:30:00.000Z',
+        startAt: '2026-10-05T12:00:00.000Z', endAt: '2026-10-05T12:30:00.000Z', attendeeTimeZone: 'Asia/Kolkata',
+    joinUrl: 'https://meet.google.com/abc-defg-hij',
         attendeeEmail: 'synthetic@example.invalid', organizerEmail: 'management@example.invalid',
       }
       const sendTest = (request: Request) => handleBookingWebhook(request, {
         secret, ledger: testLedger, testScope,
         writer: { async apply(operation) {
           testWrites.push(operation)
-          return { meetingId: 'test-meeting', contactId: 'test-contact' }
+          return { taskId: 'test-meeting', contactId: 'test-contact' }
         } },
       })
       const testResults = await Promise.all([
@@ -118,7 +122,7 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       assert.deepEqual(await ledger.reserve(syntheticBooking('out-of-order', 'e')), { outcome: 'quarantined' })
       assert.equal((await pool.query("SELECT count(*)::int AS n FROM cal_crm_operations WHERE calendar_uid = 'out-of-order'")).rows[0].n, 0)
       assert.equal(writes[1].action, 'update')
-      assert.equal(writes[1].crmMeetingId, 'meeting-1')
+      assert.equal(writes[1].crmTaskId, 'task-1')
       assert.equal((await send(signedRequest('concurrent', 'booking-2', 1, 'BOOKING_RESCHEDULED', 'booking-1'))).status, 200)
       assert.equal(writes.length, 2)
 
@@ -132,7 +136,7 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       assert.deepEqual(await ledger.reserve(later), { outcome: 'quarantined' })
       assert.equal((await pool.query("SELECT state FROM cal_crm_operations WHERE calendar_uid = 'crashed'")).rows[0].state, 'started')
 
-      const uncertainWriter = { async apply(_operation: ReservedOperation): Promise<{ meetingId: string; contactId: string }> {
+      const uncertainWriter = { async apply(_operation: ReservedOperation): Promise<{ taskId: string; contactId: string }> {
         throw new Error('synthetic_timeout_after_send')
       } }
       const uncertain = await handleBookingWebhook(signedRequest('uncertain', 'booking-3', 0),

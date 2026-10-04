@@ -1,3 +1,7 @@
+> Local Task migration in progress: see [booking-crm-task-switch.md](booking-crm-task-switch.md).
+> This file records the earlier Events design; its Events scopes and test procedure
+> must not be used for Task activation. All production sync flags remain off.
+
 # Cal.com to Zoho Meetings preparation
 
 The route wires the PostgreSQL ledger and Zoho writer behind
