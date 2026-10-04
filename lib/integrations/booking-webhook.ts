@@ -10,7 +10,10 @@ export type BookingWebhookDependencies = {
   secret: string | undefined
   ledger: BookingLedger
   writer: CrmTaskWriter
-  testScope?: { startAt: string; endAt: string; attendeeEmail: string; organizerEmail: string }
+  testScope?: {
+    startAt: string; endAt: string; attendeeEmail: string; organizerEmail: string
+    rescheduleStartAt?: string; rescheduleEndAt?: string
+  }
   now?: () => number
   log?: (code: string) => void
 }
@@ -36,14 +39,19 @@ export async function handleBookingWebhook(
     return Response.json({ error: code }, { status: code === 'not_configured' ? 503 : 400 })
   }
 
-  if (dependencies.testScope && (
-    booking.trigger !== 'BOOKING_CREATED' ||
-    booking.sequence !== 0 || booking.previousBookingUid !== null ||
+  const scope = dependencies.testScope
+  const exactCreate = booking.trigger === 'BOOKING_CREATED' && booking.sequence === 0 &&
+    booking.previousBookingUid === null && booking.startAt === scope?.startAt &&
+    booking.endAt === scope?.endAt
+  const exactFollowUp = !!scope?.rescheduleStartAt && !!scope?.rescheduleEndAt &&
+    (booking.trigger === 'BOOKING_RESCHEDULED' || booking.trigger === 'BOOKING_CANCELLED') &&
+    booking.sequence > 0 && booking.startAt === scope.rescheduleStartAt &&
+    booking.endAt === scope.rescheduleEndAt
+  if (scope && (
     booking.hasOtherGuests === true ||
-    booking.startAt !== dependencies.testScope.startAt ||
-    booking.endAt !== dependencies.testScope.endAt ||
-    booking.attendeeEmail !== dependencies.testScope.attendeeEmail ||
-    booking.organizerEmail !== dependencies.testScope.organizerEmail
+    booking.attendeeEmail !== scope.attendeeEmail ||
+    booking.organizerEmail !== scope.organizerEmail ||
+    !(exactCreate || exactFollowUp)
   )) {
     dependencies.log?.('test_scope_ignored')
     return Response.json({ outcome: 'test_scope_ignored' }, { status: 202 })

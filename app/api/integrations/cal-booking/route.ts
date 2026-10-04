@@ -55,16 +55,23 @@ export async function POST(request: Request): Promise<Response> {
   const secret = process.env.CAL_WEBHOOK_SECRET
   const testStartAt = process.env.BOOKING_CRM_TEST_START_UTC
   const testEndAt = process.env.BOOKING_CRM_TEST_END_UTC
+  const testRescheduleStartAt = process.env.BOOKING_CRM_TEST_RESCHEDULE_START_UTC
+  const testRescheduleEndAt = process.env.BOOKING_CRM_TEST_RESCHEDULE_END_UTC
+  const taskTestRunId = process.env.BOOKING_CRM_TASK_TEST_RUN_ID
   if (!secret || secret.length < 32 || !process.env.DATABASE_URL ||
       process.env.ZOHO_DC !== 'in' || !process.env.ZOHO_CLIENT_ID ||
       !process.env.ZOHO_CLIENT_SECRET || !process.env.ZOHO_REFRESH_TOKEN ||
       (testEnabled && (!validUtcSlot(testStartAt) || !validUtcSlot(testEndAt) ||
-        Date.parse(testEndAt) <= Date.parse(testStartAt)))) {
+        Date.parse(testEndAt) <= Date.parse(testStartAt) ||
+        !validUtcSlot(testRescheduleStartAt) || !validUtcSlot(testRescheduleEndAt) ||
+        Date.parse(testRescheduleEndAt) <= Date.parse(testRescheduleStartAt) ||
+        testRescheduleStartAt === testStartAt ||
+        !taskTestRunId || !/^task-[a-z0-9]{8,40}$/.test(taskTestRunId)))) {
     return Response.json({ error: 'not_configured' }, { status: 503 })
   }
   try {
     if (testEnabled && !testDependencies) testDependencies = {
-      ledger: new PostgresBookingLedger(createPgPoolFromEnvironment(), { claimSingleTestCreate: true }),
+      ledger: new PostgresBookingLedger(createPgPoolFromEnvironment(), { claimTaskTestRun: taskTestRunId }),
       writer: createZohoTaskWriterFromEnvironment(TEST_CONTACT_ID,
         code => console.info('booking_crm_zoho', code)),
     }
@@ -84,6 +91,7 @@ export async function POST(request: Request): Promise<Response> {
     testScope: testEnabled ? {
       startAt: testStartAt!, endAt: testEndAt!, attendeeEmail: TEST_ATTENDEE_EMAIL,
       organizerEmail: TEST_ORGANIZER_EMAIL,
+      rescheduleStartAt: testRescheduleStartAt!, rescheduleEndAt: testRescheduleEndAt!,
     } : undefined,
     log: code => console.info('booking_crm_webhook', code),
   })

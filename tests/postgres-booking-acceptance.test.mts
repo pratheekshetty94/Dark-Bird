@@ -23,7 +23,8 @@ function safeDisposableUrl(value: string): boolean {
 
 function signedRequest(series: string, uid: string, sequence: number,
   trigger: 'BOOKING_CREATED' | 'BOOKING_RESCHEDULED' | 'BOOKING_CANCELLED' = 'BOOKING_CREATED',
-  previousUid?: string): Request {
+  previousUid?: string, startAt = '2026-10-05T12:00:00.000Z',
+  endAt = '2026-10-05T12:30:00.000Z'): Request {
   const body = JSON.stringify({
     triggerEvent: trigger,
     createdAt: fixedCreatedAt,
@@ -32,7 +33,7 @@ function signedRequest(series: string, uid: string, sequence: number,
       rescheduleUid: previousUid, attendees: [{ email: 'synthetic@example.invalid', timeZone: 'Asia/Kolkata' }],
       metadata: { videoCallUrl: 'https://meet.google.com/abc-defg-hij' },
       organizer: { email: 'management@example.invalid' },
-      startTime: '2026-10-05T12:00:00.000Z', endTime: '2026-10-05T12:30:00.000Z',
+      startTime: startAt, endTime: endAt,
     },
   })
   return new Request('https://example.invalid/api/integrations/cal-booking', {
@@ -67,6 +68,7 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       await pool.query(await readFile(new URL('../db/migrations/001_booking_ledger.sql', import.meta.url), 'utf8'))
       await pool.query(await readFile(new URL('../db/migrations/002_single_booking_test_claim.sql', import.meta.url), 'utf8'))
       await pool.query(await readFile(new URL('../db/migrations/003_crm_task_ids.sql', import.meta.url), 'utf8'))
+      await pool.query(await readFile(new URL('../db/migrations/004_task_test_run_claim.sql', import.meta.url), 'utf8'))
       const ledger = new PostgresBookingLedger(pool)
       const writes: ReservedOperation[] = []
       const writer = { async apply(operation: ReservedOperation) {
@@ -103,6 +105,72 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       assert.equal((await sendTest(signedRequest(testClaim.rows[0].calendar_uid,
         testClaim.rows[0].booking_uid, 0))).status, 200)
       assert.equal(testWrites.length, 1, 'another series and an exact replay make no second write')
+
+      const lifecycleLedger = new PostgresBookingLedger(pool, { claimTaskTestRun: 'task-localtest01' })
+      const lifecycleWrites: ReservedOperation[] = []
+      const lifecycleScope = {
+        startAt: '2026-10-05T12:00:00.000Z', endAt: '2026-10-05T12:30:00.000Z',
+        rescheduleStartAt: '2026-10-05T13:00:00.000Z',
+        rescheduleEndAt: '2026-10-05T13:30:00.000Z',
+        attendeeEmail: 'synthetic@example.invalid', organizerEmail: 'management@example.invalid',
+      }
+      const sendLifecycle = (request: Request) => handleBookingWebhook(request, {
+        secret, ledger: lifecycleLedger, testScope: lifecycleScope,
+        writer: { async apply(operation) {
+          lifecycleWrites.push(operation)
+          return { taskId: 'lifecycle-task-1', contactId: 'test-contact' }
+        } },
+      })
+      const first = signedRequest('task-lifecycle-series', 'task-uid-1', 0)
+      assert.equal((await sendLifecycle(first)).status, 200)
+      assert.equal((await sendLifecycle(signedRequest('task-other-series', 'other-uid', 0))).status, 202)
+      assert.equal((await sendLifecycle(signedRequest('task-lifecycle-series', 'task-uid-2', 1,
+        'BOOKING_RESCHEDULED', 'task-uid-1', '2026-10-05T13:00:00.000Z',
+        '2026-10-05T13:30:00.000Z'))).status, 200)
+      assert.equal((await sendLifecycle(signedRequest('task-lifecycle-series', 'task-uid-3', 2,
+        'BOOKING_RESCHEDULED', 'task-uid-2', '2026-10-05T13:00:00.000Z',
+        '2026-10-05T13:30:00.000Z'))).status, 202)
+      assert.equal((await sendLifecycle(signedRequest('task-lifecycle-series', 'task-uid-2', 2,
+        'BOOKING_CANCELLED', undefined, '2026-10-05T13:00:00.000Z',
+        '2026-10-05T13:30:00.000Z'))).status, 200)
+      assert.equal(lifecycleWrites.length, 3)
+      assert.deepEqual(lifecycleWrites.map(item => item.action), ['create', 'update', 'update'])
+      assert.equal((await pool.query('SELECT count(*)::int AS n FROM cal_booking_test_claim')).rows[0].n, 1,
+        'legacy claim remains untouched')
+      const lifecycleClaim = await pool.query(
+        'SELECT run_id, booking_uid, calendar_uid, rescheduled, cancelled FROM cal_booking_task_test_claim'
+      )
+      assert.deepEqual(lifecycleClaim.rows, [{ run_id: 'task-localtest01', booking_uid: 'task-uid-1',
+        calendar_uid: 'task-lifecycle-series', rescheduled: true, cancelled: true }])
+
+      // Isolate the following order tests in this disposable database. The
+      // legacy production-style claim is never reset or deleted.
+      await pool.query('DELETE FROM cal_booking_task_test_claim')
+      const earlyReschedule = await sendLifecycle(signedRequest('task-early-reschedule',
+        'early-uid-2', 1, 'BOOKING_RESCHEDULED', 'early-uid-1',
+        '2026-10-05T13:00:00.000Z', '2026-10-05T13:30:00.000Z'))
+      assert.equal(earlyReschedule.status, 202)
+      assert.deepEqual(await earlyReschedule.json(), { outcome: 'quarantined' })
+      assert.equal((await sendLifecycle(signedRequest('task-early-reschedule', 'early-uid-1', 0))).status, 202)
+      assert.equal(lifecycleWrites.length, 3, 'late create cannot write an obsolete Task')
+      assert.equal((await pool.query(
+        "SELECT reason FROM cal_booking_unresolved WHERE calendar_uid = 'task-early-reschedule'"
+      )).rows[0].reason, 'revision_before_create')
+
+      await pool.query('DELETE FROM cal_booking_task_test_claim')
+      assert.equal((await sendLifecycle(signedRequest('task-early-cancel', 'cancel-uid-1', 0))).status, 200)
+      const earlyCancelTask = await sendLifecycle(signedRequest('task-early-cancel',
+        'cancel-uid-1', 1, 'BOOKING_CANCELLED', undefined,
+        '2026-10-05T13:00:00.000Z', '2026-10-05T13:30:00.000Z'))
+      assert.equal(earlyCancelTask.status, 202)
+      assert.deepEqual(await earlyCancelTask.json(), { outcome: 'quarantined' })
+      assert.equal((await sendLifecycle(signedRequest('task-early-cancel',
+        'cancel-uid-2', 2, 'BOOKING_RESCHEDULED', 'cancel-uid-1',
+        '2026-10-05T13:00:00.000Z', '2026-10-05T13:30:00.000Z'))).status, 202)
+      assert.equal(lifecycleWrites.length, 4, 'late reschedule cannot update an obsolete Task')
+      assert.equal((await pool.query(
+        "SELECT reason FROM cal_booking_unresolved WHERE calendar_uid = 'task-early-cancel'"
+      )).rows[0].reason, 'chain_conflict')
 
       const [a, b] = await Promise.all([
         send(signedRequest('concurrent', 'booking-1', 0)),

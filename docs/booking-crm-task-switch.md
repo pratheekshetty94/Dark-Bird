@@ -6,6 +6,28 @@ grant is installed privately, the Cal webhook join-URL shape is validated, and T
 notification behavior is approved. No new booking or CRM write is part of this change.
 The previous quarantined Event attempt and singleton test claim remain untouched.
 
+## One internal Task lifecycle test (local follow-up, not deployed)
+
+Migration `004_task_test_run_claim.sql` adds a separate, permanent one-run claim;
+it does not read, reset, or delete `cal_booking_test_claim`. Test mode requires a
+named `BOOKING_CRM_TASK_TEST_RUN_ID` (`task-` plus 8–40 lowercase letters or digits),
+exact first-slot start/end, and exact reschedule-slot start/end. A Cal UI test
+payload may prove signed transport, but a ping does not prove the booking URL
+shape. On the one approved internal `BOOKING_CREATED`, signature, fields,
+participants, exact first slot, and approved HTTPS `payload.metadata.videoCallUrl`
+are all checked before ledger reservation or CRM write. A missing or invalid
+URL fails closed; do not invent or replay a URL.
+
+The first eligible create binds the new claim to one booking UID and calendar UID.
+Only that series may reschedule to the second exact slot and then cancel; the
+claim records each follow-up at reservation time, so replay or a second move
+cannot write again. Every step must retain the exact internal attendee and
+organizer and have no extra guests. Keep customer sync off. Do not activate this
+path until the named run, two slots, and one own-account booking lifecycle are
+explicitly approved. An uncertain result stays quarantined; stop the test.
+An eligible reschedule before create or cancellation before reschedule records
+an unresolved tombstone, blocking a later obsolete Task write.
+
 After the private Task grant is installed, a signed validation request can check
 Tasks READ without a ledger reservation: set `BOOKING_CRM_VALIDATE_ONLY=true` and
 `BOOKING_CRM_TASK_READ_PREFLIGHT=true` while keeping normal and test sync off.

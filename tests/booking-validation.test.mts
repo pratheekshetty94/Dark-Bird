@@ -7,7 +7,9 @@ const secret = 'synthetic-cal-signing-secret-over-thirty-two-chars'
 const environmentNames = [
   'BOOKING_CRM_SYNC_ENABLED', 'BOOKING_CRM_VALIDATE_ONLY',
   'BOOKING_CRM_TEST_SYNC_ENABLED', 'BOOKING_CRM_TEST_START_UTC',
-  'BOOKING_CRM_TEST_END_UTC', 'CAL_WEBHOOK_SECRET',
+  'BOOKING_CRM_TEST_END_UTC', 'BOOKING_CRM_TEST_RESCHEDULE_START_UTC',
+  'BOOKING_CRM_TEST_RESCHEDULE_END_UTC', 'BOOKING_CRM_TASK_TEST_RUN_ID',
+  'CAL_WEBHOOK_SECRET',
   'BOOKING_CRM_CONTACT_PREFLIGHT',
   'BOOKING_CRM_TASK_READ_PREFLIGHT',
   'DATABASE_URL', 'ZOHO_DC', 'ZOHO_CLIENT_ID', 'ZOHO_CLIENT_SECRET', 'ZOHO_REFRESH_TOKEN',
@@ -51,6 +53,9 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     delete process.env.BOOKING_CRM_TEST_SYNC_ENABLED
     delete process.env.BOOKING_CRM_TEST_START_UTC
     delete process.env.BOOKING_CRM_TEST_END_UTC
+    delete process.env.BOOKING_CRM_TEST_RESCHEDULE_START_UTC
+    delete process.env.BOOKING_CRM_TEST_RESCHEDULE_END_UTC
+    delete process.env.BOOKING_CRM_TASK_TEST_RUN_ID
     delete process.env.BOOKING_CRM_CONTACT_PREFLIGHT
     delete process.env.BOOKING_CRM_TASK_READ_PREFLIGHT
     process.env.CAL_WEBHOOK_SECRET = secret
@@ -161,6 +166,9 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
       'test mode requires an exact UTC slot')
     process.env.BOOKING_CRM_TEST_START_UTC = '2026-10-05T12:00:00.000Z'
     process.env.BOOKING_CRM_TEST_END_UTC = '2026-10-05T12:30:00.000Z'
+    process.env.BOOKING_CRM_TEST_RESCHEDULE_START_UTC = '2026-10-05T13:00:00.000Z'
+    process.env.BOOKING_CRM_TEST_RESCHEDULE_END_UTC = '2026-10-05T13:30:00.000Z'
+    process.env.BOOKING_CRM_TASK_TEST_RUN_ID = 'task-localtest01'
     process.env.DATABASE_URL = 'postgresql://synthetic:synthetic@127.0.0.1:5432/test'
     const skipped = await POST(request('BOOKING_CREATED'))
     assert.equal(skipped.status, 202)

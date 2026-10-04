@@ -25,10 +25,12 @@ type SeriesRow = {
 export class PostgresBookingLedger implements BookingLedger {
   private readonly pool: SqlPool
   private readonly claimSingleTestCreate: boolean
+  private readonly claimTaskTestRun: string | undefined
 
-  constructor(pool: SqlPool, options: { claimSingleTestCreate?: boolean } = {}) {
+  constructor(pool: SqlPool, options: { claimSingleTestCreate?: boolean; claimTaskTestRun?: string } = {}) {
     this.pool = pool
     this.claimSingleTestCreate = options.claimSingleTestCreate === true
+    this.claimTaskTestRun = options.claimTaskTestRun
   }
 
   async reserve(booking: VerifiedCalBooking): Promise<
@@ -54,12 +56,46 @@ export class PostgresBookingLedger implements BookingLedger {
           return await this.finish(client, 'test_scope_ignored')
         }
       }
-      // The hash only selects a lock; collisions serialize extra series safely.
+      // Serialize a series before checking its run claim or recording an early
+      // follow-up. Otherwise an early revision could be ignored before create.
       await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', [
         `${booking.eventTypeId}:${booking.calendarUid}`,
       ])
       const previous = await client.query('SELECT 1 FROM cal_webhook_deliveries WHERE body_sha256 = $1', [booking.deliveryHash])
       if (previous.rowCount) return await this.finish(client, 'duplicate')
+
+      if (this.claimTaskTestRun) {
+        if (booking.trigger === 'BOOKING_CREATED') {
+          await client.query(
+            `INSERT INTO cal_booking_task_test_claim
+               (singleton, run_id, booking_uid, calendar_uid)
+             VALUES (true, $1, $2, $3) ON CONFLICT (singleton) DO NOTHING`,
+            [this.claimTaskTestRun, booking.bookingUid, booking.calendarUid]
+          )
+        }
+        const claim = (await client.query<{
+          run_id: string; booking_uid: string; calendar_uid: string;
+          rescheduled: boolean; cancelled: boolean
+        }>(
+          `SELECT run_id, booking_uid, calendar_uid, rescheduled, cancelled
+             FROM cal_booking_task_test_claim WHERE singleton = true FOR UPDATE`
+        )).rows[0]
+        if (!claim && booking.trigger !== 'BOOKING_CREATED') {
+          return await this.tombstoneTaskTestFollowup(client, booking, 'revision_before_create')
+        }
+        if (claim && claim.run_id === this.claimTaskTestRun &&
+            claim.calendar_uid === booking.calendarUid &&
+            booking.trigger === 'BOOKING_CANCELLED' && !claim.rescheduled) {
+          return await this.tombstoneTaskTestFollowup(client, booking, 'chain_conflict')
+        }
+        if (!claim || claim.run_id !== this.claimTaskTestRun ||
+            claim.calendar_uid !== booking.calendarUid || claim.cancelled ||
+            (booking.trigger === 'BOOKING_CREATED' && claim.booking_uid !== booking.bookingUid) ||
+            (booking.trigger === 'BOOKING_RESCHEDULED' && claim.rescheduled) ||
+            (booking.trigger === 'BOOKING_CANCELLED' && !claim.rescheduled)) {
+          return await this.finish(client, 'test_scope_ignored')
+        }
+      }
 
       const unresolved = await client.query(
         `SELECT 1 FROM cal_booking_unresolved WHERE event_type_id = $1
@@ -162,6 +198,16 @@ export class PostgresBookingLedger implements BookingLedger {
         [series.id, booking.deliveryHash, booking.eventTypeId, booking.calendarUid,
           booking.bookingUid, booking.sequence, booking.trigger, action, series.crm_task_id]
       )).rows[0]
+      if (this.claimTaskTestRun && booking.trigger === 'BOOKING_RESCHEDULED') {
+        await client.query(
+          'UPDATE cal_booking_task_test_claim SET rescheduled = true WHERE singleton = true'
+        )
+      }
+      if (this.claimTaskTestRun && booking.trigger === 'BOOKING_CANCELLED') {
+        await client.query(
+          'UPDATE cal_booking_task_test_claim SET cancelled = true WHERE singleton = true'
+        )
+      }
       await client.query('COMMIT')
       return { outcome: 'reserved', operation: { id: operation.id, booking, action, crmTaskId: series.crm_task_id } }
     } catch (error) {
@@ -182,6 +228,23 @@ export class PostgresBookingLedger implements BookingLedger {
       `INSERT INTO cal_webhook_deliveries (body_sha256, series_id, trigger) VALUES ($1, $2, $3)`,
       [booking.deliveryHash, seriesId, booking.trigger]
     )
+  }
+
+  private async tombstoneTaskTestFollowup(
+    client: SqlClient, booking: VerifiedCalBooking,
+    reason: 'revision_before_create' | 'chain_conflict'
+  ) {
+    await this.recordDelivery(client, booking, null)
+    await client.query(
+      `INSERT INTO cal_booking_unresolved
+         (event_type_id, calendar_uid, highest_sequence, first_body_sha256, reason)
+       VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (event_type_id, calendar_uid) DO UPDATE
+         SET highest_sequence = GREATEST(cal_booking_unresolved.highest_sequence, EXCLUDED.highest_sequence),
+             updated_at = now()`,
+      [booking.eventTypeId, booking.calendarUid, booking.sequence, booking.deliveryHash, reason]
+    )
+    return await this.finish(client, 'quarantined')
   }
 
   private async quarantineSeries(client: SqlClient, booking: VerifiedCalBooking, seriesId: string) {

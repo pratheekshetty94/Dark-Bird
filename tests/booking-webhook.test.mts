@@ -68,6 +68,22 @@ test('invalid signature never reaches ledger or writer', async () => {
   assert.deepEqual(calls, [])
 })
 
+test('missing signed booking URL fails before ledger reservation or CRM write', async () => {
+  const calls: string[] = []
+  const result = await handleBookingWebhook(request('BOOKING_CREATED', { metadata: {} }), {
+    secret, ledger: ledger(calls), now: () => now,
+    writer: { async apply() { calls.push('writer'); return { taskId: 'm1', contactId: 'c1' } } },
+    testScope: {
+      startAt: '2026-10-04T12:00:00.000Z', endAt: '2026-10-04T12:30:00.000Z',
+      rescheduleStartAt: '2026-10-04T13:00:00.000Z',
+      rescheduleEndAt: '2026-10-04T13:30:00.000Z',
+      attendeeEmail: 'person@example.com', organizerEmail: 'management@example.com',
+    },
+  })
+  assert.equal(result.status, 400)
+  assert.deepEqual(calls, [])
+})
+
 test('test scope skips other booking UIDs, attendees and trigger types before ledger or CRM', async () => {
   const calls: string[] = []
   const scoped = {
@@ -104,6 +120,32 @@ test('test scope skips other booking UIDs, attendees and trigger types before le
   const accepted = await handleBookingWebhook(request(), scoped)
   assert.equal(accepted.status, 200)
   assert.deepEqual(calls, ['reserve', 'start', 'writer', 'apply'])
+})
+
+test('lifecycle test scope admits only the second exact slot for follow-ups', async () => {
+  const calls: string[] = []
+  const scoped = {
+    secret, ledger: ledger(calls), now: () => now,
+    writer: { async apply() { calls.push('writer'); return { taskId: 'm1', contactId: 'c1' } } },
+    testScope: {
+      startAt: '2026-10-04T12:00:00.000Z', endAt: '2026-10-04T12:30:00.000Z',
+      rescheduleStartAt: '2026-10-04T13:00:00.000Z',
+      rescheduleEndAt: '2026-10-04T13:30:00.000Z',
+      attendeeEmail: 'person@example.com', organizerEmail: 'management@example.com',
+    },
+  }
+  assert.equal((await handleBookingWebhook(request('BOOKING_RESCHEDULED', {
+    uid: 'booking-2', rescheduleUid: 'booking-1', iCalSequence: 1,
+    startTime: '2026-10-04T13:00:00.000Z', endTime: '2026-10-04T13:30:00.000Z',
+  }), scoped)).status, 200)
+  assert.equal((await handleBookingWebhook(request('BOOKING_CANCELLED', {
+    uid: 'booking-2', iCalSequence: 2,
+    startTime: '2026-10-04T13:00:00.000Z', endTime: '2026-10-04T13:30:00.000Z',
+  }), scoped)).status, 200)
+  assert.equal((await handleBookingWebhook(request('BOOKING_RESCHEDULED', {
+    uid: 'booking-2', rescheduleUid: 'booking-1', iCalSequence: 1,
+  }), scoped)).status, 202)
+  assert.deepEqual(calls, ['reserve', 'start', 'writer', 'apply', 'reserve', 'start', 'writer', 'apply'])
 })
 
 test('uncertain writer result is quarantined without retry', async () => {
