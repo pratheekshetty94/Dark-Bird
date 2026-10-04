@@ -6,6 +6,7 @@ import {
 type ValidationDependencies = {
   secret: string | undefined
   verifyOrg: () => Promise<void>
+  verifyContact?: () => Promise<void>
   log?: (code: string) => void
   now?: () => number
 }
@@ -54,6 +55,14 @@ export async function handleBookingValidation(
   } catch {
     dependencies.log?.('org_unavailable')
     return Response.json({ error: 'org_unavailable' }, { status: 503 })
+  }
+  if (dependencies.verifyContact) {
+    try {
+      await dependencies.verifyContact()
+    } catch {
+      dependencies.log?.('contact_unavailable')
+      return Response.json({ error: 'contact_unavailable' }, { status: 503 })
+    }
   }
   dependencies.log?.(outcome)
   return Response.json({ outcome }, { status: outcome === 'booking_payload_valid' ? 200 : 202 })

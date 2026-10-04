@@ -8,6 +8,7 @@ const environmentNames = [
   'BOOKING_CRM_SYNC_ENABLED', 'BOOKING_CRM_VALIDATE_ONLY',
   'BOOKING_CRM_TEST_SYNC_ENABLED', 'BOOKING_CRM_TEST_START_UTC',
   'BOOKING_CRM_TEST_END_UTC', 'CAL_WEBHOOK_SECRET',
+  'BOOKING_CRM_CONTACT_PREFLIGHT',
   'DATABASE_URL', 'ZOHO_DC', 'ZOHO_CLIENT_ID', 'ZOHO_CLIENT_SECRET', 'ZOHO_REFRESH_TOKEN',
 ] as const
 
@@ -39,6 +40,7 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
   const originalInfo = console.info
   const calls: { url: string; method: string }[] = []
   const logs: string[][] = []
+  let contactId = '1457002000000562075'
   try {
     process.env.DATABASE_URL = 'must-not-be-used'
     delete process.env.BOOKING_CRM_SYNC_ENABLED
@@ -46,6 +48,7 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     delete process.env.BOOKING_CRM_TEST_SYNC_ENABLED
     delete process.env.BOOKING_CRM_TEST_START_UTC
     delete process.env.BOOKING_CRM_TEST_END_UTC
+    delete process.env.BOOKING_CRM_CONTACT_PREFLIGHT
     process.env.CAL_WEBHOOK_SECRET = secret
     process.env.ZOHO_DC = 'in'
     process.env.ZOHO_CLIENT_ID = 'synthetic-id'
@@ -64,6 +67,10 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
         return new Response(JSON.stringify({ org: [{ domain_name: 'org60090260228',
           zgid: '60090260228', id: '1457002000000020813', type: 'production',
           country_code: 'IN' }] }), { status: 200 })
+      }
+      if (url.startsWith('https://www.zohoapis.in/crm/v8/Contacts/search?') && method === 'GET') {
+        return Response.json({ data: [{ id: contactId, Email: 'pratheek@darkbirdfilms.com' }],
+          info: { more_records: false } })
       }
       throw new Error('unexpected_provider_call')
     }) as typeof fetch
@@ -113,6 +120,16 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
       { url: 'https://www.zohoapis.in/crm/v8/org', method: 'GET' },
     ], 'repeated signed validation reuses the verified process-local token')
 
+    process.env.BOOKING_CRM_CONTACT_PREFLIGHT = 'true'
+    assert.equal((await POST(request('UNSPECIFIED_TEST_PING'))).status, 202)
+    assert.equal(calls.filter(call => call.url.includes('/Contacts/search')).length, 1)
+    contactId = 'different-contact'
+    const mismatchContact = await POST(request('UNSPECIFIED_TEST_PING'))
+    assert.equal(mismatchContact.status, 503)
+    assert.deepEqual(await mismatchContact.json(), { error: 'contact_unavailable' })
+    assert.equal(calls.filter(call => call.url.includes('/Contacts/search')).length, 2)
+    delete process.env.BOOKING_CRM_CONTACT_PREFLIGHT
+
     process.env.BOOKING_CRM_SYNC_ENABLED = 'true'
     assert.equal((await POST(request('BOOKING_CREATED'))).status, 503)
     delete process.env.BOOKING_CRM_SYNC_ENABLED
@@ -128,11 +145,14 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     const skipped = await POST(request('BOOKING_CREATED'))
     assert.equal(skipped.status, 202)
     assert.deepEqual(await skipped.json(), { outcome: 'test_scope_ignored' })
-    assert.equal(calls.length, 2, 'conflicting modes fail before provider work')
-    assert.ok(logs.every(args => ['booking_crm_validation', 'booking_crm_webhook'].includes(args[0]) &&
-      ['digest_mismatch', 'header_absent', 'no_secret_marker', 'malformed_digest',
-        'unsupported_version', 'wrong_event_type', 'invalid_size',
-        'signed_transport_only', 'booking_payload_valid', 'test_scope_ignored'].includes(args[1])))
+    assert.equal(calls.length, 4, 'conflicting modes and scope skips make no further provider calls')
+    assert.ok(logs.every(args =>
+      (args[0] === 'booking_crm_zoho' && args[1] === 'prewrite_zoho_test_contact_mismatch') ||
+      (['booking_crm_validation', 'booking_crm_webhook'].includes(args[0]) &&
+        ['digest_mismatch', 'header_absent', 'no_secret_marker', 'malformed_digest',
+          'unsupported_version', 'wrong_event_type', 'invalid_size',
+          'signed_transport_only', 'booking_payload_valid', 'test_scope_ignored',
+          'contact_unavailable'].includes(args[1]))))
   } finally {
     globalThis.fetch = originalFetch
     console.info = originalInfo

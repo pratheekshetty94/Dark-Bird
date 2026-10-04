@@ -27,6 +27,10 @@ function mockFetch(config: {
   moreRecords?: boolean
   noContact?: boolean
   writeError?: boolean
+  writeStatus?: number
+  writeBody?: unknown
+  contactStatus?: number
+  contactBody?: unknown
   wrongOrg?: boolean
   missingOrg?: boolean
   orgError?: boolean
@@ -47,12 +51,14 @@ function mockFetch(config: {
         type: 'production', country_code: 'IN' }] })
     }
     if (url.includes('/Contacts/search')) {
+      if (config.contactStatus) return json(config.contactBody, config.contactStatus)
       if (config.noContact) return new Response(null, { status: 204 })
       return json({ data: config.contacts ?? [{ id: 'contact-1', Email: 'person@example.com' }],
         info: { more_records: config.moreRecords ?? false } })
     }
     if (url.includes('/Events')) {
       if (config.writeError) throw new Error('timeout')
+      if (config.writeStatus) return json(config.writeBody, config.writeStatus)
       return json({ data: [{ code: 'SUCCESS', status: 'success',
         details: { id: 'meeting-1' } }] }, 201)
     }
@@ -154,6 +160,39 @@ test('an uncertain write is not retried by the writer', async () => {
   const writer = new ZohoMeetingWriter(credentials, mock.request)
   await assert.rejects(writer.apply(operation))
   assert.equal(mock.calls.filter(call => call.url.includes('/Events')).length, 1)
+})
+
+test('fixed diagnostics separate Contact rejection, Events rejection and transport failure', async () => {
+  const sensitive = 'private@example.invalid secret-value'
+  const cases = [
+    {
+      config: { contactStatus: 403, contactBody: { code: 'OAUTH_SCOPE_MISMATCH', message: sensitive } },
+      expected: ['contacts_http_403_OAUTH_SCOPE_MISMATCH', 'prewrite_zoho_contact_search_failed'],
+      eventCalls: 0,
+    },
+    {
+      config: { writeStatus: 400, writeBody: { data: [{ code: 'INVALID_DATA', message: sensitive }] } },
+      expected: ['events_http_400_INVALID_DATA'], eventCalls: 1,
+    },
+    {
+      config: { writeStatus: 422, writeBody: { code: sensitive } },
+      expected: ['events_http_422_OTHER'], eventCalls: 1,
+    },
+    {
+      config: { writeError: true },
+      expected: ['events_transport_failure'], eventCalls: 1,
+    },
+  ] as const
+  for (const item of cases) {
+    const mock = mockFetch(item.config)
+    const logs: string[] = []
+    const writer = new ZohoMeetingWriter(credentials, mock.request, Date.now, undefined,
+      code => logs.push(code))
+    await assert.rejects(writer.apply(operation))
+    assert.deepEqual(logs, item.expected)
+    assert.equal(mock.calls.filter(call => call.url.includes('/Events')).length, item.eventCalls)
+    assert.ok(logs.every(code => !code.includes(sensitive)))
+  }
 })
 
 test('concurrent calls share one in-flight token refresh', async () => {

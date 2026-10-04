@@ -31,12 +31,17 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ error: 'conflicting_modes' }, { status: 503 })
   }
   if (validationEnabled) {
+    const contactPreflight = process.env.BOOKING_CRM_CONTACT_PREFLIGHT === 'true'
+    const writer = () => {
+      if (!validationWriter) validationWriter = createZohoWriterFromEnvironment(TEST_CONTACT_ID,
+        code => console.info('booking_crm_zoho', code))
+      return validationWriter
+    }
     return handleBookingValidation(request, {
       secret: process.env.CAL_WEBHOOK_SECRET,
-      verifyOrg: async () => {
-        if (!validationWriter) validationWriter = createZohoWriterFromEnvironment()
-        await validationWriter.verifyOrganizationReadOnly()
-      },
+      verifyOrg: () => writer().verifyOrganizationReadOnly(),
+      verifyContact: contactPreflight
+        ? () => writer().verifyInternalContactReadOnly(TEST_ATTENDEE_EMAIL) : undefined,
       log: code => console.info('booking_crm_validation', code),
     })
   }
@@ -58,7 +63,8 @@ export async function POST(request: Request): Promise<Response> {
   try {
     if (testEnabled && !testDependencies) testDependencies = {
       ledger: new PostgresBookingLedger(createPgPoolFromEnvironment(), { claimSingleTestCreate: true }),
-      writer: createZohoWriterFromEnvironment(TEST_CONTACT_ID),
+      writer: createZohoWriterFromEnvironment(TEST_CONTACT_ID,
+        code => console.info('booking_crm_zoho', code)),
     }
     if (syncEnabled && !dependencies) dependencies = {
       ledger: new PostgresBookingLedger(createPgPoolFromEnvironment()),

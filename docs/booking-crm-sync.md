@@ -205,6 +205,22 @@ signed request; do not create a booking to generate a test event. Disable the
 validation flag before activating any subscription. A Cal UI ping is not a
 validated booking, and real booking traffic during validation would be lost.
 
+### Signed runtime Contact preflight (prepared, disabled)
+
+With validation mode enabled, `BOOKING_CRM_CONTACT_PREFLIGHT=true` adds a
+read-only Contact check to the existing signed Cal Ping path. The route first
+verifies Cal's HMAC and body, then refreshes the runtime Zoho token, verifies
+the pinned production org, and searches Contacts for exactly one primary-email
+match to `pratheek@darkbirdfilms.com` with ID `1457002000000562075` and a
+complete search page. It makes no Events request and does not construct the
+ledger. A failed check returns only `contact_unavailable`; safe diagnostic logs
+can distinguish token, org, and Contacts HTTP status plus an allowlisted Zoho
+code. The flag is off by default. Keep normal and test sync flags off and the
+Cal subscription inactive. A fresh deployment and one signed Ping would check
+the deployed Function's runtime configuration without exposing a public
+unauthenticated credential probe. This is for a future approved diagnostic;
+it cannot recover the response from the already quarantined operation.
+
 ## Single internal booking test mode
 
 `BOOKING_CRM_TEST_SYNC_ENABLED=true` is separate from validation mode and the
