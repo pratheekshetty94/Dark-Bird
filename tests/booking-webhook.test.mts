@@ -122,6 +122,29 @@ test('test scope skips other booking UIDs, attendees and trigger types before le
   assert.deepEqual(calls, ['reserve', 'start', 'writer', 'apply'])
 })
 
+test('new-prospect test scope admits only the exact name, identity and create slot', async () => {
+  const calls: string[] = []
+  const scoped = {
+    secret, ledger: ledger(calls), now: () => now,
+    writer: { async apply() { calls.push('writer'); return { taskId: 'task-1', contactId: 'contact-new' } } },
+    testScope: {
+      startAt: '2026-10-04T12:00:00.000Z', endAt: '2026-10-04T12:30:00.000Z',
+      attendeeEmail: 'person@example.com', attendeeName: 'New Prospect',
+      organizerEmail: 'management@example.com', createOnly: true,
+    },
+  }
+  assert.equal((await handleBookingWebhook(request('BOOKING_CREATED'), scoped)).status, 202)
+  assert.equal((await handleBookingWebhook(request('BOOKING_RESCHEDULED', {
+    attendees: [{ email: 'person@example.com', name: 'New Prospect', timeZone: 'Asia/Kolkata' }],
+    rescheduleUid: 'booking-0', iCalSequence: 1,
+  }), scoped)).status, 202)
+  assert.deepEqual(calls, [])
+  assert.equal((await handleBookingWebhook(request('BOOKING_CREATED', {
+    attendees: [{ email: 'person@example.com', name: 'New Prospect', timeZone: 'Asia/Kolkata' }],
+  }), scoped)).status, 200)
+  assert.deepEqual(calls, ['reserve', 'start', 'writer', 'apply'])
+})
+
 test('lifecycle test scope admits only the second exact slot for follow-ups', async () => {
   const calls: string[] = []
   const scoped = {
@@ -162,6 +185,7 @@ test('Contact lookup failures persist only allowlisted review reasons', async ()
   for (const [message, expected] of [
     ['zoho_contact_missing', 'zoho_contact_missing'],
     ['zoho_contact_duplicate', 'zoho_contact_duplicate'],
+    ['zoho_contact_secondary_match', 'zoho_contact_secondary_match'],
     ['zoho_contact_name_missing', 'zoho_contact_name_missing'],
     ['zoho_contact_create_claim_exists', 'zoho_contact_create_claim_exists'],
     ['zoho_contact_create_uncertain', 'uncertain_crm_result'],

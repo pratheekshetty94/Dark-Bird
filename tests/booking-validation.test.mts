@@ -9,6 +9,9 @@ const environmentNames = [
   'BOOKING_CRM_TEST_SYNC_ENABLED', 'BOOKING_CRM_TEST_START_UTC',
   'BOOKING_CRM_TEST_END_UTC', 'BOOKING_CRM_TEST_RESCHEDULE_START_UTC',
   'BOOKING_CRM_TEST_RESCHEDULE_END_UTC', 'BOOKING_CRM_TASK_TEST_RUN_ID',
+  'BOOKING_CRM_CONTACT_TEST_ENABLED', 'BOOKING_CRM_CONTACT_TEST_START_UTC',
+  'BOOKING_CRM_CONTACT_TEST_END_UTC', 'BOOKING_CRM_CONTACT_TEST_RUN_ID',
+  'BOOKING_CRM_NEW_CONTACT_ENABLED',
   'CAL_WEBHOOK_SECRET',
   'BOOKING_CRM_CONTACT_PREFLIGHT',
   'BOOKING_CRM_TASK_READ_PREFLIGHT',
@@ -56,6 +59,11 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     delete process.env.BOOKING_CRM_TEST_RESCHEDULE_START_UTC
     delete process.env.BOOKING_CRM_TEST_RESCHEDULE_END_UTC
     delete process.env.BOOKING_CRM_TASK_TEST_RUN_ID
+    delete process.env.BOOKING_CRM_CONTACT_TEST_ENABLED
+    delete process.env.BOOKING_CRM_CONTACT_TEST_START_UTC
+    delete process.env.BOOKING_CRM_CONTACT_TEST_END_UTC
+    delete process.env.BOOKING_CRM_CONTACT_TEST_RUN_ID
+    delete process.env.BOOKING_CRM_NEW_CONTACT_ENABLED
     delete process.env.BOOKING_CRM_CONTACT_PREFLIGHT
     delete process.env.BOOKING_CRM_TASK_READ_PREFLIGHT
     process.env.CAL_WEBHOOK_SECRET = secret
@@ -173,6 +181,24 @@ test('validation-only route authenticates first and never calls DB, Contacts or 
     const skipped = await POST(request('BOOKING_CREATED'))
     assert.equal(skipped.status, 202)
     assert.deepEqual(await skipped.json(), { outcome: 'test_scope_ignored' })
+    delete process.env.BOOKING_CRM_TEST_SYNC_ENABLED
+    process.env.BOOKING_CRM_CONTACT_TEST_ENABLED = 'true'
+    assert.equal((await POST(request('BOOKING_CREATED'))).status, 503,
+      'Contact test mode requires its own exact UTC slot and run ID')
+    process.env.BOOKING_CRM_CONTACT_TEST_START_UTC = '2026-10-05T12:00:00.000Z'
+    process.env.BOOKING_CRM_CONTACT_TEST_END_UTC = '2026-10-05T12:30:00.000Z'
+    process.env.BOOKING_CRM_CONTACT_TEST_RUN_ID = 'contact-localtest01'
+    const contactSkipped = await POST(request('BOOKING_CREATED'))
+    assert.equal(contactSkipped.status, 202)
+    assert.deepEqual(await contactSkipped.json(), { outcome: 'test_scope_ignored' })
+    process.env.BOOKING_CRM_SYNC_ENABLED = 'true'
+    assert.equal((await POST(request('BOOKING_CREATED'))).status, 503,
+      'Contact test mode cannot run with customer sync')
+    delete process.env.BOOKING_CRM_SYNC_ENABLED
+    process.env.BOOKING_CRM_NEW_CONTACT_ENABLED = 'true'
+    assert.equal((await POST(request('BOOKING_CREATED'))).status, 503,
+      'Contact test mode cannot run with the customer Contact flag')
+    delete process.env.BOOKING_CRM_NEW_CONTACT_ENABLED
     assert.equal(calls.length, 6, 'conflicting modes and scope skips make no further provider calls')
     assert.ok(logs.every(args =>
       (args[0] === 'booking_crm_zoho' &&

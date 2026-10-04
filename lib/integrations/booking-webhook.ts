@@ -13,6 +13,7 @@ export type BookingWebhookDependencies = {
   testScope?: {
     startAt: string; endAt: string; attendeeEmail: string; organizerEmail: string
     rescheduleStartAt?: string; rescheduleEndAt?: string
+    createOnly?: boolean; attendeeName?: string
   }
   now?: () => number
   log?: (code: string) => void
@@ -24,6 +25,7 @@ function safeQuarantineReason(error: unknown): string {
   switch (error.message) {
     case 'zoho_contact_missing':
     case 'zoho_contact_duplicate':
+    case 'zoho_contact_secondary_match':
     case 'zoho_contact_page_incomplete':
     case 'zoho_contact_result_invalid':
     case 'zoho_contact_search_failed':
@@ -68,6 +70,8 @@ export async function handleBookingWebhook(
     booking.hasOtherGuests === true ||
     booking.attendeeEmail !== scope.attendeeEmail ||
     booking.organizerEmail !== scope.organizerEmail ||
+    (scope.attendeeName !== undefined && booking.attendeeName !== scope.attendeeName) ||
+    (scope.createOnly === true && booking.trigger !== 'BOOKING_CREATED') ||
     !(exactCreate || exactFollowUp)
   )) {
     dependencies.log?.('test_scope_ignored')

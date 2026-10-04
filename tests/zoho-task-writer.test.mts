@@ -238,13 +238,14 @@ test('opt-in missing Contact creates one Contact from booking name/email before 
     mock.calls.findIndex(call => call.url.endsWith('/Tasks') && call.init?.method === 'POST'))
 })
 
-test('a complete search with only non-primary email matches may create the Contact', async () => {
+test('a secondary-email search hit blocks Contact creation for manual deduplication', async () => {
   const mock = mockFetch({ contacts: [{ id: 'secondary-only', Email: 'other@example.com' }] })
   const claim = claimGate()
   const writer = new ZohoTaskWriter(credentials, mock.request, Date.now, undefined, undefined, claim.gate)
   const newProspect = { ...operation, booking: { ...operation.booking, attendeeName: 'New Prospect' } }
-  assert.deepEqual(await writer.apply(newProspect), { contactId: 'contact-new', taskId: 'task-1' })
-  assert.equal(mock.calls.filter(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST').length, 1)
+  await assert.rejects(writer.apply(newProspect), /zoho_contact_secondary_match/)
+  assert.deepEqual(claim.calls, [])
+  assert.equal(mock.calls.filter(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST').length, 0)
 })
 
 test('uncertain Contact create is claimed and never blindly retried', async () => {

@@ -15,9 +15,12 @@ type WriterDependencies = {
 let dependencies: WriterDependencies | null = null
 let validationWriter: ReturnType<typeof createZohoTaskWriterFromEnvironment> | null = null
 let testDependencies: WriterDependencies | null = null
+let contactTestDependencies: WriterDependencies | null = null
 const TEST_ATTENDEE_EMAIL = 'pratheek@darkbirdfilms.com'
 const TEST_ORGANIZER_EMAIL = 'management@darkbirdfilms.com'
 const TEST_CONTACT_ID = '1457002000000562075'
+const CONTACT_TEST_EMAIL = 'pratheek+crm-contact-test-20261004@darkbirdfilms.com'
+const CONTACT_TEST_NAME = 'CRM Contact Test 2026-10-04'
 
 function validUtcSlot(value: string | undefined): value is string {
   if (!value || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(value)) return false
@@ -28,7 +31,10 @@ export async function POST(request: Request): Promise<Response> {
   const syncEnabled = process.env.BOOKING_CRM_SYNC_ENABLED === 'true'
   const validationEnabled = process.env.BOOKING_CRM_VALIDATE_ONLY === 'true'
   const testEnabled = process.env.BOOKING_CRM_TEST_SYNC_ENABLED === 'true'
-  if (Number(syncEnabled) + Number(validationEnabled) + Number(testEnabled) > 1) {
+  const contactTestEnabled = process.env.BOOKING_CRM_CONTACT_TEST_ENABLED === 'true'
+  if (Number(syncEnabled) + Number(validationEnabled) + Number(testEnabled) +
+      Number(contactTestEnabled) > 1 ||
+      (contactTestEnabled && process.env.BOOKING_CRM_NEW_CONTACT_ENABLED === 'true')) {
     return Response.json({ error: 'conflicting_modes' }, { status: 503 })
   }
   if (validationEnabled) {
@@ -50,7 +56,7 @@ export async function POST(request: Request): Promise<Response> {
   }
   // Leave the enable flag unset until signing, payload shape, Zoho OAuth, and
   // organization notification behavior are all verified and approved.
-  if (!syncEnabled && !testEnabled) {
+  if (!syncEnabled && !testEnabled && !contactTestEnabled) {
     return Response.json({ error: 'not_configured' }, { status: 503 })
   }
   const secret = process.env.CAL_WEBHOOK_SECRET
@@ -59,6 +65,9 @@ export async function POST(request: Request): Promise<Response> {
   const testRescheduleStartAt = process.env.BOOKING_CRM_TEST_RESCHEDULE_START_UTC
   const testRescheduleEndAt = process.env.BOOKING_CRM_TEST_RESCHEDULE_END_UTC
   const taskTestRunId = process.env.BOOKING_CRM_TASK_TEST_RUN_ID
+  const contactTestStartAt = process.env.BOOKING_CRM_CONTACT_TEST_START_UTC
+  const contactTestEndAt = process.env.BOOKING_CRM_CONTACT_TEST_END_UTC
+  const contactTestRunId = process.env.BOOKING_CRM_CONTACT_TEST_RUN_ID
   if (!secret || secret.length < 32 || !process.env.DATABASE_URL ||
       process.env.ZOHO_DC !== 'in' || !process.env.ZOHO_CLIENT_ID ||
       !process.env.ZOHO_CLIENT_SECRET || !process.env.ZOHO_REFRESH_TOKEN ||
@@ -67,7 +76,11 @@ export async function POST(request: Request): Promise<Response> {
         !validUtcSlot(testRescheduleStartAt) || !validUtcSlot(testRescheduleEndAt) ||
         Date.parse(testRescheduleEndAt) <= Date.parse(testRescheduleStartAt) ||
         testRescheduleStartAt === testStartAt ||
-        !taskTestRunId || !/^task-[a-z0-9]{8,40}$/.test(taskTestRunId)))) {
+        !taskTestRunId || !/^task-[a-z0-9]{8,40}$/.test(taskTestRunId))) ||
+      (contactTestEnabled && (!validUtcSlot(contactTestStartAt) ||
+        !validUtcSlot(contactTestEndAt) ||
+        Date.parse(contactTestEndAt) <= Date.parse(contactTestStartAt) ||
+        !contactTestRunId || !/^contact-[a-z0-9]{8,40}$/.test(contactTestRunId)))) {
     return Response.json({ error: 'not_configured' }, { status: 503 })
   }
   try {
@@ -75,6 +88,14 @@ export async function POST(request: Request): Promise<Response> {
       ledger: new PostgresBookingLedger(createPgPoolFromEnvironment(), { claimTaskTestRun: taskTestRunId }),
       writer: createZohoTaskWriterFromEnvironment(TEST_CONTACT_ID,
         code => console.info('booking_crm_zoho', code)),
+    }
+    if (contactTestEnabled && !contactTestDependencies) {
+      const pool = createPgPoolFromEnvironment()
+      contactTestDependencies = {
+        ledger: new PostgresBookingLedger(pool, { claimContactTestRun: contactTestRunId }),
+        writer: createZohoTaskWriterFromEnvironment(undefined,
+          code => console.info('booking_crm_zoho', code), new PostgresContactCreationGate(pool)),
+      }
     }
     if (syncEnabled && !dependencies) {
       const pool = createPgPoolFromEnvironment()
@@ -89,13 +110,18 @@ export async function POST(request: Request): Promise<Response> {
   } catch {
     return Response.json({ error: 'not_configured' }, { status: 503 })
   }
-  const active = testEnabled ? testDependencies : dependencies
+  const active = contactTestEnabled ? contactTestDependencies
+    : testEnabled ? testDependencies : dependencies
   if (!active) return Response.json({ error: 'not_configured' }, { status: 503 })
   return handleBookingWebhook(request, {
     secret,
     ledger: active.ledger,
     writer: active.writer,
-    testScope: testEnabled ? {
+    testScope: contactTestEnabled ? {
+      startAt: contactTestStartAt!, endAt: contactTestEndAt!,
+      attendeeEmail: CONTACT_TEST_EMAIL, attendeeName: CONTACT_TEST_NAME,
+      organizerEmail: TEST_ORGANIZER_EMAIL, createOnly: true,
+    } : testEnabled ? {
       startAt: testStartAt!, endAt: testEndAt!, attendeeEmail: TEST_ATTENDEE_EMAIL,
       organizerEmail: TEST_ORGANIZER_EMAIL,
       rescheduleStartAt: testRescheduleStartAt!, rescheduleEndAt: testRescheduleEndAt!,

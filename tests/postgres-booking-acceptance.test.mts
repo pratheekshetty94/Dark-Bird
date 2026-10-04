@@ -71,7 +71,23 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       await pool.query(await readFile(new URL('../db/migrations/003_crm_task_ids.sql', import.meta.url), 'utf8'))
       await pool.query(await readFile(new URL('../db/migrations/004_task_test_run_claim.sql', import.meta.url), 'utf8'))
       await pool.query(await readFile(new URL('../db/migrations/005_contact_creation_claims.sql', import.meta.url), 'utf8'))
+      await pool.query(await readFile(new URL('../db/migrations/006_contact_test_claim.sql', import.meta.url), 'utf8'))
       const ledger = new PostgresBookingLedger(pool)
+      const contactTestLedger = new PostgresBookingLedger(pool, { claimContactTestRun: 'contact-localtest01' })
+      const contactTestResults = await Promise.all([
+        contactTestLedger.reserve(syntheticBooking('contact-test-first', 'p')),
+        contactTestLedger.reserve(syntheticBooking('contact-test-second', 'q')),
+      ])
+      assert.deepEqual(contactTestResults.map(result => result.outcome).sort(),
+        ['reserved', 'test_scope_ignored'])
+      const contactTestClaim = await pool.query(
+        'SELECT run_id, booking_uid, calendar_uid FROM cal_booking_contact_test_claim'
+      )
+      assert.equal(contactTestClaim.rowCount, 1)
+      assert.equal(contactTestClaim.rows[0].run_id, 'contact-localtest01')
+      const secondRun = new PostgresBookingLedger(pool, { claimContactTestRun: 'contact-localtest02' })
+      assert.equal((await secondRun.reserve(syntheticBooking('contact-test-third', 'r'))).outcome,
+        'test_scope_ignored')
       const contactGate = new PostgresContactCreationGate(pool)
       const firstProspect = await ledger.reserve(syntheticBooking('prospect-first', 'm'))
       const secondProspect = await ledger.reserve(syntheticBooking('prospect-second', 'n'))

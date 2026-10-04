@@ -26,11 +26,15 @@ export class PostgresBookingLedger implements BookingLedger {
   private readonly pool: SqlPool
   private readonly claimSingleTestCreate: boolean
   private readonly claimTaskTestRun: string | undefined
+  private readonly claimContactTestRun: string | undefined
 
-  constructor(pool: SqlPool, options: { claimSingleTestCreate?: boolean; claimTaskTestRun?: string } = {}) {
+  constructor(pool: SqlPool, options: {
+    claimSingleTestCreate?: boolean; claimTaskTestRun?: string; claimContactTestRun?: string
+  } = {}) {
     this.pool = pool
     this.claimSingleTestCreate = options.claimSingleTestCreate === true
     this.claimTaskTestRun = options.claimTaskTestRun
+    this.claimContactTestRun = options.claimContactTestRun
   }
 
   async reserve(booking: VerifiedCalBooking): Promise<
@@ -63,6 +67,26 @@ export class PostgresBookingLedger implements BookingLedger {
       ])
       const previous = await client.query('SELECT 1 FROM cal_webhook_deliveries WHERE body_sha256 = $1', [booking.deliveryHash])
       if (previous.rowCount) return await this.finish(client, 'duplicate')
+
+      if (this.claimContactTestRun) {
+        if (booking.trigger !== 'BOOKING_CREATED') return await this.finish(client, 'test_scope_ignored')
+        await client.query(
+          `INSERT INTO cal_booking_contact_test_claim
+             (singleton, run_id, booking_uid, calendar_uid)
+           VALUES (true, $1, $2, $3) ON CONFLICT (singleton) DO NOTHING`,
+          [this.claimContactTestRun, booking.bookingUid, booking.calendarUid]
+        )
+        const claim = (await client.query<{
+          run_id: string; booking_uid: string; calendar_uid: string
+        }>(
+          `SELECT run_id, booking_uid, calendar_uid FROM cal_booking_contact_test_claim
+            WHERE singleton = true FOR UPDATE`
+        )).rows[0]
+        if (!claim || claim.run_id !== this.claimContactTestRun ||
+            claim.booking_uid !== booking.bookingUid || claim.calendar_uid !== booking.calendarUid) {
+          return await this.finish(client, 'test_scope_ignored')
+        }
+      }
 
       if (this.claimTaskTestRun) {
         if (booking.trigger === 'BOOKING_CREATED') {

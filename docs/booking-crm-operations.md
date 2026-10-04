@@ -64,7 +64,7 @@ path. It is unset by default and has no effect in internal test mode. Apply
 ever enabling it. A signed booking must have exactly one attendee with a
 nonempty name of at most 255 characters. The writer first searches for exactly
 one primary-email Contact. It uses that Contact when found; it holds duplicate,
-incomplete, or invalid lookup results for review. Only a complete no-match
+secondary-email, incomplete, or invalid lookup results for review. Only a complete no-match
 result for a new booking may create a Contact.
 
 Before a Contact POST, the ledger commits a permanent claim keyed by the
@@ -77,6 +77,27 @@ the Task. An uncertain create or readback quarantines the claim and booking
 operation; never reset the claim or blindly retry. The hash is linkable and
 belongs in the private ledger. A Contact created successfully while its Task
 later fails still has a permanent claim; reconcile that booking manually.
+The claim serializes this integration only. A person creating a Contact in
+Zoho between its exact-email search and POST can still race it. Zoho's own
+unique-field check may reject that POST; a rejection remains quarantined for
+review. Do not treat a new Contact as a qualified Lead or automatically mark
+one as hot. Confirm the org's Email uniqueness setting before customer use.
+Search hits whose primary Email differs from the booking address are held for
+manual deduplication; they might match a secondary address.
+
+For a one-booking live test with customer sync off, apply
+`db/migrations/006_contact_test_claim.sql` as well. The separate
+`BOOKING_CRM_CONTACT_TEST_ENABLED=true` mode requires one exact UTC start/end
+window and `BOOKING_CRM_CONTACT_TEST_RUN_ID=contact-` followed by 8–40 lower
+case letters or digits. Its hardcoded attendee is
+`pratheek+crm-contact-test-20261004@darkbirdfilms.com`, with signed name
+`CRM Contact Test 2026-10-04`; its organizer is
+`management@darkbirdfilms.com`. Confirm the alias reaches the owner before
+using it. Only a signed initial booking with that identity, name, window, and
+no other guests can reserve the permanent singleton claim and reach the
+Contact-create writer. Other bookings are skipped before database or CRM
+work. A different run ID cannot reset the claim. Keep the existing Task test,
+validation, customer sync, and customer Contact flags off throughout.
 
 The new grant must add only `ZohoCRM.modules.contacts.CREATE` to the existing
 org/Contacts search/Tasks scopes. `node scripts/prepare-zoho-task-grant.mjs`

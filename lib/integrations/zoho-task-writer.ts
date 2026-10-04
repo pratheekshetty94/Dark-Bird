@@ -23,6 +23,7 @@ const PREWRITE_CODES = new Set([
   'zoho_org_invalid', 'zoho_org_mismatch', 'zoho_contact_missing',
   'zoho_contact_search_failed', 'zoho_contact_page_incomplete',
   'zoho_contact_result_invalid', 'zoho_contact_duplicate',
+  'zoho_contact_secondary_match',
   'zoho_test_contact_mismatch', 'zoho_missing_task_id', 'zoho_missing_join_url',
   'zoho_contact_name_missing', 'zoho_contact_create_claim_exists',
   'zoho_contact_create_uncertain',
@@ -214,6 +215,9 @@ export class ZohoTaskWriter implements CrmTaskWriter {
     const exact = (result.data as Record<string, unknown>[]).filter(contact =>
       typeof contact.Email === 'string' && contact.Email.trim().toLowerCase() === email
     )
+    if (exact.length === 0 && result.data.length > 0) {
+      throw new Error('zoho_contact_secondary_match')
+    }
     if (exact.length === 0) throw new Error('zoho_contact_missing')
     if (exact.length > 1) throw new Error('zoho_contact_duplicate')
     if (typeof exact[0].id !== 'string' || !exact[0].id) throw new Error('zoho_contact_result_invalid')
