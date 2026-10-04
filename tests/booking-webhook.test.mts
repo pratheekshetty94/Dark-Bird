@@ -162,6 +162,9 @@ test('Contact lookup failures persist only allowlisted review reasons', async ()
   for (const [message, expected] of [
     ['zoho_contact_missing', 'zoho_contact_missing'],
     ['zoho_contact_duplicate', 'zoho_contact_duplicate'],
+    ['zoho_contact_name_missing', 'zoho_contact_name_missing'],
+    ['zoho_contact_create_claim_exists', 'zoho_contact_create_claim_exists'],
+    ['zoho_contact_create_uncertain', 'uncertain_crm_result'],
     ['person@example.invalid private failure', 'uncertain_crm_result'],
   ]) {
     const reasons: string[] = []

@@ -20,7 +20,8 @@ WITH categories(category) AS (
            WHEN o.state = 'quarantined' AND o.quarantine_reason = 'zoho_contact_duplicate'
              THEN 'contact_duplicate'
            WHEN o.state = 'quarantined' AND o.quarantine_reason IN
-             ('zoho_contact_page_incomplete', 'zoho_contact_result_invalid', 'zoho_contact_search_failed')
+             ('zoho_contact_page_incomplete', 'zoho_contact_result_invalid', 'zoho_contact_search_failed',
+              'zoho_contact_name_missing', 'zoho_contact_create_claim_exists')
              THEN 'contact_lookup_error'
            WHEN o.state = 'quarantined' THEN 'other_quarantined'
            WHEN o.state = 'started' THEN 'aged_started'

@@ -56,6 +56,42 @@ a bounded live test that deduplicates before creating one Contact. This scope
 is not currently installed. Lead creation would require a different scope and
 a different linking design.
 
+## Prepared automatic new-prospect Contact creation (disabled)
+
+`BOOKING_CRM_NEW_CONTACT_ENABLED=true` opts the normal customer sync into this
+path. It is unset by default and has no effect in internal test mode. Apply
+`db/migrations/005_contact_creation_claims.sql` to the approved ledger before
+ever enabling it. A signed booking must have exactly one attendee with a
+nonempty name of at most 255 characters. The writer first searches for exactly
+one primary-email Contact. It uses that Contact when found; it holds duplicate,
+incomplete, or invalid lookup results for review. Only a complete no-match
+result for a new booking may create a Contact.
+
+Before a Contact POST, the ledger commits a permanent claim keyed by the
+normalized email's SHA-256 digest and the booking operation ID. Concurrent
+bookings for that email cannot both create Contacts. The writer sends one
+Contacts POST with the signed name as `Last_Name`, the normalized `Email`,
+`trigger: []`, and cadence suppression. It verifies the returned Contact ID
+and reads that exact Contact back to check its primary email before creating
+the Task. An uncertain create or readback quarantines the claim and booking
+operation; never reset the claim or blindly retry. The hash is linkable and
+belongs in the private ledger. A Contact created successfully while its Task
+later fails still has a permanent claim; reconcile that booking manually.
+
+The new grant must add only `ZohoCRM.modules.contacts.CREATE` to the existing
+org/Contacts search/Tasks scopes. `node scripts/prepare-zoho-task-grant.mjs`
+prints the exact scope set without credentials or network access. The owner can
+run `python3 /Users/pratheekshetty/Documents/Codex/2026-10-03/task/zoho-private-task-contact-setup.py`
+in their own Mac Terminal to generate the new grant and save it in Vercel
+Production. That separate private helper differs from the prior Task helper
+only by the added scope and its scope-count message; it has not been run by the
+agent. Do not paste credentials into chat, the repo, logs, or a shell command.
+Before activation, verify the actual
+Contacts layout's mandatory fields, Contact creation side effects, and the
+signed Cal payload's attendee name, then approve one bounded internal
+new-prospect test with readback. Keep customer sync and this flag off until
+that test and private exception delivery are verified.
+
 ## Activation gate
 
 Assign an operator and a documented check cadence, establish a working alert

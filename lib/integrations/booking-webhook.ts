@@ -27,6 +27,8 @@ function safeQuarantineReason(error: unknown): string {
     case 'zoho_contact_page_incomplete':
     case 'zoho_contact_result_invalid':
     case 'zoho_contact_search_failed':
+    case 'zoho_contact_name_missing':
+    case 'zoho_contact_create_claim_exists':
       return error.message
     default:
       return 'uncertain_crm_result'

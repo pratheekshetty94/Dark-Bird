@@ -19,6 +19,7 @@ export type VerifiedCalBooking = {
   sequence: number
   previousBookingUid: string | null
   attendeeEmail: string
+  attendeeName?: string | null
   organizerEmail?: string | null
   hasOtherGuests?: boolean
   startAt: string
@@ -165,6 +166,8 @@ export function verifyCalBookingWebhook(
   const attendee = object(attendees[0])
   const email = boundedString(attendee.email, 320).trim().toLowerCase()
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new CalWebhookError('invalid_email')
+  const attendeeName = typeof attendee.name === 'string' && attendee.name.trim()
+    ? boundedString(attendee.name.trim(), 255) : null
   const attendeeTimeZone = boundedString(attendee.timeZone, 80)
   try { new Intl.DateTimeFormat('en-US', { timeZone: attendeeTimeZone }) } catch {
     throw new CalWebhookError('invalid_timezone')
@@ -218,6 +221,7 @@ export function verifyCalBookingWebhook(
     sequence: sequence as number,
     previousBookingUid,
     attendeeEmail: email,
+    attendeeName,
     organizerEmail,
     hasOtherGuests,
     startAt,

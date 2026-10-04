@@ -3,6 +3,7 @@
 const scopes = Object.freeze([
   'ZohoCRM.org.READ',
   'ZohoCRM.modules.contacts.READ',
+  'ZohoCRM.modules.contacts.CREATE',
   'ZohoSearch.securesearch.READ',
   'ZohoCRM.modules.tasks.READ',
   'ZohoCRM.modules.tasks.CREATE',

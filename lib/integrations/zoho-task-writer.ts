@@ -24,6 +24,8 @@ const PREWRITE_CODES = new Set([
   'zoho_contact_search_failed', 'zoho_contact_page_incomplete',
   'zoho_contact_result_invalid', 'zoho_contact_duplicate',
   'zoho_test_contact_mismatch', 'zoho_missing_task_id', 'zoho_missing_join_url',
+  'zoho_contact_name_missing', 'zoho_contact_create_claim_exists',
+  'zoho_contact_create_uncertain',
 ])
 
 function safeProviderCode(value: unknown): string {
@@ -45,6 +47,13 @@ export type ZohoCredentials = {
   clientSecret: string
   refreshToken: string
   confirmedRegion: string
+}
+
+export interface ContactCreationGate {
+  reserve(operationId: string, email: string): Promise<void>
+  markStarted(operationId: string, email: string): Promise<void>
+  markApplied(operationId: string, email: string, contactId: string): Promise<void>
+  quarantine(operationId: string, email: string): Promise<void>
 }
 
 function object(value: unknown): Record<string, unknown> {
@@ -99,6 +108,7 @@ export class ZohoTaskWriter implements CrmTaskWriter {
   private readonly now: () => number
   private readonly requiredContactId: string | undefined
   private readonly logDiagnostic: ((code: string) => void) | undefined
+  private readonly contactCreationGate: ContactCreationGate | undefined
   private accessToken: { value: string; expiresAt: number } | null = null
   private tokenInFlight: Promise<string> | null = null
   private verifiedOrgToken: string | null = null
@@ -114,7 +124,8 @@ export class ZohoTaskWriter implements CrmTaskWriter {
     request: typeof fetch = fetch,
     now: () => number = Date.now,
     requiredContactId?: string,
-    logDiagnostic?: (code: string) => void
+    logDiagnostic?: (code: string) => void,
+    contactCreationGate?: ContactCreationGate
   ) {
     if (credentials.confirmedRegion !== 'in' || !credentials.clientId ||
         !credentials.clientSecret || !credentials.refreshToken) {
@@ -125,6 +136,7 @@ export class ZohoTaskWriter implements CrmTaskWriter {
     this.now = now
     this.requiredContactId = requiredContactId
     this.logDiagnostic = logDiagnostic
+    this.contactCreationGate = contactCreationGate
   }
 
   private async token(): Promise<string> {
@@ -209,6 +221,68 @@ export class ZohoTaskWriter implements CrmTaskWriter {
       throw new Error('zoho_test_contact_mismatch')
     }
     return exact[0].id
+  }
+
+  /** One POST after a durable started claim. Any uncertainty blocks future creates. */
+  private async createContactForBooking(operation: ReservedOperation): Promise<string> {
+    const gate = this.contactCreationGate
+    if (!gate) throw new Error('zoho_contact_missing')
+    const { attendeeEmail: email, attendeeName } = operation.booking
+    if (!attendeeName || !attendeeName.trim() || attendeeName.length > 255) {
+      throw new Error('zoho_contact_name_missing')
+    }
+    await gate.reserve(operation.id, email)
+    try {
+      await gate.markStarted(operation.id, email)
+      const token = await this.token()
+      await this.verifyOrg(token)
+      const response = await this.request(`${API_HOST}/crm/v8/Contacts`, {
+        method: 'POST',
+        headers: { Authorization: `Zoho-oauthtoken ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          data: [{ Last_Name: attendeeName.trim(), Email: email }],
+          trigger: [], skip_feature_execution: [{ name: 'cadences' }],
+        }),
+        signal: AbortSignal.timeout(WRITE_TIMEOUT_MS), cache: 'no-store', redirect: 'error',
+      })
+      if (!response.ok || response.status === 207) {
+        await this.logHttpFailure('contacts', response)
+        throw new Error('zoho_contact_create_uncertain')
+      }
+      const result = object(await response.json())
+      if (!Array.isArray(result.data) || result.data.length !== 1) {
+        throw new Error('zoho_contact_create_uncertain')
+      }
+      const item = object(result.data[0])
+      const details = object(item.details)
+      if (item.code !== 'SUCCESS' || item.status !== 'success' ||
+          typeof details.id !== 'string' || !details.id) {
+        throw new Error('zoho_contact_create_uncertain')
+      }
+      const id = details.id
+      const read = await this.request(`${API_HOST}/crm/v8/Contacts/${encodeURIComponent(id)}?fields=Email,Last_Name`, {
+        headers: { Authorization: `Zoho-oauthtoken ${token}` },
+        signal: AbortSignal.timeout(READ_TIMEOUT_MS), cache: 'no-store', redirect: 'error',
+      })
+      if (!read.ok) {
+        await this.logHttpFailure('contacts', read)
+        throw new Error('zoho_contact_create_uncertain')
+      }
+      const verified = object(await read.json())
+      if (!Array.isArray(verified.data) || verified.data.length !== 1) {
+        throw new Error('zoho_contact_create_uncertain')
+      }
+      const contact = object(verified.data[0])
+      if (contact.id !== id || typeof contact.Email !== 'string' ||
+          contact.Email.trim().toLowerCase() !== email) {
+        throw new Error('zoho_contact_create_uncertain')
+      }
+      await gate.markApplied(operation.id, email, id)
+      return id
+    } catch {
+      await gate.quarantine(operation.id, email).catch(() => undefined)
+      throw new Error('zoho_contact_create_uncertain')
+    }
   }
 
   private async verifyOrg(token: string): Promise<void> {
@@ -304,7 +378,15 @@ export class ZohoTaskWriter implements CrmTaskWriter {
     let contactId: string
     let token: string
     try {
-      contactId = await this.exactContact(operation.booking.attendeeEmail)
+      try {
+        contactId = await this.exactContact(operation.booking.attendeeEmail)
+      } catch (error) {
+        if (error instanceof Error && error.message === 'zoho_contact_missing' &&
+            this.contactCreationGate && operation.action === 'create' &&
+            operation.booking.trigger === 'BOOKING_CREATED') {
+          contactId = await this.createContactForBooking(operation)
+        } else throw error
+      }
       if (operation.booking.trigger === 'BOOKING_CANCELLED' && operation.action !== 'update') {
         throw new Error('zoho_cancellation_manual_review')
       }
@@ -400,12 +482,13 @@ export class ZohoTaskWriter implements CrmTaskWriter {
 /** Do not call until Zoho India DC and server-side OAuth setup are reviewed. */
 export function createZohoTaskWriterFromEnvironment(
   requiredContactId?: string,
-  logDiagnostic?: (code: string) => void
+  logDiagnostic?: (code: string) => void,
+  contactCreationGate?: ContactCreationGate
 ): ZohoTaskWriter {
   return new ZohoTaskWriter({
     clientId: process.env.ZOHO_CLIENT_ID ?? '',
     clientSecret: process.env.ZOHO_CLIENT_SECRET ?? '',
     refreshToken: process.env.ZOHO_REFRESH_TOKEN ?? '',
     confirmedRegion: process.env.ZOHO_DC ?? '',
-  }, fetch, Date.now, requiredContactId, logDiagnostic)
+  }, fetch, Date.now, requiredContactId, logDiagnostic, contactCreationGate)
 }

@@ -5,6 +5,7 @@ import test from 'node:test'
 import { Pool } from 'pg'
 import { handleBookingWebhook } from '../lib/integrations/booking-webhook.ts'
 import { PostgresBookingLedger } from '../lib/integrations/postgres-booking-ledger.ts'
+import { PostgresContactCreationGate } from '../lib/integrations/postgres-contact-claim.ts'
 import type { ReservedOperation } from '../lib/integrations/booking-ledger.ts'
 import type { VerifiedCalBooking } from '../lib/integrations/cal-booking.ts'
 
@@ -69,7 +70,43 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       await pool.query(await readFile(new URL('../db/migrations/002_single_booking_test_claim.sql', import.meta.url), 'utf8'))
       await pool.query(await readFile(new URL('../db/migrations/003_crm_task_ids.sql', import.meta.url), 'utf8'))
       await pool.query(await readFile(new URL('../db/migrations/004_task_test_run_claim.sql', import.meta.url), 'utf8'))
+      await pool.query(await readFile(new URL('../db/migrations/005_contact_creation_claims.sql', import.meta.url), 'utf8'))
       const ledger = new PostgresBookingLedger(pool)
+      const contactGate = new PostgresContactCreationGate(pool)
+      const firstProspect = await ledger.reserve(syntheticBooking('prospect-first', 'm'))
+      const secondProspect = await ledger.reserve(syntheticBooking('prospect-second', 'n'))
+      const appliedProspect = await ledger.reserve(syntheticBooking('prospect-applied', 'o'))
+      assert.equal(firstProspect.outcome, 'reserved')
+      assert.equal(secondProspect.outcome, 'reserved')
+      assert.equal(appliedProspect.outcome, 'reserved')
+      if (firstProspect.outcome === 'reserved' && secondProspect.outcome === 'reserved') {
+        const email = 'new@example.invalid'
+        const attempts = await Promise.allSettled([
+          contactGate.reserve(firstProspect.operation.id, email),
+          contactGate.reserve(secondProspect.operation.id, email),
+        ])
+        assert.equal(attempts.filter(item => item.status === 'fulfilled').length, 1)
+        const winner = attempts[0].status === 'fulfilled'
+          ? firstProspect.operation.id : secondProspect.operation.id
+        await contactGate.markStarted(winner, email)
+        await contactGate.quarantine(winner, email)
+        await assert.rejects(contactGate.reserve(winner, email), /zoho_contact_create_claim_exists/)
+        assert.equal((await pool.query('SELECT state, contact_id FROM cal_contact_creation_claims')).rows[0].state,
+          'quarantined')
+        assert.equal((await pool.query('SELECT count(*)::int AS n FROM cal_contact_creation_claims')).rows[0].n, 1)
+      }
+      if (appliedProspect.outcome === 'reserved') {
+        await contactGate.reserve(appliedProspect.operation.id, 'applied@example.invalid')
+        await contactGate.markStarted(appliedProspect.operation.id, 'applied@example.invalid')
+        await contactGate.markApplied(appliedProspect.operation.id, 'applied@example.invalid', 'contact-new')
+        await assert.rejects(contactGate.reserve(secondProspect.outcome === 'reserved'
+          ? secondProspect.operation.id : appliedProspect.operation.id, 'applied@example.invalid'),
+        /zoho_contact_create_claim_exists/)
+        const result = await pool.query(
+          "SELECT state, contact_id FROM cal_contact_creation_claims WHERE contact_id = 'contact-new'"
+        )
+        assert.deepEqual(result.rows[0], { state: 'applied', contact_id: 'contact-new' })
+      }
       const writes: ReservedOperation[] = []
       const writer = { async apply(operation: ReservedOperation) {
         writes.push(operation)

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import type { ReservedOperation } from '../lib/integrations/booking-ledger.ts'
-import { ZohoTaskWriter, taskFields } from '../lib/integrations/zoho-task-writer.ts'
+import { ZohoTaskWriter, taskFields, type ContactCreationGate } from '../lib/integrations/zoho-task-writer.ts'
 
 const credentials = {
   clientId: 'local-client', clientSecret: 'local-secret',
@@ -37,6 +37,8 @@ function mockFetch(config: {
   orgError?: boolean
   taskReminder?: boolean
   taskStatus?: string
+  contactCreateError?: boolean
+  contactReadbackError?: boolean
 } = {}) {
   const calls: { url: string; init: RequestInit | undefined }[] = []
   let taskState: Record<string, unknown> = { id: 'task-1', Who_Id: { id: 'contact-1' },
@@ -63,6 +65,16 @@ function mockFetch(config: {
       return json({ data: config.contacts ?? [{ id: 'contact-1', Email: 'person@example.com' }],
         info: { more_records: config.moreRecords ?? false } })
     }
+    if (url === 'https://www.zohoapis.in/crm/v8/Contacts' && init?.method === 'POST') {
+      if (config.contactCreateError) throw new Error('synthetic_timeout')
+      return json({ data: [{ code: 'SUCCESS', status: 'success',
+        details: { id: 'contact-new' } }] }, 201)
+    }
+    if (url === 'https://www.zohoapis.in/crm/v8/Contacts/contact-new?fields=Email,Last_Name') {
+      if (config.contactReadbackError) return json({ code: 'NO_PERMISSION' }, 403)
+      return json({ data: [{ id: 'contact-new', Email: 'person@example.com',
+        Last_Name: 'New Prospect' }] })
+    }
     if (url.includes('/Tasks') && init?.method !== 'PUT' && init?.method !== 'POST') {
       return json({ data: [taskState] })
     }
@@ -77,6 +89,22 @@ function mockFetch(config: {
     throw new Error('unexpected_endpoint')
   }
   return { request: request as typeof fetch, calls }
+}
+
+function claimGate() {
+  const calls: string[] = []
+  let claimed = false
+  const gate: ContactCreationGate = {
+    async reserve() {
+      calls.push('reserve')
+      if (claimed) throw new Error('zoho_contact_create_claim_exists')
+      claimed = true
+    },
+    async markStarted() { calls.push('started') },
+    async markApplied() { calls.push('applied') },
+    async quarantine() { calls.push('quarantined') },
+  }
+  return { gate, calls }
 }
 
 test('creates one CRM Task for one exact primary-email Contact', async () => {
@@ -191,6 +219,74 @@ test('cancellation with missing or duplicate Contact never reads or updates Task
     assert.deepEqual(diagnostics, [item.code])
     assert.equal(mock.calls.filter(call => call.url.includes('/Tasks')).length, 0)
   }
+})
+
+test('opt-in missing Contact creates one Contact from booking name/email before its Task', async () => {
+  const mock = mockFetch({ noContact: true })
+  const claim = claimGate()
+  const writer = new ZohoTaskWriter(credentials, mock.request, Date.now, undefined, undefined, claim.gate)
+  const newProspect = { ...operation, booking: { ...operation.booking, attendeeName: 'New Prospect' } }
+  assert.deepEqual(await writer.apply(newProspect), { contactId: 'contact-new', taskId: 'task-1' })
+  assert.deepEqual(claim.calls, ['reserve', 'started', 'applied'])
+  const create = mock.calls.find(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST')
+  assert.deepEqual(JSON.parse(String(create?.init?.body)), {
+    data: [{ Last_Name: 'New Prospect', Email: 'person@example.com' }],
+    trigger: [], skip_feature_execution: [{ name: 'cadences' }],
+  })
+  assert.equal(mock.calls.filter(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST').length, 1)
+  assert.ok(mock.calls.findIndex(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST') <
+    mock.calls.findIndex(call => call.url.endsWith('/Tasks') && call.init?.method === 'POST'))
+})
+
+test('a complete search with only non-primary email matches may create the Contact', async () => {
+  const mock = mockFetch({ contacts: [{ id: 'secondary-only', Email: 'other@example.com' }] })
+  const claim = claimGate()
+  const writer = new ZohoTaskWriter(credentials, mock.request, Date.now, undefined, undefined, claim.gate)
+  const newProspect = { ...operation, booking: { ...operation.booking, attendeeName: 'New Prospect' } }
+  assert.deepEqual(await writer.apply(newProspect), { contactId: 'contact-new', taskId: 'task-1' })
+  assert.equal(mock.calls.filter(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST').length, 1)
+})
+
+test('uncertain Contact create is claimed and never blindly retried', async () => {
+  for (const config of [
+    { noContact: true, contactCreateError: true },
+    { noContact: true, contactReadbackError: true },
+  ]) {
+    const mock = mockFetch(config)
+    const claim = claimGate()
+    const writer = new ZohoTaskWriter(credentials, mock.request, Date.now, undefined, undefined, claim.gate)
+    const newProspect = { ...operation, booking: { ...operation.booking, attendeeName: 'New Prospect' } }
+    await assert.rejects(writer.apply(newProspect), /zoho_contact_create_uncertain/)
+    assert.deepEqual(claim.calls, ['reserve', 'started', 'quarantined'])
+    await assert.rejects(writer.apply({ ...newProspect, id: '2' }), /zoho_contact_create_claim_exists/)
+    assert.equal(mock.calls.filter(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST').length, 1)
+    assert.equal(mock.calls.filter(call => call.url.endsWith('/Tasks') && call.init?.method === 'POST').length, 0)
+  }
+})
+
+test('missing name or duplicate Contact never starts a new Contact claim', async () => {
+  for (const config of [{ noContact: true }, { contacts: [
+    { id: 'contact-1', Email: 'person@example.com' },
+    { id: 'contact-2', Email: 'person@example.com' },
+  ] }]) {
+    const mock = mockFetch(config)
+    const claim = claimGate()
+    const writer = new ZohoTaskWriter(credentials, mock.request, Date.now, undefined, undefined, claim.gate)
+    await assert.rejects(writer.apply(operation))
+    assert.deepEqual(claim.calls, [])
+    assert.equal(mock.calls.filter(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST').length, 0)
+  }
+})
+
+test('missing Contact on a reschedule never creates a new prospect', async () => {
+  const mock = mockFetch({ noContact: true })
+  const claim = claimGate()
+  const writer = new ZohoTaskWriter(credentials, mock.request, Date.now, undefined, undefined, claim.gate)
+  await assert.rejects(writer.apply({ ...operation, action: 'update', crmTaskId: 'task-1',
+    booking: { ...operation.booking, trigger: 'BOOKING_RESCHEDULED', attendeeName: 'New Prospect' } }),
+  /zoho_contact_missing/)
+  assert.deepEqual(claim.calls, [])
+  assert.equal(mock.calls.filter(call => call.url.endsWith('/Contacts') && call.init?.method === 'POST').length, 0)
 })
 
 test('an uncertain write is not retried by the writer', async () => {

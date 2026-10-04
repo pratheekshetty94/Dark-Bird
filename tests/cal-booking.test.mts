@@ -46,6 +46,17 @@ test('valid signed discovery booking yields bounded normalized data', () => {
   assert.equal(parsed.eventTypeId, 4773493)
   assert.equal(parsed.sequence, 0)
   assert.match(parsed.deliveryHash, /^[a-f0-9]{64}$/)
+  assert.equal(parsed.attendeeName, null)
+})
+
+test('signed attendee name is trimmed and bounded for opt-in Contact creation', () => {
+  const { raw, headers } = signed(payload({ attendees: [
+    { email: 'Person@Example.com', name: '  New Prospect  ', timeZone: 'Asia/Kolkata' },
+  ] }))
+  assert.equal(verifyCalBookingWebhook(raw, headers, secret, now).attendeeName, 'New Prospect')
+  reject(payload({ attendees: [
+    { email: 'Person@Example.com', name: 'x'.repeat(256), timeZone: 'Asia/Kolkata' },
+  ] }), 'invalid_payload')
 })
 
 test('missing configuration, unsigned and tampered deliveries fail closed', () => {

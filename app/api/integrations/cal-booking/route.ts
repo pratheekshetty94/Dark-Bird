@@ -3,6 +3,7 @@ import { handleBookingValidation } from '../../../../lib/integrations/booking-va
 import { PostgresBookingLedger } from '../../../../lib/integrations/postgres-booking-ledger.ts'
 import { createPgPoolFromEnvironment } from '../../../../lib/integrations/pg-pool.ts'
 import { createZohoTaskWriterFromEnvironment } from '../../../../lib/integrations/zoho-task-writer.ts'
+import { PostgresContactCreationGate } from '../../../../lib/integrations/postgres-contact-claim.ts'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -75,10 +76,15 @@ export async function POST(request: Request): Promise<Response> {
       writer: createZohoTaskWriterFromEnvironment(TEST_CONTACT_ID,
         code => console.info('booking_crm_zoho', code)),
     }
-    if (syncEnabled && !dependencies) dependencies = {
-      ledger: new PostgresBookingLedger(createPgPoolFromEnvironment()),
-      writer: createZohoTaskWriterFromEnvironment(undefined,
-        code => console.info('booking_crm_zoho', code)),
+    if (syncEnabled && !dependencies) {
+      const pool = createPgPoolFromEnvironment()
+      dependencies = {
+        ledger: new PostgresBookingLedger(pool),
+        writer: createZohoTaskWriterFromEnvironment(undefined,
+          code => console.info('booking_crm_zoho', code),
+          process.env.BOOKING_CRM_NEW_CONTACT_ENABLED === 'true'
+            ? new PostgresContactCreationGate(pool) : undefined),
+      }
     }
   } catch {
     return Response.json({ error: 'not_configured' }, { status: 503 })
