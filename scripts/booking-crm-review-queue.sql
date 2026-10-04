@@ -1,20 +1,29 @@
 -- Run manually only in an authorized private ledger SQL editor with read-only access.
--- Four category counts plus at most 50 existing IDs per category. calendar_uid
+-- Seven category counts plus at most 50 existing IDs per category. calendar_uid
 -- is linkable and may itself contain personal text (including @). Do not share
 -- the result publicly. No separate payload, email, name, URL, token, or CRM
 -- request/response columns are selected.
 -- A reserved/started operation is aged after 15 minutes. Do not retry or clear it.
 -- This report has no schedule, alert owner, or reconciliation workflow.
 WITH categories(category) AS (
-  VALUES ('unresolved'), ('quarantined'), ('aged_started'), ('aged_reserved')
+  VALUES ('unresolved'), ('contact_missing'), ('contact_duplicate'),
+         ('contact_lookup_error'), ('other_quarantined'),
+         ('aged_started'), ('aged_reserved')
 ), review_items AS (
   SELECT 'unresolved'::text AS category, NULL::bigint AS operation_id,
          NULL::bigint AS series_id, u.event_type_id, u.calendar_uid
     FROM public.cal_booking_unresolved u
   UNION ALL
-  SELECT CASE o.state
-           WHEN 'quarantined' THEN 'quarantined'
-           WHEN 'started' THEN 'aged_started'
+  SELECT CASE
+           WHEN o.state = 'quarantined' AND o.quarantine_reason = 'zoho_contact_missing'
+             THEN 'contact_missing'
+           WHEN o.state = 'quarantined' AND o.quarantine_reason = 'zoho_contact_duplicate'
+             THEN 'contact_duplicate'
+           WHEN o.state = 'quarantined' AND o.quarantine_reason IN
+             ('zoho_contact_page_incomplete', 'zoho_contact_result_invalid', 'zoho_contact_search_failed')
+             THEN 'contact_lookup_error'
+           WHEN o.state = 'quarantined' THEN 'other_quarantined'
+           WHEN o.state = 'started' THEN 'aged_started'
            ELSE 'aged_reserved'
          END AS category,
          o.id AS operation_id, o.series_id, o.event_type_id, o.calendar_uid

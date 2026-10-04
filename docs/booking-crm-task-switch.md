@@ -1,12 +1,12 @@
 # Cal.com booking to Contact-linked Zoho CRM Task
 
-This is a local implementation for review. Do not enable production or test sync until
-`003_crm_task_ids.sql` is applied to the approved ledger database, the narrow Task OAuth
-grant is installed privately, the Cal webhook join-URL shape is validated, and Task
-notification behavior is approved. No new booking or CRM write is part of this change.
-The previous quarantined Event attempt and singleton test claim remain untouched.
+The internal Contact-linked create, reschedule, and cancellation test passed with
+one CRM Task. Customer sync is still off. Before customer activation, establish
+the exception process in `docs/booking-crm-operations.md`; the current grant
+cannot create a new Contact. The previous quarantined Event attempt and
+singleton test claim remain untouched.
 
-## One internal Task lifecycle test (local follow-up, not deployed)
+## Bounded internal Task lifecycle test (completed)
 
 Migration `004_task_test_run_claim.sql` adds a separate, permanent one-run claim;
 it does not read, reset, or delete `cal_booking_test_claim`. Test mode requires a
@@ -54,8 +54,10 @@ Google Meet or Cal Video URL on create and reschedule. Missing or unapproved lin
 are rejected before ledger reservation. The attendee `timeZone` is required and validated as an
 IANA zone. The Task subject and due date use the fixed business zone `Asia/Kolkata`;
 the attendee zone is retained separately in the description. Missing or invalid
-timezone data is rejected before ledger reservation. Cal's live webhook shape for the configured
-version still needs validation. The original URL is copied verbatim into the Task.
+timezone data is rejected before ledger reservation. The signed internal
+create/reschedule/cancel test verified the configured Cal URL field for that
+booking; other booking variations have not been tested. The original URL is
+copied verbatim into the Task.
 
 On reschedule, the ledger uses the existing Task ID and never creates a second Task.
 Before and after the update, the writer reads that Task, verifies its Contact and
@@ -69,11 +71,14 @@ response remains quarantined with no automatic retry.
 
 For manual operations review, run `scripts/booking-crm-review-queue.sql` only in
 an authorized private ledger SQL editor. It returns counts and up to 50 existing IDs for
-unresolved, quarantined, and started/reserved operations aged 15 minutes. It is
+unresolved series, missing or duplicate Contact reviews, other quarantines, and
+started/reserved operations aged 15 minutes. Known Contact lookup failures are
+stored as fixed, non-personal `quarantine_reason` codes on the existing operation. It is
 read-only and never clears or retries a row. This is a manual report, not an
 automatic user alert. Its `calendar_uid` values are linkable and may contain
-personal text, so treat the results as private. There is no scheduled alert,
-assigned review owner, or reconciliation workflow yet.
+personal text, so treat the results as private. See
+`docs/booking-crm-operations.md` for the manual review and new-prospect path.
+There is no scheduled alert or assigned review owner yet.
 
 ## Minimal authorization and private setup
 

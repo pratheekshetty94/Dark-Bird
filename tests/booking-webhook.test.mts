@@ -158,6 +158,28 @@ test('uncertain writer result is quarantined without retry', async () => {
   assert.deepEqual(calls, ['reserve', 'start', 'writer', 'quarantine'])
 })
 
+test('Contact lookup failures persist only allowlisted review reasons', async () => {
+  for (const [message, expected] of [
+    ['zoho_contact_missing', 'zoho_contact_missing'],
+    ['zoho_contact_duplicate', 'zoho_contact_duplicate'],
+    ['person@example.invalid private failure', 'uncertain_crm_result'],
+  ]) {
+    const reasons: string[] = []
+    const logs: string[] = []
+    const stub = ledger([])
+    stub.quarantine = async (_id, reason) => { reasons.push(reason) }
+    const response = await handleBookingWebhook(request(), {
+      secret, ledger: stub, now: () => now,
+      writer: { async apply() { throw new Error(message) } },
+      log: code => logs.push(code),
+    })
+    assert.equal(response.status, 202)
+    assert.deepEqual(reasons, [expected])
+    assert.deepEqual(logs, [`crm_${expected}_quarantined`])
+    assert.ok(logs.every(code => !code.includes('@')))
+  }
+})
+
 test('failed start prevents outbound request', async () => {
   const calls: string[] = []
   const original = ledger(calls)

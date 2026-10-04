@@ -218,6 +218,17 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       // with category counts and only existing IDs in its result.
       const reserved = await ledger.reserve(syntheticBooking('aged-reserved', 'f'))
       assert.equal(reserved.outcome, 'reserved')
+      for (const [series, hash, reason] of [
+        ['missing-review', 'g', 'zoho_contact_missing'],
+        ['duplicate-review', 'h', 'zoho_contact_duplicate'],
+      ]) {
+        const review = await ledger.reserve(syntheticBooking(series, hash))
+        assert.equal(review.outcome, 'reserved')
+        if (review.outcome === 'reserved') {
+          await ledger.markStarted(review.operation.id)
+          await ledger.quarantine(review.operation.id, reason)
+        }
+      }
       await pool.query("UPDATE cal_crm_operations SET started_at = now() - interval '16 minutes' WHERE calendar_uid = 'crashed'")
       await pool.query("UPDATE cal_webhook_deliveries SET received_at = now() - interval '16 minutes' WHERE body_sha256 = $1",
         [syntheticBooking('aged-reserved', 'f').deliveryHash])
@@ -225,12 +236,70 @@ test('disposable PostgreSQL: concurrency, replay, crash and uncertainty stay at 
       assert.ok(!/\b(?:email|name|description|url|token)\b/i.test(reportSql.split('WITH categories')[1]))
       const report = await pool.query(reportSql)
       const categories = Object.fromEntries(report.rows.map(row => [row.category, row]))
-      assert.equal(report.rowCount, 4)
+      assert.equal(report.rowCount, 7)
       assert.ok(Number(categories.unresolved.total_count) >= 2)
-      assert.ok(Number(categories.quarantined.total_count) >= 1)
+      assert.ok(Number(categories.contact_missing.total_count) >= 1)
+      assert.ok(Number(categories.contact_duplicate.total_count) >= 1)
+      assert.ok(Number(categories.other_quarantined.total_count) >= 1)
       assert.ok(Number(categories.aged_started.total_count) >= 1)
       assert.ok(Number(categories.aged_reserved.total_count) >= 1)
-      assert.ok(categories.quarantined.ids.some((id: { calendar_uid: string }) => id.calendar_uid === 'uncertain'))
+      assert.ok(categories.other_quarantined.ids.some((id: { calendar_uid: string }) => id.calendar_uid === 'uncertain'))
+      const missingId = categories.contact_missing.ids.find(
+        (id: { calendar_uid: string }) => id.calendar_uid === 'missing-review'
+      )?.operation_id
+      assert.ok(missingId)
+      const detailSql = (await readFile(new URL('../scripts/booking-crm-review-case.sql', import.meta.url), 'utf8'))
+        .replace("'SET_OPERATION_ID'", String(missingId))
+      const detail = await pool.query(detailSql)
+      assert.equal(detail.rowCount, 1)
+      assert.equal(detail.rows[0].quarantine_reason, 'zoho_contact_missing')
+      assert.equal(detail.rows[0].calendar_uid, 'missing-review')
+
+      const reconcileTemplate = await readFile(
+        new URL('../scripts/booking-crm-reconcile-contact.sql', import.meta.url), 'utf8'
+      )
+      const renderReconcile = (id: string, contactId: string, taskId: string, reason: string) =>
+        reconcileTemplate.replaceAll('SET_OPERATION_ID', id)
+          .replaceAll('SET_CONTACT_ID', contactId).replaceAll('SET_TASK_ID', taskId)
+          .replaceAll('SET_EXPECTED_REASON', reason)
+      const manualCreate = await ledger.reserve(syntheticBooking('manual-link', 'i'))
+      assert.equal(manualCreate.outcome, 'reserved')
+      if (manualCreate.outcome === 'reserved') {
+        await ledger.markStarted(manualCreate.operation.id)
+        await ledger.quarantine(manualCreate.operation.id, 'zoho_contact_missing')
+        await assert.rejects(pool.query(renderReconcile(manualCreate.operation.id,
+          '1234567890123456', '1234567890123457', 'zoho_contact_duplicate')))
+        assert.equal((await pool.query('SELECT state FROM cal_crm_operations WHERE id = $1',
+          [manualCreate.operation.id])).rows[0].state, 'quarantined')
+        await pool.query(renderReconcile(manualCreate.operation.id,
+          '1234567890123456', '1234567890123457', 'zoho_contact_missing'))
+        const linked = await pool.query('SELECT o.state, o.crm_task_id, s.contact_id FROM cal_crm_operations o JOIN cal_booking_series s ON s.id = o.series_id WHERE o.id = $1',
+          [manualCreate.operation.id])
+        assert.deepEqual(linked.rows[0], { state: 'applied', crm_task_id: '1234567890123457',
+          contact_id: '1234567890123456' })
+      }
+
+      const manualUpdateCreate = await ledger.reserve(syntheticBooking('manual-update', 'j'))
+      assert.equal(manualUpdateCreate.outcome, 'reserved')
+      if (manualUpdateCreate.outcome === 'reserved') {
+        await ledger.markStarted(manualUpdateCreate.operation.id)
+        await ledger.markApplied(manualUpdateCreate.operation.id,
+          '1234567890123458', '1234567890123456')
+        const manualUpdate = await ledger.reserve({ ...syntheticBooking('manual-update', 'k'),
+          trigger: 'BOOKING_RESCHEDULED', bookingUid: 'manual-update-next',
+          previousBookingUid: 'manual-update-uid', sequence: 1 })
+        assert.equal(manualUpdate.outcome, 'reserved')
+        if (manualUpdate.outcome === 'reserved') {
+          await ledger.markStarted(manualUpdate.operation.id)
+          await ledger.quarantine(manualUpdate.operation.id, 'zoho_contact_duplicate')
+          await assert.rejects(pool.query(renderReconcile(manualUpdate.operation.id,
+            '1234567890123456', '1234567890123459', 'zoho_contact_duplicate')))
+          await pool.query(renderReconcile(manualUpdate.operation.id,
+            '1234567890123456', '1234567890123458', 'zoho_contact_duplicate'))
+          assert.equal((await pool.query('SELECT state FROM cal_crm_operations WHERE id = $1',
+            [manualUpdate.operation.id])).rows[0].state, 'applied')
+        }
+      }
     } finally {
       await pool.end()
     }

@@ -18,6 +18,21 @@ export type BookingWebhookDependencies = {
   log?: (code: string) => void
 }
 
+/** Only prewrite, non-personal Contact lookup reasons may be persisted verbatim. */
+function safeQuarantineReason(error: unknown): string {
+  if (!(error instanceof Error)) return 'uncertain_crm_result'
+  switch (error.message) {
+    case 'zoho_contact_missing':
+    case 'zoho_contact_duplicate':
+    case 'zoho_contact_page_incomplete':
+    case 'zoho_contact_result_invalid':
+    case 'zoho_contact_search_failed':
+      return error.message
+    default:
+      return 'uncertain_crm_result'
+  }
+}
+
 export async function handleBookingWebhook(
   request: Request,
   dependencies: BookingWebhookDependencies
@@ -84,10 +99,11 @@ export async function handleBookingWebhook(
     if (!result.taskId || !result.contactId) throw new Error('ambiguous_crm_result')
     await dependencies.ledger.markApplied(operation.id, result.taskId, result.contactId)
     return Response.json({ outcome: 'applied' })
-  } catch {
+  } catch (error) {
     // Even an apparent timeout can mean Zoho committed. Never resend.
-    await dependencies.ledger.quarantine(operation.id, 'uncertain_crm_result').catch(() => undefined)
-    dependencies.log?.('crm_uncertain_quarantined')
+    const reason = safeQuarantineReason(error)
+    await dependencies.ledger.quarantine(operation.id, reason).catch(() => undefined)
+    dependencies.log?.(`crm_${reason}_quarantined`)
     return Response.json({ outcome: 'quarantined' }, { status: 202 })
   }
 }
